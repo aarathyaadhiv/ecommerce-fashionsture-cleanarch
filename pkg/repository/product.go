@@ -47,7 +47,7 @@ func (c *ProductRepository) ShowAll(page, count int) ([]models.ProductResponse, 
 func (c *ProductRepository) ShowProduct(id uint) (models.ProductResponse, error) {
 	var productDetails models.ProductResponse
 
-	if err := c.DB.Raw(`select p.id,p.name,p.description,p.price,p.image,p.discount,c.name as category,b.name as category from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id where p.id=?`, id).Scan(&productDetails).Error; err != nil {
+	if err := c.DB.Raw(`select p.id,p.name,p.description,p.price,p.image,p.discount,c.name as category,b.name as brand from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id where p.id=?`, id).Scan(&productDetails).Error; err != nil {
 		return models.ProductResponse{}, err
 	}
 	return productDetails, nil

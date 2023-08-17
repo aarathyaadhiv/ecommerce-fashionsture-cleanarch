@@ -24,7 +24,15 @@ func NewUserHandler(usecase services.UserUseCase) handler.UserHandler {
 		userUseCase: usecase,
 	}
 }
-
+// @Summary User SignUp
+// @Description SignUp handler for user
+// @Tags User Authentication
+// @Accept json
+// @Produce json
+// @Param  user body models.UserSignUp true "user signup details"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /SignUp [post]
 func (ur *UserHandler) SignUpHandler(c *gin.Context) {
 	var signUpDetails models.UserSignUp
 	if err := c.ShouldBindJSON(&signUpDetails); err != nil {
@@ -47,6 +55,15 @@ func (ur *UserHandler) SignUpHandler(c *gin.Context) {
 	sucRes := response.Responses(http.StatusCreated, "successfully signedup", userData, nil)
 	c.JSON(http.StatusCreated, sucRes)
 }
+// @Summary User Login
+// @Description Login handler for user
+// @Tags User Authentication
+// @Accept json
+// @Produce json
+// @Param  user body models.UserLogin true "user login details"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /login [post]
 func (ur *UserHandler) LoginHandler(c *gin.Context) {
 	var loginDetails models.UserLogin
 	if err := c.ShouldBindJSON(&loginDetails); err != nil {

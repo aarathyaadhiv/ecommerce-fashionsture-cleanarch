@@ -75,6 +75,9 @@ func (c *AdminUseCase) BlockUser(id string) error {
 	if err != nil {
 		return err
 	}
+	if ok:=c.adminRepo.IsBlocked(uint(userId));ok{
+		return errors.New("already blocked user")
+	}
 	return c.adminRepo.BlockUser(uint(userId))
 }
 
@@ -82,6 +85,9 @@ func (c *AdminUseCase) UnblockUser(id string) error {
 	userId, err := strconv.Atoi(id)
 	if err != nil {
 		return err
+	}
+	if ok:=c.adminRepo.IsBlocked(uint(userId));!ok{
+		return errors.New("already unblocked user")
 	}
 	return c.adminRepo.UnblockUser(uint(userId))
 }

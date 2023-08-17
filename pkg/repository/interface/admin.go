@@ -8,4 +8,5 @@ type AdminRepository interface {
 	Save(admin models.AdminSignUp) (models.AdminDetails, error)
 	BlockUser(id uint) error
 	UnblockUser(id uint) error
+	IsBlocked(id uint) bool
 }

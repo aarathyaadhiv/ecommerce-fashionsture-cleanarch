@@ -47,3 +47,11 @@ func (c *AdminRepository) BlockUser(id uint) error {
 func (c *AdminRepository) UnblockUser(id uint) error {
 	return c.DB.Exec(`update users set block='false' where id=?`, id).Error
 }
+
+func (c *AdminRepository) IsBlocked(id uint) bool {
+	var block bool
+	if err := c.DB.Raw(`select block from users where id=?`, id).Scan(&block).Error; err != nil {
+		return false
+	}
+	return block
+}

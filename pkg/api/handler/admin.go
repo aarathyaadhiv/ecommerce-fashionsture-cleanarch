@@ -21,7 +21,15 @@ func NewAdminHandler(useCase services.AdminUseCase) handler.AdminHandler {
 		AdminUsecase: useCase,
 	}
 }
-
+// @Summary Admin SignUp
+// @Description SignUp handler for admin
+// @Tags Admin Authentication
+// @Accept json
+// @Produce json
+// @Param  admin body models.AdminSignUp true "Admin signup details"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/adminSignUp [post]
 func (ad *AdminHandler) AdminSignUpHandler(c *gin.Context) {
 	var adminSignUpDetails models.AdminSignUp
 
@@ -45,7 +53,15 @@ func (ad *AdminHandler) AdminSignUpHandler(c *gin.Context) {
 	sucRes := response.Responses(http.StatusCreated, "successfully signed in", adminDetails, nil)
 	c.JSON(http.StatusOK, sucRes)
 }
-
+// @Summary Admin Login
+// @Description Login handler for admin
+// @Tags Admin Authentication
+// @Accept json
+// @Produce json
+// @Param  admin body models.AdminLogin true "Admin login details"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/adminLogin [post]
 func (ad *AdminHandler) AdminLoginHandler(c *gin.Context) {
 	var adminLoginDetails models.AdminLogin
 
@@ -69,7 +85,16 @@ func (ad *AdminHandler) AdminLoginHandler(c *gin.Context) {
 	sucRes := response.Responses(http.StatusOK, "successfully logged in", adminDetails, nil)
 	c.JSON(http.StatusOK, sucRes)
 }
-
+// @Summary Block User 
+// @Description Block User By Admin
+// @Tags User Management
+// @Accept json
+// @Produce json
+// @Param  id path string true "id"
+// @Security ApiKeyHeaderAuth
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/user/blockUser/{id} [post]
 func (ad *AdminHandler) BlockUser(c *gin.Context) {
 	id := c.Param("id")
 
@@ -82,7 +107,16 @@ func (ad *AdminHandler) BlockUser(c *gin.Context) {
 	c.JSON(http.StatusOK, succRes)
 
 }
-
+// @Summary Unblock User 
+// @Description Unblock User By Admin
+// @Tags User Management
+// @Accept json
+// @Produce json
+// @Param  id path string true "id"
+// @Security ApiKeyHeaderAuth
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/user/unblockUser/{id} [post]
 func (ad *AdminHandler) UnblockUser(c *gin.Context) {
 	id := c.Param("id")
 

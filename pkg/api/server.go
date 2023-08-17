@@ -6,6 +6,8 @@ import (
 	handler "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/api/handler/interface"
 	_ "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/api/middleware"
 	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/api/routes"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type ServerHTTP struct {
@@ -17,6 +19,8 @@ func NewServerHTTP(userHandler handler.UserHandler, adminHandler handler.AdminHa
 
 	// Use logger from Gin
 	engine.Use(gin.Logger())
+
+	engine.GET("/swagger/*any",ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	routes.UserRoutes(engine.Group("/"), userHandler, productHandler, otpHandler)
 	routes.AdminRoutes(engine.Group("/admin"), adminHandler, productHandler)

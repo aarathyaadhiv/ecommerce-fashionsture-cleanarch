@@ -1,0 +1,590 @@
+definitions:
+  models.AddBrand:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  models.AddCategory:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  models.AddProduct:
+    properties:
+      brand_id:
+        type: integer
+      category_id:
+        type: integer
+      description:
+        type: string
+      discount:
+        type: integer
+      image:
+        type: string
+      name:
+        type: string
+      price:
+        type: integer
+      quantity:
+        type: integer
+    required:
+    - brand_id
+    - category_id
+    - description
+    - discount
+    - image
+    - name
+    - price
+    - quantity
+    type: object
+  models.AdminLogin:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  models.AdminSignUp:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phno:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    - phno
+    type: object
+  models.OTPData:
+    properties:
+      phoneNumber:
+        type: string
+    required:
+    - phoneNumber
+    type: object
+  models.ProductUpdate:
+    properties:
+      id:
+        type: integer
+      quantity:
+        type: integer
+    type: object
+  models.UserLogin:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  models.UserSignUp:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phno:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    - phno
+    type: object
+  models.VerifyData:
+    properties:
+      code:
+        type: string
+      phoneNumber:
+        type: string
+    required:
+    - code
+    - phoneNumber
+    type: object
+  response.Response:
+    properties:
+      data: {}
+      error: {}
+      message:
+        type: string
+      statuscode:
+        type: integer
+    type: object
+info:
+  contact: {}
+paths:
+  /SignUp:
+    post:
+      consumes:
+      - application/json
+      description: SignUp handler for user
+      parameters:
+      - description: user signup details
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserSignUp'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: User SignUp
+      tags:
+      - User Authentication
+  /admin/adminLogin:
+    post:
+      consumes:
+      - application/json
+      description: Login handler for admin
+      parameters:
+      - description: Admin login details
+        in: body
+        name: admin
+        required: true
+        schema:
+          $ref: '#/definitions/models.AdminLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Admin Login
+      tags:
+      - Admin Authentication
+  /admin/adminSignUp:
+    post:
+      consumes:
+      - application/json
+      description: SignUp handler for admin
+      parameters:
+      - description: Admin signup details
+        in: body
+        name: admin
+        required: true
+        schema:
+          $ref: '#/definitions/models.AdminSignUp'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Admin SignUp
+      tags:
+      - Admin Authentication
+  /admin/brand/add:
+    post:
+      consumes:
+      - application/json
+      description: Add Brand By Admin
+      parameters:
+      - description: brand details
+        in: body
+        name: brand
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddBrand'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Add Brand
+      tags:
+      - Brand Management
+  /admin/brand/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Brand By Admin
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Delete Brand
+      tags:
+      - Brand Management
+  /admin/category/add:
+    post:
+      consumes:
+      - application/json
+      description: Add Category By Admin
+      parameters:
+      - description: category details
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddCategory'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Add Category
+      tags:
+      - Category Management
+  /admin/category/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Category By Admin
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Delete Category
+      tags:
+      - Category Management
+  /admin/product/add:
+    post:
+      consumes:
+      - application/json
+      description: Add Product By Admin
+      parameters:
+      - description: product details
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddProduct'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Add Product
+      tags:
+      - Product Management
+  /admin/product/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Product By Admin
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Delete Product
+      tags:
+      - Product Management
+  /admin/product/update:
+    patch:
+      consumes:
+      - application/json
+      description: Update Product By Admin
+      parameters:
+      - description: update details
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProductUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Update Product
+      tags:
+      - Product Management
+  /admin/user/blockUser/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Block User By Admin
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Block User
+      tags:
+      - User Management
+  /admin/user/unblockUser/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Unblock User By Admin
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Unblock User
+      tags:
+      - User Management
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login handler for user
+      parameters:
+      - description: user login details
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: User Login
+      tags:
+      - User Authentication
+  /products:
+    get:
+      consumes:
+      - application/json
+      description: Show All Product To User
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: count
+        in: query
+        name: count
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Show All
+      tags:
+      - Product View
+  /products/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Show Product To User
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Show Product
+      tags:
+      - Product View
+  /sendOtp:
+    post:
+      consumes:
+      - application/json
+      description: Sending Otp To User
+      parameters:
+      - description: otp
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.OTPData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Send Otp
+      tags:
+      - User Authentication
+  /verifyOtp:
+    post:
+      consumes:
+      - application/json
+      description: Verify Otp From User
+      parameters:
+      - description: verify
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.VerifyData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Verify Otp
+      tags:
+      - User Authentication
+swagger: "2.0"

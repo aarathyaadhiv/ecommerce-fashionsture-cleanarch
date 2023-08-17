@@ -17,7 +17,15 @@ type OtpHandler struct {
 func NewOtpHandler(usecase usecase.OtpUseCase) interfaces.OtpHandler {
 	return &OtpHandler{usecase}
 }
-
+// @Summary Send Otp
+// @Description Sending Otp To User
+// @Tags User Authentication
+// @Accept json
+// @Produce json
+// @Param  user body models.OTPData true "otp"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /sendOtp [post]
 func (ot *OtpHandler) SendOTP(c *gin.Context) {
 	var otp models.OTPData
 	if err := c.ShouldBindJSON(&otp); err != nil {
@@ -33,7 +41,15 @@ func (ot *OtpHandler) SendOTP(c *gin.Context) {
 	succRes := response.Responses(http.StatusOK, "successfully sent otp", nil, nil)
 	c.JSON(http.StatusOK, succRes)
 }
-
+// @Summary Verify Otp
+// @Description Verify Otp From User
+// @Tags User Authentication
+// @Accept json
+// @Produce json
+// @Param  user body models.VerifyData true "verify"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /verifyOtp [post]
 func (ot *OtpHandler) VerifyOtp(c *gin.Context) {
 	var verify models.VerifyData
 

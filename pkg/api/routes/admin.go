@@ -14,8 +14,8 @@ func AdminRoutes(router *gin.RouterGroup, adminHandler handler.AdminHandler, pro
 		router.POST("/adminSignUp", adminHandler.AdminSignUpHandler)
 		user := router.Group("/user")
 		{
-			user.GET("/blockUser/:id", adminHandler.BlockUser)
-			user.GET("/unblockUser/:id", adminHandler.UnblockUser)
+			user.POST("/blockUser/:id", adminHandler.BlockUser)
+			user.POST("/unblockUser/:id", adminHandler.UnblockUser)
 		}
 		product := router.Group("/product")
 		{
