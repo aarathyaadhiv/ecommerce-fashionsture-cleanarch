@@ -56,6 +56,137 @@ const docTemplate = `{
                 }
             }
         },
+        "/address": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Show Addresses of the user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Show Address",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/address/add": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Add Address of the user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Add Address",
+                "parameters": [
+                    {
+                        "description": "address",
+                        "name": "address",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ShowAddress"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/address/update/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Update Address of the user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Update Address",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "address",
+                        "name": "address",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ShowAddress"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/adminLogin": {
             "post": {
                 "description": "Login handler for admin",
@@ -531,6 +662,285 @@ const docTemplate = `{
                 }
             }
         },
+        "/cart": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Show Products In Users Cart",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cart Management"
+                ],
+                "summary": "Show Cart Products",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/cart/add/{id}": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Add Products To Cart",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cart Management"
+                ],
+                "summary": "Add To Cart",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "product_id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/cart/remove/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Remove Product From Cart",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cart Management"
+                ],
+                "summary": "Remove From Cart",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "product_id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/checkout": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Displaying Checkout Page Before Placing Order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Checkout Page"
+                ],
+                "summary": "CheckOut",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/forgotPassword": {
+            "post": {
+                "description": "forgot password for user to reset password by sending otp to phone number",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "forgot password",
+                "parameters": [
+                    {
+                        "description": "forgot",
+                        "name": "forgot",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Forgot"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/forgotPassword/reset": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "To Reset Password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Reset Password",
+                "parameters": [
+                    {
+                        "description": "reset",
+                        "name": "reset",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Reset"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/forgotPassword/verify": {
+            "post": {
+                "description": "Verify otp to reset password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Verify Reset Otp",
+                "parameters": [
+                    {
+                        "description": "verify",
+                        "name": "verify",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ForgotVerify"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/login": {
             "post": {
                 "description": "Login handler for user",
@@ -552,6 +962,101 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/models.UserLogin"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/orders": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Showing Order History To User",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order Management"
+                ],
+                "summary": "Order History",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "count",
+                        "name": "count",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/placeOrder": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Place order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order Management"
+                ],
+                "summary": "Place Order",
+                "parameters": [
+                    {
+                        "description": "orderRequest",
+                        "name": "OrderRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.OrderRequest"
                         }
                     }
                 ],
@@ -694,6 +1199,85 @@ const docTemplate = `{
                 }
             }
         },
+        "/userProfile": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "View Details Of The User",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "View Details",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/userProfile/update": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Update Details of the user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Update User Details",
+                "parameters": [
+                    {
+                        "description": "userdetails",
+                        "name": "userdetails",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UserUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/verifyOtp": {
             "post": {
                 "description": "Verify Otp From User",
@@ -781,7 +1365,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "discount": {
-                    "type": "integer"
+                    "type": "number"
                 },
                 "image": {
                     "type": "string"
@@ -790,7 +1374,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "price": {
-                    "type": "integer"
+                    "type": "number"
                 },
                 "quantity": {
                     "type": "integer"
@@ -835,6 +1419,32 @@ const docTemplate = `{
                 }
             }
         },
+        "models.Forgot": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ForgotVerify": {
+            "type": "object",
+            "required": [
+                "code",
+                "email"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
         "models.OTPData": {
             "type": "object",
             "required": [
@@ -846,6 +1456,21 @@ const docTemplate = `{
                 }
             }
         },
+        "models.OrderRequest": {
+            "type": "object",
+            "required": [
+                "address_id",
+                "payment_id"
+            ],
+            "properties": {
+                "address_id": {
+                    "type": "integer"
+                },
+                "payment_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "models.ProductUpdate": {
             "type": "object",
             "properties": {
@@ -854,6 +1479,48 @@ const docTemplate = `{
                 },
                 "quantity": {
                     "type": "integer"
+                }
+            }
+        },
+        "models.Reset": {
+            "type": "object",
+            "required": [
+                "new_password"
+            ],
+            "properties": {
+                "new_password": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ShowAddress": {
+            "type": "object",
+            "required": [
+                "city",
+                "house_name",
+                "landmark",
+                "name",
+                "pincode",
+                "state"
+            ],
+            "properties": {
+                "city": {
+                    "type": "string"
+                },
+                "house_name": {
+                    "type": "string"
+                },
+                "landmark": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "pincode": {
+                    "type": "integer"
+                },
+                "state": {
+                    "type": "string"
                 }
             }
         },
@@ -888,6 +1555,25 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                },
+                "phno": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UserUpdate": {
+            "type": "object",
+            "required": [
+                "email",
+                "name",
+                "phno"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 },
                 "phno": {

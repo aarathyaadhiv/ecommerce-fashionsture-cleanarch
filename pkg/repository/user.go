@@ -70,3 +70,27 @@ func (c *userDatabase) IsBlocked(email string) bool {
 	}
 	return block
 }
+
+func (c *userDatabase) ShowAddress(id uint) ([]models.ShowAddress, error) {
+	var showAddress []models.ShowAddress
+	if err := c.DB.Raw(`SELECT house_name,name,city,state,landmark,pincode FROM addresses WHERE users_id=?`, id).Scan(&showAddress).Error; err != nil {
+		return nil, err
+	}
+	return showAddress, nil
+}
+
+func (c *userDatabase) AddAddress(address models.ShowAddress, userId uint) error {
+	return c.DB.Exec(`INSERT INTO addresses(house_name,name,city,state,landmark,pincode,users_id ) VALUES(?,?,?,?,?,?,?)`, address.HouseName, address.Name, address.City, address.State, address.Landmark, address.Pincode, userId).Error
+}
+
+func (c *userDatabase) UpdateAddress(address models.ShowAddress, addressId, userId uint) error {
+	return c.DB.Exec(`UPDATE addresses SET house_name=?,name=?,city=?,state=?,landmark=?,pincode=? WHERE id=? AND users_id=?`, address.HouseName, address.Name, address.City, address.State, address.Landmark, address.Pincode, addressId, userId).Error
+}
+
+func (c *userDatabase) UpdateUserDetails(userId uint, userDetails models.UserUpdate) error {
+	return c.DB.Exec(`UPDATE users SET name=?,email=?,ph_no=? WHERE id=?`, userDetails.Name, userDetails.Email, userDetails.PhNo, userId).Error
+}
+
+func (c *userDatabase) UpdatePassword(id uint, password string) error {
+	return c.DB.Exec(`UPDATE users SET password=? WHERE id=?`, password, id).Error
+}

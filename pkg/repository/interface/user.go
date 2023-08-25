@@ -14,4 +14,9 @@ type UserRepository interface {
 	FindByID(id uint) (models.UserDetails, error)
 	Save(user models.UserSignUp) (models.UserDetails, error)
 	IsBlocked(email string) bool
+	ShowAddress(id uint) ([]models.ShowAddress, error)
+	AddAddress(address models.ShowAddress,userId uint)error
+	UpdateAddress(address models.ShowAddress,addressId,userId uint)error
+	UpdateUserDetails(userId uint,userDetails models.UserUpdate)error
+	UpdatePassword(id uint,password string)error
 }

@@ -10,6 +10,13 @@ import (
 type UserUseCase interface {
 	UserSignUp(user models.UserSignUp) (models.TokenResponse, error)
 	UserLogin(user models.UserLogin) (models.TokenResponse, error)
-	// UserOtpLogin(user models.UserOtpLogin)(models.TokenResponse,error)
-
+	ShowDetails(id uint)(models.UserDetails,error)
+	ShowAddress(id uint)([]models.ShowAddress,error)
+	AddAddress(address models.ShowAddress,userId uint)error
+	UpdateAddress(address models.ShowAddress,addressId string,userId uint)error
+	UpdateUserDetails(userId uint,userdetails models.UserUpdate)error
+	Checkout(id uint )(models.Checkout,error)
+	ForgotPassword(forgot models.Forgot)(error)
+	VerifyResetOtp(data models.ForgotVerify) (string, error)
+	ResetPassword(id uint,password string)error
 }

@@ -9,7 +9,7 @@ import (
 func AdminRoutes(router *gin.RouterGroup, adminHandler handler.AdminHandler, productHandler handler.ProductHandler) {
 
 	router.POST("/adminLogin", adminHandler.AdminLoginHandler)
-	router.Use(middleware.AuthorizationMiddleware)
+	router.Use(middleware.AdminAuthorizationMiddleware)
 	{
 		router.POST("/adminSignUp", adminHandler.AdminSignUpHandler)
 		user := router.Group("/user")

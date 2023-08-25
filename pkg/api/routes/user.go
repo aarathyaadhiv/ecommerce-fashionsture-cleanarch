@@ -2,17 +2,53 @@ package routes
 
 import (
 	handler "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/api/handler/interface"
+	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/api/middleware"
 	"github.com/gin-gonic/gin"
 )
 
-func UserRoutes(router *gin.RouterGroup, userHandler handler.UserHandler, productHandler handler.ProductHandler, otpHandler handler.OtpHandler) {
+func UserRoutes(router *gin.RouterGroup, userHandler handler.UserHandler, productHandler handler.ProductHandler, otpHandler handler.OtpHandler,cartHandler handler.CartHandler,orderHandler handler.OrderHandler) {
 	router.POST("/SignUp", userHandler.SignUpHandler)
 	router.POST("/login", userHandler.LoginHandler)
 	router.POST("/sendOtp", otpHandler.SendOTP)
 	router.POST("/verifyOtp", otpHandler.VerifyOtp)
+	password:=router.Group("/forgotpassword")
+	{
+		password.POST("",userHandler.ForgotPassword)
+		password.POST("/verify",userHandler.VerifyResetOtp)
+		password.Use(middleware.ResetAuthorizationMiddleware)
+		{
+			password.POST("/reset",userHandler.ResetPassword)
+		}
+	}
 	products := router.Group("/products")
 	{
 		products.GET("", productHandler.ShowAll)
 		products.GET("/:id", productHandler.ShowProduct)
+	}
+	router.Use(middleware.UserAuthorizationMiddleware)
+	{
+		profile:=router.Group("/userProfile")
+		{
+			profile.GET("",userHandler.ShowDetails)
+			profile.PATCH("/update",userHandler.UpdateUserDetails)
+		}
+		address:=router.Group("/address")
+		{
+			address.GET("",userHandler.ShowAddress)
+			address.POST("/add",userHandler.AddAddress)
+			address.PATCH("/update/:id",userHandler.UpdateAddress)
+		}
+		router.GET("/checkout",userHandler.Checkout)
+		cart:=router.Group("/cart")
+		{
+			cart.POST("/add/:id",cartHandler.AddToCart)
+			cart.DELETE("/remove/:id",cartHandler.RemoveFromCart)
+			cart.GET("",cartHandler.ShowProductInCart)
+		}
+		order:=router.Group("/orders")
+		{
+			order.POST("/placeOrder",orderHandler.PlaceOrder)
+			order.GET("",orderHandler.ShowOrderHistory)
+		}
 	}
 }

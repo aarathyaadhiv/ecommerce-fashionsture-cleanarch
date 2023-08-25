@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"errors"
-	"fmt"
+	
 
 	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/config"
 	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/helper"
@@ -29,7 +29,7 @@ func (c *OtpUseCase) SendOTP(user models.OTPData) error {
 	helper.TwilioSetUp(c.config.TwilioAccountSID, c.config.TwilioAuthToken)
 	_, err := helper.TwilioSendOTP(user.PhoneNumber, c.config.TwilioServicesId)
 	if err != nil {
-		fmt.Println(err)
+		
 		return err
 	}
 	return nil
@@ -52,3 +52,6 @@ func (c *OtpUseCase) VerifyOTP(data models.VerifyData) (models.TokenResponse, er
 
 	return models.TokenResponse{UserDetails: userDetails, Token: tokenString}, nil
 }
+
+
+

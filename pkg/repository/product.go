@@ -14,8 +14,8 @@ func NewProductRepository(DB *gorm.DB) repo.ProductRepository {
 	return &ProductRepository{DB}
 }
 
-func (c *ProductRepository) AddProduct(product models.AddProduct) error {
-	return c.DB.Exec(`insert into products (name,description,quantity,price,image,discount,category_id,brand_id) values(?,?,?,?,?,?,?,?)`, product.Name, product.Description, product.Quantity, product.Price, product.Image, product.Discount, product.CategoryID, product.BrandID).Error
+func (c *ProductRepository) AddProduct(product models.AddProduct,sellingPrice float64) error {
+	return c.DB.Exec(`insert into products (name,description,quantity,price,selling_price,image,discount,category_id,brand_id) values(?,?,?,?,?,?,?,?,?)`, product.Name, product.Description, product.Quantity, product.Price,sellingPrice, product.Image, product.Discount, product.CategoryID, product.BrandID).Error
 }
 
 func (c *ProductRepository) UpdateProduct(product models.ProductUpdate) error {
@@ -38,7 +38,7 @@ func (c *ProductRepository) ShowAll(page, count int) ([]models.ProductResponse, 
 	offset := (page - 1) * count
 
 	var productResponse []models.ProductResponse
-	if err := c.DB.Raw(`select p.id,p.name,p.description,p.price,p.image,p.discount,c.name as category,b.name as brand from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id limit ? offset ?`, count, offset).Scan(&productResponse).Error; err != nil {
+	if err := c.DB.Raw(`select p.id,p.name,p.description,p.price,p.selling_price,p.image,p.discount,c.name as category,b.name as brand from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id limit ? offset ?`, count, offset).Scan(&productResponse).Error; err != nil {
 		return nil, err
 	}
 	return productResponse, nil
@@ -47,7 +47,7 @@ func (c *ProductRepository) ShowAll(page, count int) ([]models.ProductResponse, 
 func (c *ProductRepository) ShowProduct(id uint) (models.ProductResponse, error) {
 	var productDetails models.ProductResponse
 
-	if err := c.DB.Raw(`select p.id,p.name,p.description,p.price,p.image,p.discount,c.name as category,b.name as brand from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id where p.id=?`, id).Scan(&productDetails).Error; err != nil {
+	if err := c.DB.Raw(`select p.id,p.name,p.description,p.price,p.selling_price,p.image,p.discount,c.name as category,b.name as brand from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id where p.id=?`, id).Scan(&productDetails).Error; err != nil {
 		return models.ProductResponse{}, err
 	}
 	return productDetails, nil
@@ -59,4 +59,10 @@ func (c *ProductRepository) AddBrand(brand models.AddBrand) error {
 
 func (c *ProductRepository) DeleteBrand(id uint) error {
 	return c.DB.Exec(`delete from brands where id=?`, id).Error
+}
+
+func (c *ProductRepository) FetchProductDetails(productId uint)( models.Product,error){
+	var product models.Product
+	err:=c.DB.Raw(`SELECT selling_price,quantity FROM products WHERE id=?`,productId).Scan(&product).Error
+	return product,err
 }

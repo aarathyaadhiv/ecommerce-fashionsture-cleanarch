@@ -5,9 +5,10 @@ type Products struct {
 	Name        string   `json:"name" `
 	Description string   `json:"description" `
 	Quantity    uint     `json:"quantity"`
-	Price       uint     `json:"price"`
+	Price       float64  `json:"price"`
+	SellingPrice float64 `json:"selling_price"`
 	Image       string   `json:"image"`
-	Discount    int      `json:"discount"`
+	Discount    float64  `json:"discount"`
 	CategoryID  uint     `json:"category_id"`
 	Category    Category `json:"category" gorm:"foreignKey:CategoryID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	BrandID     uint     `json:"brand_id"`

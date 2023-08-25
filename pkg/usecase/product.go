@@ -3,6 +3,7 @@ package usecase
 import (
 	"strconv"
 
+	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/helper"
 	repo "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/repository/interface"
 	services "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/usecase/interface"
 	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/utils/models"
@@ -17,7 +18,8 @@ func NewProductUseCase(repo repo.ProductRepository) services.ProductUseCase {
 }
 
 func (c *ProductUseCase) AddProduct(product models.AddProduct) error {
-	return c.ProductRepo.AddProduct(product)
+	sellingPrice:=helper.SellingPrice(product.Price,product.Discount)
+	return c.ProductRepo.AddProduct(product,sellingPrice)
 }
 
 func (c *ProductUseCase) UpdateProduct(product models.ProductUpdate) error {

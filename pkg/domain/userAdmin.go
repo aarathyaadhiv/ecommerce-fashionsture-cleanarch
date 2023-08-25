@@ -11,12 +11,13 @@ type Users struct {
 }
 
 type Address struct {
-	ID       uint   `json:"id" gorm:"primaryKey"`
-	Type     string `json:"address_type" `
-	Name     string `json:"name" `
-	City     string `json:"city" gorm:"validate:required"`
-	State    string `json:"state" gorm:"validate:required"`
-	Landmark string `json:"landmark" gorm:"validate:required"`
-	Pincode  uint   `json:"pincode" gorm:"validate:required"`
-	UserID   uint   `json:"userid" gorm:"foreignKey:UsersID"`
+	ID        uint   `json:"id" gorm:"primaryKey"`
+	HouseName string `json:"house_name" `
+	Name      string `json:"name" `
+	City      string `json:"city" gorm:"validate:required"`
+	State     string `json:"state" gorm:"validate:required"`
+	Landmark  string `json:"landmark" gorm:"validate:required"`
+	Pincode   uint   `json:"pincode" gorm:"validate:required"`
+	UsersID   uint   `json:"users_id" `
+	Users     Users  `json:"users" gorm:"foreignKey:UsersID;constraint:OnDelete:CASCADE"`
 }

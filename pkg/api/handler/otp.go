@@ -68,3 +68,4 @@ func (ot *OtpHandler) VerifyOtp(c *gin.Context) {
 	succRes := response.Responses(http.StatusOK, "successfully logged in", userDetails, nil)
 	c.JSON(http.StatusOK, succRes)
 }
+

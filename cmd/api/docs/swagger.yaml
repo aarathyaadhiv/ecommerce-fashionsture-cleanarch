@@ -22,13 +22,13 @@ definitions:
       description:
         type: string
       discount:
-        type: integer
+        type: number
       image:
         type: string
       name:
         type: string
       price:
-        type: integer
+        type: number
       quantity:
         type: integer
     required:
@@ -67,6 +67,23 @@ definitions:
     - password
     - phno
     type: object
+  models.Forgot:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
+  models.ForgotVerify:
+    properties:
+      code:
+        type: string
+      email:
+        type: string
+    required:
+    - code
+    - email
+    type: object
   models.OTPData:
     properties:
       phoneNumber:
@@ -74,12 +91,51 @@ definitions:
     required:
     - phoneNumber
     type: object
+  models.OrderRequest:
+    properties:
+      address_id:
+        type: integer
+      payment_id:
+        type: integer
+    required:
+    - address_id
+    - payment_id
+    type: object
   models.ProductUpdate:
     properties:
       id:
         type: integer
       quantity:
         type: integer
+    type: object
+  models.Reset:
+    properties:
+      new_password:
+        type: string
+    required:
+    - new_password
+    type: object
+  models.ShowAddress:
+    properties:
+      city:
+        type: string
+      house_name:
+        type: string
+      landmark:
+        type: string
+      name:
+        type: string
+      pincode:
+        type: integer
+      state:
+        type: string
+    required:
+    - city
+    - house_name
+    - landmark
+    - name
+    - pincode
+    - state
     type: object
   models.UserLogin:
     properties:
@@ -105,6 +161,19 @@ definitions:
     - email
     - name
     - password
+    - phno
+    type: object
+  models.UserUpdate:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      phno:
+        type: string
+    required:
+    - email
+    - name
     - phno
     type: object
   models.VerifyData:
@@ -155,6 +224,88 @@ paths:
       summary: User SignUp
       tags:
       - User Authentication
+  /address:
+    get:
+      consumes:
+      - application/json
+      description: Show Addresses of the user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Show Address
+      tags:
+      - User Profile
+  /address/add:
+    post:
+      consumes:
+      - application/json
+      description: Add Address of the user
+      parameters:
+      - description: address
+        in: body
+        name: address
+        required: true
+        schema:
+          $ref: '#/definitions/models.ShowAddress'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Add Address
+      tags:
+      - User Profile
+  /address/update/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Update Address of the user
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: address
+        in: body
+        name: address
+        required: true
+        schema:
+          $ref: '#/definitions/models.ShowAddress'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Update Address
+      tags:
+      - User Profile
   /admin/adminLogin:
     post:
       consumes:
@@ -454,6 +605,183 @@ paths:
       summary: Unblock User
       tags:
       - User Management
+  /cart:
+    get:
+      consumes:
+      - application/json
+      description: Show Products In Users Cart
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Show Cart Products
+      tags:
+      - Cart Management
+  /cart/add/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Add Products To Cart
+      parameters:
+      - description: product_id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Add To Cart
+      tags:
+      - Cart Management
+  /cart/remove/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Remove Product From Cart
+      parameters:
+      - description: product_id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Remove From Cart
+      tags:
+      - Cart Management
+  /checkout:
+    get:
+      consumes:
+      - application/json
+      description: Displaying Checkout Page Before Placing Order
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: CheckOut
+      tags:
+      - Checkout Page
+  /forgotPassword:
+    post:
+      consumes:
+      - application/json
+      description: forgot password for user to reset password by sending otp to phone
+        number
+      parameters:
+      - description: forgot
+        in: body
+        name: forgot
+        required: true
+        schema:
+          $ref: '#/definitions/models.Forgot'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: forgot password
+      tags:
+      - User Profile
+  /forgotPassword/reset:
+    post:
+      consumes:
+      - application/json
+      description: To Reset Password
+      parameters:
+      - description: reset
+        in: body
+        name: reset
+        required: true
+        schema:
+          $ref: '#/definitions/models.Reset'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Reset Password
+      tags:
+      - User Profile
+  /forgotPassword/verify:
+    post:
+      consumes:
+      - application/json
+      description: Verify otp to reset password
+      parameters:
+      - description: verify
+        in: body
+        name: verify
+        required: true
+        schema:
+          $ref: '#/definitions/models.ForgotVerify'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Verify Reset Otp
+      tags:
+      - User Profile
   /login:
     post:
       consumes:
@@ -480,6 +808,66 @@ paths:
       summary: User Login
       tags:
       - User Authentication
+  /orders:
+    get:
+      consumes:
+      - application/json
+      description: Showing Order History To User
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: count
+        in: query
+        name: count
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Order History
+      tags:
+      - Order Management
+  /orders/placeOrder:
+    post:
+      consumes:
+      - application/json
+      description: Place order
+      parameters:
+      - description: orderRequest
+        in: body
+        name: OrderRequest
+        required: true
+        schema:
+          $ref: '#/definitions/models.OrderRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Place Order
+      tags:
+      - Order Management
   /products:
     get:
       consumes:
@@ -561,6 +949,55 @@ paths:
       summary: Send Otp
       tags:
       - User Authentication
+  /userProfile:
+    get:
+      consumes:
+      - application/json
+      description: View Details Of The User
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: View Details
+      tags:
+      - User Profile
+  /userProfile/update:
+    patch:
+      consumes:
+      - application/json
+      description: Update Details of the user
+      parameters:
+      - description: userdetails
+        in: body
+        name: userdetails
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Update User Details
+      tags:
+      - User Profile
   /verifyOtp:
     post:
       consumes:
