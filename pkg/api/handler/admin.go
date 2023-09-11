@@ -2,7 +2,7 @@ package handler
 
 import (
 	"net/http"
-
+	
 	handler "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/api/handler/interface"
 	_ "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/domain"
 	services "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/usecase/interface"
@@ -128,3 +128,4 @@ func (ad *AdminHandler) UnblockUser(c *gin.Context) {
 	succRes := response.Responses(http.StatusOK, "successfully unblocked user", nil, nil)
 	c.JSON(http.StatusOK, succRes)
 }
+

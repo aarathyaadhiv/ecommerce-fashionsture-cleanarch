@@ -1,6 +1,9 @@
 package interfaces
 
-import "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/utils/models"
+import (
+	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/domain"
+	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/utils/models"
+)
 
 type ProductUseCase interface {
 	AddProduct(product models.AddProduct) error
@@ -12,4 +15,9 @@ type ProductUseCase interface {
 	ShowProduct(id string) (models.ProductResponse, error)
 	AddBrand(brand models.AddBrand) error
 	DeleteBrand(id string) error
+	ShowCategory()([]domain.Category,error)
+	ShowBrand()([]domain.Brand,error)
+	FilterProductByCategory(id string)([]models.ProductResponse,error)
+	FilterProductByBrand(id string)([]models.ProductResponse,error)
+	ProductSearch(word string)([]models.ProductResponse,error)
 }

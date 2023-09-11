@@ -57,3 +57,7 @@ func (c *CartUseCase) ShowProductInCart(cartId uint)([]models.CartProducts,error
 func (c *CartUseCase) TotalAmountInCart(cartId uint)(float64,error){
 	return c.Repo.TotalAmountInCart(cartId)
 }
+
+func (c *CartUseCase) EmptyCart(cartId uint)error{
+	return c.Repo.EmptyCart(cartId)
+}

@@ -1,6 +1,9 @@
 package interfaces
 
-import "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/utils/models"
+import (
+	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/domain"
+	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/utils/models"
+)
 
 type ProductRepository interface {
 	AddProduct(product models.AddProduct,sellingPrice float64) error
@@ -13,4 +16,9 @@ type ProductRepository interface {
 	AddBrand(brand models.AddBrand) error
 	DeleteBrand(id uint) error
 	FetchProductDetails(productId uint)( models.Product,error)
+	ShowCategory()([]domain.Category,error)
+	ShowBrand()([]domain.Brand,error)
+	ProductByCategory(id uint)([]models.ProductResponse,error)
+	ProductByBrand(id uint)([]models.ProductResponse,error)
+	ProductSearch(word string)([]models.ProductResponse,error)
 }

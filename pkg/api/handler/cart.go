@@ -110,3 +110,29 @@ func (cr *CartHandler) ShowProductInCart(c *gin.Context){
 	c.JSON(http.StatusOK,succRes)
 }
 
+// @Summary empty Cart Products 
+// @Description empty Products In Users Cart
+// @Tags Cart Management
+// @Accept json
+// @Produce json
+// @Security ApiKeyHeaderAuth
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /cart [delete]
+
+func(cr *CartHandler) EmptyCart(c *gin.Context){
+	id,ok:=c.Get("userId")
+	if !ok {
+		errRes := response.Responses(http.StatusBadRequest, "userid not retrieved", nil, errors.New("userid retrieval error").Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	err:=cr.Usecase.EmptyCart(id.(uint))
+	if err!=nil{
+		errRes:=response.Responses(http.StatusInternalServerError,"internal server error",nil,err.Error())
+		c.JSON(http.StatusInternalServerError,errRes)
+		return
+	}
+	succRes:=response.Responses(http.StatusOK,"successfully empty cart",nil,nil)
+	c.JSON(http.StatusOK,succRes)
+}

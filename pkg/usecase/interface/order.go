@@ -4,6 +4,11 @@ import "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/utils/
 
 
 type OrderUseCase interface{
-	PlaceOrder(addressId,paymentId,userId uint)error
+	PlaceOrder(addressId,paymentId,userId uint,couponId string)error
 	ShowOrderDetails(userId uint,page,count int)([]models.OrderResponse,error)
+	CancelOrder(id string)error
+	AdminApproval(id string)error
+	ReturnOrder(id string)error
+	ShowOrderToAdmin(page,count int)([]models.OrderDetailsToAdmin,error)
+	SearchOrder(id string)(models.OrderDetailsToAdmin,error)
 }

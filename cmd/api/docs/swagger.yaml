@@ -13,6 +13,15 @@ definitions:
     required:
     - name
     type: object
+  models.AddCoupon:
+    properties:
+      coupon_id:
+        type: string
+      discount:
+        type: integer
+      usage:
+        type: integer
+    type: object
   models.AddProduct:
     properties:
       brand_id:
@@ -95,11 +104,21 @@ definitions:
     properties:
       address_id:
         type: integer
+      coupon_id:
+        type: string
       payment_id:
         type: integer
     required:
     - address_id
+    - coupon_id
     - payment_id
+    type: object
+  models.ProductSearch:
+    properties:
+      word:
+        type: string
+    required:
+    - word
     type: object
   models.ProductUpdate:
     properties:
@@ -468,6 +487,142 @@ paths:
       summary: Delete Category
       tags:
       - Category Management
+  /admin/coupon:
+    post:
+      consumes:
+      - application/json
+      description: Add coupon
+      parameters:
+      - description: coupon details
+        in: body
+        name: coupon
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddCoupon'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Add coupon
+      tags:
+      - Coupon Management
+  /admin/coupon/block/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Block Coupon By Admin
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Block Coupon
+      tags:
+      - Coupon Management
+  /admin/coupon/expire/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Expire Coupon By Admin
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Expire Coupon
+      tags:
+      - Coupon Management
+  /admin/coupon/unblock/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Unblock Coupon By Admin
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Unblock Coupon
+      tags:
+      - Coupon Management
+  /admin/orders/approval/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Approve Order By Admin
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Approve Order
+      tags:
+      - Order Management By Admin
   /admin/product/add:
     post:
       consumes:
@@ -605,6 +760,50 @@ paths:
       summary: Unblock User
       tags:
       - User Management
+  /brand:
+    get:
+      consumes:
+      - application/json
+      description: Show All brands To User
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Show All brands
+      tags:
+      - Filter
+  /brand/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Filter Products By Brand
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Filter Products By Brand
+      tags:
+      - Filter
   /cart:
     get:
       consumes:
@@ -680,6 +879,50 @@ paths:
       summary: Remove From Cart
       tags:
       - Cart Management
+  /category:
+    get:
+      consumes:
+      - application/json
+      description: Show All categories To User
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Show All categories
+      tags:
+      - Filter
+  /category/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Filter Products By category
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Filter Products By category
+      tags:
+      - Filter
   /checkout:
     get:
       consumes:
@@ -840,6 +1083,33 @@ paths:
       summary: Order History
       tags:
       - Order Management
+  /orders/cancel/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Cancel Order By User
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Cancel Order
+      tags:
+      - Order Management
   /orders/placeOrder:
     post:
       consumes:
@@ -921,6 +1191,32 @@ paths:
           schema:
             $ref: '#/definitions/response.Response'
       summary: Show Product
+      tags:
+      - Product View
+  /products/search:
+    post:
+      consumes:
+      - application/json
+      description: Show Products By A Word In The Name Of The Product
+      parameters:
+      - description: search word
+        in: body
+        name: word
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProductSearch'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Show Products By name
       tags:
       - Product View
   /sendOtp:

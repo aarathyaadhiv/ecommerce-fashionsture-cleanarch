@@ -8,4 +8,5 @@ type CartHandler interface{
 	AddToCart(c *gin.Context)
 	RemoveFromCart(c *gin.Context)
 	ShowProductInCart(c *gin.Context)
+	EmptyCart(c *gin.Context)
 }

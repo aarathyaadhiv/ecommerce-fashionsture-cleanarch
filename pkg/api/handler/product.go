@@ -249,3 +249,104 @@ func (pr *ProductHandler) DeleteBrand(c *gin.Context) {
 	succRes := response.Responses(http.StatusOK, "successfully deleted brand", nil, nil)
 	c.JSON(http.StatusOK, succRes)
 }
+// @Summary Show All categories
+// @Description Show All categories To User
+// @Tags Filter
+// @Accept json
+// @Produce json
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /category [get]
+func (pr *ProductHandler) ShowCategory(c *gin.Context){
+	category,err:=pr.Usecase.ShowCategory()
+	if err!=nil{
+		errRes:=response.Responses(http.StatusInternalServerError,"internal server error",nil, err.Error())
+		c.JSON(http.StatusInternalServerError,errRes)
+		return
+	}
+	succRes:=response.Responses(http.StatusOK,"successfully showing category",category,nil)
+	c.JSON(http.StatusOK,succRes)
+}
+// @Summary Show All brands
+// @Description Show All brands To User
+// @Tags Filter
+// @Accept json
+// @Produce json
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /brand [get]
+func (pr *ProductHandler) ShowBrand(c *gin.Context){
+	brand,err:=pr.Usecase.ShowBrand()
+	if err!=nil{
+		errRes:=response.Responses(http.StatusInternalServerError,"internal server error",nil, err.Error())
+		c.JSON(http.StatusInternalServerError,errRes)
+		return
+	}
+	succRes:=response.Responses(http.StatusOK,"successfully showing brand",brand,nil)
+	c.JSON(http.StatusOK,succRes)
+}
+// @Summary Filter Products By category
+// @Description Filter Products By category
+// @Tags Filter
+// @Accept json
+// @Produce json
+// @Param  id path string true "id"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /category/{id} [get]
+func (pr *ProductHandler) FilterProductsByCategory(c *gin.Context){
+	id:=c.Param("id")
+	products,err:=pr.Usecase.FilterProductByCategory(id)
+	if err!=nil{
+		errRes:=response.Responses(http.StatusInternalServerError,"internal server error",nil, err.Error())
+		c.JSON(http.StatusInternalServerError,errRes)
+		return
+	}
+	succRes:=response.Responses(http.StatusOK,"successfully showing products with given category",products,nil)
+	c.JSON(http.StatusOK,succRes)
+}
+// @Summary Filter Products By Brand
+// @Description Filter Products By Brand
+// @Tags Filter
+// @Accept json
+// @Produce json
+// @Param  id path string true "id"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /brand/{id} [get]
+func (pr *ProductHandler) FilterProductsByBrand(c *gin.Context){
+	id:=c.Param("id")
+	products,err:=pr.Usecase.FilterProductByBrand(id)
+	if err!=nil{
+		errRes:=response.Responses(http.StatusInternalServerError,"internal server error",nil, err.Error())
+		c.JSON(http.StatusInternalServerError,errRes)
+		return
+	}
+	succRes:=response.Responses(http.StatusOK,"successfully showing products with given category",products,nil)
+	c.JSON(http.StatusOK,succRes)
+}
+// @Summary Show Products By name
+// @Description Show Products By A Word In The Name Of The Product
+// @Tags Product View
+// @Accept json
+// @Produce json
+// @Param  word body models.ProductSearch true "search word"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /products/search [post]
+func (pr *ProductHandler) SearchProduct(c *gin.Context){
+	var word models.ProductSearch
+	if err := c.ShouldBindJSON(&word); err != nil {
+		errRes := response.Responses(http.StatusBadRequest, "fields are not in proper format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	products,err:=pr.Usecase.ProductSearch(word.Word)
+	if err!=nil{
+		errRes:=response.Responses(http.StatusInternalServerError,"internal server error",nil, err.Error())
+		c.JSON(http.StatusInternalServerError,errRes)
+		return
+	}
+	succRes:=response.Responses(http.StatusOK,"successfully showing products with given word in name",products,nil)
+	c.JSON(http.StatusOK,succRes)
+}

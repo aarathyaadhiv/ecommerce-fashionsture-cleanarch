@@ -39,10 +39,10 @@ wire: ## Generate wire_gen.go
 
 swag: ## Generate swagger docs
 	swag init -g pkg/api/handler/user.go -o ./cmd/api/docs
-	swag init -g pkg/api/handler/product.go -o ./cmd/api/docs
-	swag init -g pkg/api/handler/otp.go -o ./cmd/api/docs
-	swag init -g pkg/api/handler/admin.go -o ./cmd/api/docs
-	swag init -g cmd/api/main.go -o ./cmd/api/docs
+	# swag init -g pkg/api/handler/product.go -o ./cmd/api/docs
+	# swag init -g pkg/api/handler/otp.go -o ./cmd/api/docs
+	# swag init -g pkg/api/handler/admin.go -o ./cmd/api/docs
+	# swag init -g cmd/api/main.go -o ./cmd/api/docs
 	
 
 help: ## Display this help screen

@@ -14,4 +14,5 @@ type CartRepository interface{
 	UpdateCart(CartID,ProductId,quantity uint,amount float64)error
 	PaymentMethods()([]string,error)
 	ProductsInCart(cartId uint)([]models.ProductsInCart,error)
+	EmptyCart(cartId uint)error
 }

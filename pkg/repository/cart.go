@@ -39,7 +39,7 @@ func (c *CartRepository) QuantityOfProductInCart(cartId,productId uint)(uint,err
 
 func (c *CartRepository) AmountOfProductInCart(cartId,productId uint)(float64,error){
 	var amount float64
-	err:=c.DB.Raw(`SELECT amount FROM carts WHERE cart_id=?,product_id=?`,cartId,productId).Scan(&amount).Error
+	err:=c.DB.Raw(`SELECT amount FROM carts WHERE cart_id=? AND product_id=?`,cartId,productId).Scan(&amount).Error
 	return amount,err
 }
 
@@ -63,4 +63,10 @@ func (c *CartRepository) ProductsInCart(cartId uint)([]models.ProductsInCart,err
 	var products []models.ProductsInCart
 	err:=c.DB.Raw(`SELECT product_id,quantity,amount FROM carts WHERE cart_id=?`,cartId).Scan(&products).Error
 	return products,err
+}
+
+func (c *CartRepository) EmptyCart(cartId uint)error{
+	
+	return c.DB.Exec(`DELETE FROM carts WHERE cart_id=?`,cartId).Error
+	
 }

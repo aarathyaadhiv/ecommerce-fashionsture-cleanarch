@@ -1,8 +1,10 @@
 package usecase
 
 import (
+	"fmt"
 	"strconv"
 
+	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/domain"
 	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/helper"
 	repo "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/repository/interface"
 	services "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/usecase/interface"
@@ -18,8 +20,8 @@ func NewProductUseCase(repo repo.ProductRepository) services.ProductUseCase {
 }
 
 func (c *ProductUseCase) AddProduct(product models.AddProduct) error {
-	sellingPrice:=helper.SellingPrice(product.Price,product.Discount)
-	return c.ProductRepo.AddProduct(product,sellingPrice)
+	sellingPrice := helper.SellingPrice(product.Price, product.Discount)
+	return c.ProductRepo.AddProduct(product, sellingPrice)
 }
 
 func (c *ProductUseCase) UpdateProduct(product models.ProductUpdate) error {
@@ -79,4 +81,34 @@ func (c *ProductUseCase) DeleteBrand(id string) error {
 		return err
 	}
 	return c.ProductRepo.DeleteBrand(uint(brandId))
+}
+
+func (c *ProductUseCase) ShowCategory() ([]domain.Category, error) {
+	return c.ProductRepo.ShowCategory()
+}
+
+func (c *ProductUseCase) ShowBrand() ([]domain.Brand, error) {
+	return c.ProductRepo.ShowBrand()
+}
+
+func (c *ProductUseCase) FilterProductByCategory(id string) ([]models.ProductResponse, error) {
+	categoryId, err := strconv.Atoi(id)
+	if err != nil {
+		return nil, err
+	}
+	return c.ProductRepo.ProductByCategory(uint(categoryId))
+}
+
+func (c *ProductUseCase) FilterProductByBrand(id string) ([]models.ProductResponse, error) {
+	brandId, err := strconv.Atoi(id)
+	if err != nil {
+		return nil, err
+	}
+	return c.ProductRepo.ProductByBrand(uint(brandId))
+}
+
+func (c *ProductUseCase) ProductSearch(word string)([]models.ProductResponse,error){
+	words:=fmt.Sprint(word)
+	searchWord:="%"+words+"%"
+	return c.ProductRepo.ProductSearch(searchWord)
 }

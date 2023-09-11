@@ -40,3 +40,7 @@ type Product struct{
 	SellingPrice float64 `json:"selling_price"`
 	Quantity uint `json:"quantity"`
 }
+
+type ProductSearch struct{
+	Word string `json:"word" binding:"required"`
+}

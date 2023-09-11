@@ -6,49 +6,64 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UserRoutes(router *gin.RouterGroup, userHandler handler.UserHandler, productHandler handler.ProductHandler, otpHandler handler.OtpHandler,cartHandler handler.CartHandler,orderHandler handler.OrderHandler) {
+func UserRoutes(router *gin.RouterGroup, userHandler handler.UserHandler, productHandler handler.ProductHandler, otpHandler handler.OtpHandler, cartHandler handler.CartHandler, orderHandler handler.OrderHandler,paymentHanler handler.PaymentHandler) {
 	router.POST("/SignUp", userHandler.SignUpHandler)
 	router.POST("/login", userHandler.LoginHandler)
 	router.POST("/sendOtp", otpHandler.SendOTP)
 	router.POST("/verifyOtp", otpHandler.VerifyOtp)
-	password:=router.Group("/forgotpassword")
+	router.GET("/payment/:order_id",paymentHanler.MakePaymentUsingRazorPay)
+	router.GET("/payment-success",paymentHanler.VerifyPayment)
+	
+	password := router.Group("/forgotpassword")
 	{
-		password.POST("",userHandler.ForgotPassword)
-		password.POST("/verify",userHandler.VerifyResetOtp)
+		password.POST("", userHandler.ForgotPassword)
+		password.POST("/verify", userHandler.VerifyResetOtp)
 		password.Use(middleware.ResetAuthorizationMiddleware)
 		{
-			password.POST("/reset",userHandler.ResetPassword)
+			password.POST("/reset", userHandler.ResetPassword)
 		}
 	}
 	products := router.Group("/products")
 	{
 		products.GET("", productHandler.ShowAll)
 		products.GET("/:id", productHandler.ShowProduct)
+		products.POST("/search",productHandler.SearchProduct)
+	}
+	filter:=router.Group("/filter")
+	{
+		filter.GET("/category",productHandler.ShowCategory)
+		filter.GET("/category/:id",productHandler.FilterProductsByCategory)
+		filter.GET("/brand",productHandler.ShowBrand)
+		filter.GET("/brand/:id",productHandler.FilterProductsByBrand)
 	}
 	router.Use(middleware.UserAuthorizationMiddleware)
 	{
-		profile:=router.Group("/userProfile")
+		profile := router.Group("/userProfile")
 		{
-			profile.GET("",userHandler.ShowDetails)
-			profile.PATCH("/update",userHandler.UpdateUserDetails)
+			profile.GET("", userHandler.ShowDetails)
+			profile.PATCH("/update", userHandler.UpdateUserDetails)
 		}
-		address:=router.Group("/address")
+		address := router.Group("/address")
 		{
-			address.GET("",userHandler.ShowAddress)
-			address.POST("/add",userHandler.AddAddress)
-			address.PATCH("/update/:id",userHandler.UpdateAddress)
+			address.GET("", userHandler.ShowAddress)
+			address.POST("/add", userHandler.AddAddress)
+			address.PATCH("/update/:id", userHandler.UpdateAddress)
 		}
-		router.GET("/checkout",userHandler.Checkout)
-		cart:=router.Group("/cart")
+		router.GET("/checkout", userHandler.Checkout)
+		cart := router.Group("/cart")
 		{
-			cart.POST("/add/:id",cartHandler.AddToCart)
-			cart.DELETE("/remove/:id",cartHandler.RemoveFromCart)
-			cart.GET("",cartHandler.ShowProductInCart)
+			cart.POST("/add/:id", cartHandler.AddToCart)
+			cart.DELETE("/remove/:id", cartHandler.RemoveFromCart)
+			cart.GET("", cartHandler.ShowProductInCart)
+			cart.DELETE("",cartHandler.EmptyCart)
 		}
-		order:=router.Group("/orders")
+		order := router.Group("/orders")
 		{
-			order.POST("/placeOrder",orderHandler.PlaceOrder)
-			order.GET("",orderHandler.ShowOrderHistory)
+			order.POST("/placeOrder", orderHandler.PlaceOrder)
+			order.GET("", orderHandler.ShowOrderHistory)
+			order.PATCH("/cancel/:id", orderHandler.CancelOrder)
+			order.PATCH("/return/:id",orderHandler.ReturnOrder)
 		}
+		
 	}
 }

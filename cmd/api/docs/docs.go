@@ -443,6 +443,223 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/coupon": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Add coupon",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Coupon Management"
+                ],
+                "summary": "Add coupon",
+                "parameters": [
+                    {
+                        "description": "coupon details",
+                        "name": "coupon",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.AddCoupon"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/coupon/block/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Block Coupon By Admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Coupon Management"
+                ],
+                "summary": "Block Coupon",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/coupon/expire/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Expire Coupon By Admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Coupon Management"
+                ],
+                "summary": "Expire Coupon",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/coupon/unblock/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Unblock Coupon By Admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Coupon Management"
+                ],
+                "summary": "Unblock Coupon",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/orders/approval/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Approve Order By Admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order Management By Admin"
+                ],
+                "summary": "Approve Order",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/product/add": {
             "post": {
                 "security": [
@@ -662,6 +879,73 @@ const docTemplate = `{
                 }
             }
         },
+        "/brand": {
+            "get": {
+                "description": "Show All brands To User",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Filter"
+                ],
+                "summary": "Show All brands",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/brand/{id}": {
+            "get": {
+                "description": "Filter Products By Brand",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Filter"
+                ],
+                "summary": "Filter Products By Brand",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/cart": {
             "get": {
                 "security": [
@@ -761,6 +1045,73 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "product_id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/category": {
+            "get": {
+                "description": "Show All categories To User",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Filter"
+                ],
+                "summary": "Show All categories",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/category/{id}": {
+            "get": {
+                "description": "Filter Products By category",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Filter"
+                ],
+                "summary": "Filter Products By category",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -1031,6 +1382,49 @@ const docTemplate = `{
                 }
             }
         },
+        "/orders/cancel/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Cancel Order By User",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order Management"
+                ],
+                "summary": "Cancel Order",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/orders/placeOrder": {
             "post": {
                 "security": [
@@ -1103,6 +1497,46 @@ const docTemplate = `{
                         "name": "count",
                         "in": "query",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/products/search": {
+            "post": {
+                "description": "Show Products By A Word In The Name Of The Product",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product View"
+                ],
+                "summary": "Show Products By name",
+                "parameters": [
+                    {
+                        "description": "search word",
+                        "name": "word",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ProductSearch"
+                        }
                     }
                 ],
                 "responses": {
@@ -1342,6 +1776,20 @@ const docTemplate = `{
                 }
             }
         },
+        "models.AddCoupon": {
+            "type": "object",
+            "properties": {
+                "coupon_id": {
+                    "type": "string"
+                },
+                "discount": {
+                    "type": "integer"
+                },
+                "usage": {
+                    "type": "integer"
+                }
+            }
+        },
         "models.AddProduct": {
             "type": "object",
             "required": [
@@ -1460,14 +1908,29 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "address_id",
+                "coupon_id",
                 "payment_id"
             ],
             "properties": {
                 "address_id": {
                     "type": "integer"
                 },
+                "coupon_id": {
+                    "type": "string"
+                },
                 "payment_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "models.ProductSearch": {
+            "type": "object",
+            "required": [
+                "word"
+            ],
+            "properties": {
+                "word": {
+                    "type": "string"
                 }
             }
         },

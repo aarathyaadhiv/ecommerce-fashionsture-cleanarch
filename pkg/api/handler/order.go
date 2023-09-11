@@ -12,15 +12,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
-
-type OrderHandler struct{
+type OrderHandler struct {
 	UseCase services.OrderUseCase
 }
 
-func NewOrderHandler(usecase services.OrderUseCase)handler.OrderHandler{
+func NewOrderHandler(usecase services.OrderUseCase) handler.OrderHandler {
 	return &OrderHandler{usecase}
 }
+
 // @Summary Place Order
 // @Description Place order
 // @Tags Order Management
@@ -31,27 +30,27 @@ func NewOrderHandler(usecase services.OrderUseCase)handler.OrderHandler{
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /orders/placeOrder [post]
-func (or *OrderHandler) PlaceOrder(c *gin.Context){
-	id,ok:=c.Get("userId")
-	if !ok{
-		errRes:=response.Responses(http.StatusBadRequest,"bad request",nil,errors.New("userid not recovered").Error())
-		c.JSON(http.StatusBadRequest,errRes)
+func (or *OrderHandler) PlaceOrder(c *gin.Context) {
+	id, ok := c.Get("userId")
+	if !ok {
+		errRes := response.Responses(http.StatusBadRequest, "bad request", nil, errors.New("userid not recovered").Error())
+		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
 	var OrderRequest models.OrderRequest
-	if err:=c.ShouldBindJSON(&OrderRequest);err!=nil{
-		errRes:=response.Responses(http.StatusBadRequest,"bad request",nil,errors.New("userid not recovered").Error())
-		c.JSON(http.StatusBadRequest,errRes)
+	if err := c.ShouldBindJSON(&OrderRequest); err != nil {
+		errRes := response.Responses(http.StatusBadRequest, "bad request", nil, errors.New("userid not recovered").Error())
+		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	err:=or.UseCase.PlaceOrder(OrderRequest.AddressId,OrderRequest.PaymentId,id.(uint))
-	if err!=nil{
-		errRes:=response.Responses(http.StatusInternalServerError,"internal server error",nil,err.Error())
-		c.JSON(http.StatusInternalServerError,errRes)
+	err := or.UseCase.PlaceOrder(OrderRequest.AddressId, OrderRequest.PaymentId, id.(uint),OrderRequest.CouponId)
+	if err != nil {
+		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
 		return
 	}
-	succRes:=response.Responses(http.StatusOK,"successfully placed order",nil,nil)
-	c.JSON(http.StatusOK,succRes)
+	succRes := response.Responses(http.StatusOK, "successfully placed order", nil, nil)
+	c.JSON(http.StatusOK, succRes)
 }
 
 // @Summary Order History
@@ -65,7 +64,7 @@ func (or *OrderHandler) PlaceOrder(c *gin.Context){
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /orders [get]
-func (or *OrderHandler) ShowOrderHistory(c *gin.Context){
+func (or *OrderHandler) ShowOrderHistory(c *gin.Context) {
 	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
 
 	if err != nil {
@@ -79,18 +78,145 @@ func (or *OrderHandler) ShowOrderHistory(c *gin.Context){
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	id,ok:=c.Get("userId")
-	if !ok{
-		errRes:=response.Responses(http.StatusBadRequest,"bad request",nil,errors.New("userid not recovered").Error())
-		c.JSON(http.StatusBadRequest,errRes)
+	id, ok := c.Get("userId")
+	if !ok {
+		errRes := response.Responses(http.StatusBadRequest, "bad request", nil, errors.New("userid not recovered").Error())
+		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	order,err:=or.UseCase.ShowOrderDetails(id.(uint),page,count)
+	order, err := or.UseCase.ShowOrderDetails(id.(uint), page, count)
+	if err != nil {
+		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
+		return
+	}
+	succRes := response.Responses(http.StatusOK, "successfully showing order details", order, nil)
+	c.JSON(http.StatusOK, succRes)
+}
+
+// @Summary Cancel Order
+// @Description Cancel Order By User
+// @Tags Order Management
+// @Accept json
+// @Produce json
+// @Param  id path string true "id"
+// @Security ApiKeyHeaderAuth
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /orders/cancel/{id} [patch]
+func (or *OrderHandler) CancelOrder(c *gin.Context) {
+	id := c.Param("id")
+	err := or.UseCase.CancelOrder(id)
+	if err != nil {
+		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
+		return
+	}
+	succRes := response.Responses(http.StatusOK, "successfully cancelled order", nil, nil)
+	c.JSON(http.StatusOK, succRes)
+}
+
+// @Summary Approve Order
+// @Description Approve Order By Admin
+// @Tags Order Management By Admin
+// @Accept json
+// @Produce json
+// @Param  id path string true "id"
+// @Security ApiKeyHeaderAuth
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/orders/approval/{id} [patch]
+func (or *OrderHandler) AdminApproval(c *gin.Context) {
+	id := c.Param("id")
+	err := or.UseCase.AdminApproval(id)
+	if err != nil {
+		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
+		return
+	}
+	succRes := response.Responses(http.StatusOK, "successfully approved order", nil, nil)
+	c.JSON(http.StatusOK, succRes)
+}
+
+// @Summary Return Order
+// @Description Return Order 
+// @Tags Order Management By Admin
+// @Accept json
+// @Produce json
+// @Param  id path string true "id"
+// @Security ApiKeyHeaderAuth
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /orders/return/{id} [patch]
+
+func (or *OrderHandler) ReturnOrder(c *gin.Context){
+	id := c.Param("id")
+	err := or.UseCase.ReturnOrder(id)
+	if err != nil {
+		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
+		return
+	}
+	succRes := response.Responses(http.StatusOK, "successfully returned order", nil, nil)
+	c.JSON(http.StatusOK, succRes)
+}
+
+// @Summary Show All Orders To Admin
+// @Description Show All Orders To Admin
+// @Tags Order Management
+// @Accept json
+// @Produce json
+// @Security ApiKeyHeaderAuth
+// @Param  page query string true "page"
+// @Param  count query string true "count"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /orders [get]
+
+func (or *OrderHandler) ShowOrdersToAdmin(c *gin.Context){
+	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
+
+	if err != nil {
+		errRes := response.Responses(http.StatusBadRequest, "bad request", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	count, err := strconv.Atoi(c.DefaultQuery("count", "4"))
+	if err != nil {
+		errRes := response.Responses(http.StatusBadRequest, "bad request", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	orderDetails,err:=or.UseCase.ShowOrderToAdmin(page,count)
+	if err!=nil{
+		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
+		return
+	}
+	succRes:=response.Responses(http.StatusOK,"successfully showing order details",orderDetails,nil)
+	c.JSON(http.StatusOK,succRes)
+	
+}
+
+// @Summary Search Order By Admin
+// @Description Search Order By Admin
+// @Tags Order Management
+// @Accept json
+// @Produce json
+// @Security ApiKeyHeaderAuth
+// @Param  id path string true "id"
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /orders/{id} [get]
+
+func (or *OrderHandler) SearchOrder(c *gin.Context){
+	id:=c.Param("id")
+	orderDetails,err:=or.UseCase.SearchOrder(id)
 	if err!=nil{
 		errRes:=response.Responses(http.StatusInternalServerError,"internal server error",nil,err.Error())
 		c.JSON(http.StatusInternalServerError,errRes)
 		return
 	}
-	succRes:=response.Responses(http.StatusOK,"successfully showing order details",order,nil)
+	succRes:=response.Responses(http.StatusOK,"successfully showing the searched order",orderDetails,nil)
 	c.JSON(http.StatusOK,succRes)
 }

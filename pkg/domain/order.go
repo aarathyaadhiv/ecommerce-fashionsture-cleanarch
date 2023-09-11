@@ -3,7 +3,7 @@ package domain
 import "time"
 
 type Order struct {
-	ID            uint          `json:"id"`
+	ID            uint          `json:"id" gorm:"primaryKey"`
 	AddressID     uint          `json:"address_id"`
 	Address       Address       `json:"address" gorm:"foreignKey:AddressID"`
 	PaymentId     uint          `json:"payment_id"`
@@ -12,14 +12,14 @@ type Order struct {
 	DeliveryDate  time.Time     `json:"delivery_date"`
 	Amount        float64       `json:"amount"`
 	Status        string        `json:"status" gorm:"default:processing"`
-	PaymentStatus string        `json:"payment_status"`
+	PaymentStatus string        `json:"payment_status" gorm:"default:not paid"`
 	Approval      bool          `json:"approval" gorm:"default:false"`
 	UsersID       uint			`json:"users_id"`
 	Users         Users			`json:"users" gorm:"foreignKey:UsersID"`
 }
 
 type OrderProduct struct {
-	ID        uint     `json:"id"`
+	ID        uint     `json:"id" gorm:"primaryKey"`
 	ProductID uint     `json:"product_id"`
 	Product   Products `json:"products" gorm:"foreignKey:ProductID"`
 	Quantity  uint     `json:"quantity"`

@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AdminRoutes(router *gin.RouterGroup, adminHandler handler.AdminHandler, productHandler handler.ProductHandler) {
+func AdminRoutes(router *gin.RouterGroup, adminHandler handler.AdminHandler, productHandler handler.ProductHandler,orderHandler handler.OrderHandler,couponHandler handler.CouponHandler) {
 
 	router.POST("/adminLogin", adminHandler.AdminLoginHandler)
 	router.Use(middleware.AdminAuthorizationMiddleware)
@@ -32,6 +32,20 @@ func AdminRoutes(router *gin.RouterGroup, adminHandler handler.AdminHandler, pro
 		{
 			brand.POST("/add", productHandler.AddBrand)
 			brand.DELETE("/delete/:id", productHandler.DeleteBrand)
+		}
+		orders:=router.Group("/orders")
+		{
+			orders.PATCH("/approval/:id",orderHandler.AdminApproval)
+			orders.GET("",orderHandler.ShowOrdersToAdmin)
+			orders.GET("/:id",orderHandler.SearchOrder)
+		}
+
+		coupon:=router.Group("/coupon")
+		{
+			coupon.POST("",couponHandler.AddCoupon)
+			coupon.PATCH("/expire/:id",couponHandler.ExpireCoupon)
+			coupon.PATCH("/block/:id",couponHandler.BlockCoupon)
+			coupon.PATCH("/unblock/:id",couponHandler.UnBlockCoupon)
 		}
 	}
 }

@@ -12,4 +12,9 @@ type ProductHandler interface {
 	ShowProduct(c *gin.Context)
 	AddBrand(c *gin.Context)
 	DeleteBrand(c *gin.Context)
+	ShowCategory(c *gin.Context)
+	ShowBrand(c *gin.Context)
+	FilterProductsByCategory(c *gin.Context)
+	FilterProductsByBrand(c *gin.Context)
+	SearchProduct(c *gin.Context)
 }

@@ -14,16 +14,17 @@ type ServerHTTP struct {
 	engine *gin.Engine
 }
 
-func NewServerHTTP(userHandler handler.UserHandler, adminHandler handler.AdminHandler, productHandler handler.ProductHandler, otpHandler handler.OtpHandler,cartHandler handler.CartHandler,orderHandler handler.OrderHandler) *ServerHTTP {
+func NewServerHTTP(userHandler handler.UserHandler, adminHandler handler.AdminHandler, productHandler handler.ProductHandler, otpHandler handler.OtpHandler,cartHandler handler.CartHandler,orderHandler handler.OrderHandler,paymentHandler handler.PaymentHandler,couponHandler handler.CouponHandler) *ServerHTTP {
 	engine := gin.New()
 
 	// Use logger from Gin
 	engine.Use(gin.Logger())
+	engine.LoadHTMLGlob("templates/*.html")
 
 	engine.GET("/swagger/*any",ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	routes.UserRoutes(engine.Group("/"), userHandler, productHandler, otpHandler,cartHandler,orderHandler)
-	routes.AdminRoutes(engine.Group("/admin"), adminHandler, productHandler)
+	routes.UserRoutes(engine.Group("/"), userHandler, productHandler, otpHandler,cartHandler,orderHandler,paymentHandler)
+	routes.AdminRoutes(engine.Group("/admin"), adminHandler, productHandler,orderHandler,couponHandler)
 
 	return &ServerHTTP{engine: engine}
 }

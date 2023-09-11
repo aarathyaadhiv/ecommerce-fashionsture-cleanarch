@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/domain"
 	repo "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/repository/interface"
 	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/utils/models"
 	"gorm.io/gorm"
@@ -65,4 +66,49 @@ func (c *ProductRepository) FetchProductDetails(productId uint)( models.Product,
 	var product models.Product
 	err:=c.DB.Raw(`SELECT selling_price,quantity FROM products WHERE id=?`,productId).Scan(&product).Error
 	return product,err
+}
+
+func (c *ProductRepository) ShowCategory()([]domain.Category,error){
+	var category []domain.Category
+	err:=c.DB.Raw(`SELECT * FROM categories`).Scan(&category).Error
+	if err!=nil{
+		return nil,err
+	}
+	return category,nil
+}
+
+func (c *ProductRepository) ShowBrand()([]domain.Brand,error){
+	var brand []domain.Brand
+	err:=c.DB.Raw(`SELECT * FROM brands`).Scan(&brand).Error
+	if err!=nil{
+		return nil,err
+	}
+	return brand,nil
+}
+
+func (c *ProductRepository) ProductByCategory(id uint)([]models.ProductResponse,error){
+	var product []models.ProductResponse
+	err:=c.DB.Raw(`select p.id,p.name,p.description,p.price,p.selling_price,p.image,p.discount,c.name as category,b.name as brand from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id where p.category_id=?`,id).Scan(&product).Error
+	if err!=nil{
+		return nil,err
+	}
+	return product,nil
+}
+
+func (c *ProductRepository) ProductByBrand(id uint)([]models.ProductResponse,error){
+	var product []models.ProductResponse
+	err:=c.DB.Raw(`select p.id,p.name,p.description,p.price,p.selling_price,p.image,p.discount,c.name as category,b.name as brand from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id where p.brand_id=?`,id).Scan(&product).Error
+	if err!=nil{
+		return nil,err
+	}
+	return product,nil
+}
+
+func (c *ProductRepository) ProductSearch(word string)([]models.ProductResponse,error){
+	var product []models.ProductResponse
+	err:=c.DB.Raw(`select p.id,p.name,p.description,p.price,p.selling_price,p.image,p.discount,c.name as category,b.name as brand from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id where p.name ILIKE ?`,word).Scan(&product).Error
+	if err!=nil{
+		return nil,err
+	}
+	return product,nil
 }
