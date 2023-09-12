@@ -7,7 +7,7 @@ import (
 )
 
 func UserRoutes(router *gin.RouterGroup, userHandler handler.UserHandler, productHandler handler.ProductHandler, otpHandler handler.OtpHandler, cartHandler handler.CartHandler, orderHandler handler.OrderHandler,paymentHanler handler.PaymentHandler) {
-	router.POST("/SignUp", userHandler.SignUpHandler)
+	router.POST("/signup", userHandler.SignUpHandler)
 	router.POST("/login", userHandler.LoginHandler)
 	router.POST("/sendOtp", otpHandler.SendOTP)
 	router.POST("/verifyOtp", otpHandler.VerifyOtp)
@@ -32,34 +32,34 @@ func UserRoutes(router *gin.RouterGroup, userHandler handler.UserHandler, produc
 	filter:=router.Group("/filter")
 	{
 		filter.GET("/category",productHandler.ShowCategory)
-		filter.GET("/category/:id",productHandler.FilterProductsByCategory)
+		filter.GET("/products/category/:id",productHandler.FilterProductsByCategory)
 		filter.GET("/brand",productHandler.ShowBrand)
-		filter.GET("/brand/:id",productHandler.FilterProductsByBrand)
+		filter.GET("/products/brand/:id",productHandler.FilterProductsByBrand)
 	}
 	router.Use(middleware.UserAuthorizationMiddleware)
 	{
 		profile := router.Group("/userProfile")
 		{
 			profile.GET("", userHandler.ShowDetails)
-			profile.PATCH("/update", userHandler.UpdateUserDetails)
+			profile.PATCH("", userHandler.UpdateUserDetails)
 		}
 		address := router.Group("/address")
 		{
 			address.GET("", userHandler.ShowAddress)
-			address.POST("/add", userHandler.AddAddress)
-			address.PATCH("/update/:id", userHandler.UpdateAddress)
+			address.POST("", userHandler.AddAddress)
+			address.PATCH("/:id", userHandler.UpdateAddress)
 		}
 		router.GET("/checkout", userHandler.Checkout)
 		cart := router.Group("/cart")
 		{
-			cart.POST("/add/:id", cartHandler.AddToCart)
+			cart.POST("/:id", cartHandler.AddToCart)
 			cart.DELETE("/remove/:id", cartHandler.RemoveFromCart)
 			cart.GET("", cartHandler.ShowProductInCart)
 			cart.DELETE("",cartHandler.EmptyCart)
 		}
 		order := router.Group("/orders")
 		{
-			order.POST("/placeOrder", orderHandler.PlaceOrder)
+			order.POST("", orderHandler.PlaceOrder)
 			order.GET("", orderHandler.ShowOrderHistory)
 			order.PATCH("/cancel/:id", orderHandler.CancelOrder)
 			order.PATCH("/return/:id",orderHandler.ReturnOrder)

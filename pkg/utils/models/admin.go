@@ -28,3 +28,11 @@ type AdminSignUpResponse struct {
 	PhNo     string `json:"phno"`
 	Password string `json:"password"`
 }
+
+type AdminUserResponse struct {
+	ID     uint   `json:"id" `
+	Name   string `json:"name" `
+	Email  string `json:"email"  `
+	PhNo   string `json:"mobile_number" `
+	Status bool   `json:"status" `
+}

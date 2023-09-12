@@ -22,14 +22,14 @@ func NewOrderHandler(usecase services.OrderUseCase) handler.OrderHandler {
 
 // @Summary Place Order
 // @Description Place order
-// @Tags Order Management
+// @Tags Order 
 // @Accept json
 // @Produce json
 // @Param  OrderRequest body models.OrderRequest true "orderRequest"
 // @Security ApiKeyHeaderAuth
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /orders/placeOrder [post]
+// @Router /orders [post]
 func (or *OrderHandler) PlaceOrder(c *gin.Context) {
 	id, ok := c.Get("userId")
 	if !ok {
@@ -55,7 +55,7 @@ func (or *OrderHandler) PlaceOrder(c *gin.Context) {
 
 // @Summary Order History
 // @Description Showing Order History To User
-// @Tags Order Management
+// @Tags Order 
 // @Accept json
 // @Produce json
 // @Param  page query string true "page"
@@ -96,7 +96,7 @@ func (or *OrderHandler) ShowOrderHistory(c *gin.Context) {
 
 // @Summary Cancel Order
 // @Description Cancel Order By User
-// @Tags Order Management
+// @Tags Order 
 // @Accept json
 // @Produce json
 // @Param  id path string true "id"
@@ -115,10 +115,9 @@ func (or *OrderHandler) CancelOrder(c *gin.Context) {
 	succRes := response.Responses(http.StatusOK, "successfully cancelled order", nil, nil)
 	c.JSON(http.StatusOK, succRes)
 }
-
 // @Summary Approve Order
 // @Description Approve Order By Admin
-// @Tags Order Management By Admin
+// @Tags Order Management  
 // @Accept json
 // @Produce json
 // @Param  id path string true "id"
@@ -137,10 +136,9 @@ func (or *OrderHandler) AdminApproval(c *gin.Context) {
 	succRes := response.Responses(http.StatusOK, "successfully approved order", nil, nil)
 	c.JSON(http.StatusOK, succRes)
 }
-
 // @Summary Return Order
 // @Description Return Order 
-// @Tags Order Management By Admin
+// @Tags Order   
 // @Accept json
 // @Produce json
 // @Param  id path string true "id"
@@ -148,7 +146,6 @@ func (or *OrderHandler) AdminApproval(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /orders/return/{id} [patch]
-
 func (or *OrderHandler) ReturnOrder(c *gin.Context){
 	id := c.Param("id")
 	err := or.UseCase.ReturnOrder(id)
@@ -160,7 +157,6 @@ func (or *OrderHandler) ReturnOrder(c *gin.Context){
 	succRes := response.Responses(http.StatusOK, "successfully returned order", nil, nil)
 	c.JSON(http.StatusOK, succRes)
 }
-
 // @Summary Show All Orders To Admin
 // @Description Show All Orders To Admin
 // @Tags Order Management
@@ -171,8 +167,7 @@ func (or *OrderHandler) ReturnOrder(c *gin.Context){
 // @Param  count query string true "count"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /orders [get]
-
+// @Router /admin/orders [get]
 func (or *OrderHandler) ShowOrdersToAdmin(c *gin.Context){
 	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
 
@@ -207,8 +202,7 @@ func (or *OrderHandler) ShowOrdersToAdmin(c *gin.Context){
 // @Param  id path string true "id"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /orders/{id} [get]
-
+// @Router /admin/orders/{id} [get]
 func (or *OrderHandler) SearchOrder(c *gin.Context){
 	id:=c.Param("id")
 	orderDetails,err:=or.UseCase.SearchOrder(id)

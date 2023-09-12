@@ -18,7 +18,8 @@ type ProductHandler struct {
 func NewProductHandler(usecase services.ProductUseCase) handler.ProductHandler {
 	return &ProductHandler{usecase}
 }
-// @Summary Add Product 
+
+// @Summary Add Product
 // @Description Add Product By Admin
 // @Tags Product Management
 // @Accept json
@@ -27,7 +28,7 @@ func NewProductHandler(usecase services.ProductUseCase) handler.ProductHandler {
 // @Security ApiKeyHeaderAuth
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /admin/product/add [post]
+// @Router /admin/product [post]
 func (pr *ProductHandler) AddProduct(c *gin.Context) {
 	var addProduct models.AddProduct
 
@@ -45,7 +46,8 @@ func (pr *ProductHandler) AddProduct(c *gin.Context) {
 	succRes := response.Responses(http.StatusOK, "successfully added product", nil, nil)
 	c.JSON(http.StatusOK, succRes)
 }
-// @Summary Update Product 
+
+// @Summary Update Product
 // @Description Update Product By Admin
 // @Tags Product Management
 // @Accept json
@@ -54,7 +56,7 @@ func (pr *ProductHandler) AddProduct(c *gin.Context) {
 // @Security ApiKeyHeaderAuth
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /admin/product/update [patch]
+// @Router /admin/product [patch]
 func (pr *ProductHandler) UpdateProduct(c *gin.Context) {
 	var updateProduct models.ProductUpdate
 
@@ -73,7 +75,8 @@ func (pr *ProductHandler) UpdateProduct(c *gin.Context) {
 	succRes := response.Responses(http.StatusOK, "successfully update product", nil, nil)
 	c.JSON(http.StatusOK, succRes)
 }
-// @Summary Delete Product 
+
+// @Summary Delete Product
 // @Description Delete Product By Admin
 // @Tags Product Management
 // @Accept json
@@ -82,7 +85,7 @@ func (pr *ProductHandler) UpdateProduct(c *gin.Context) {
 // @Security ApiKeyHeaderAuth
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /admin/product/delete/{id} [delete]
+// @Router /admin/product/{id} [delete]
 func (pr *ProductHandler) DeleteProduct(c *gin.Context) {
 	id := c.Param("id")
 	if err := pr.Usecase.DeleteProduct(id); err != nil {
@@ -93,7 +96,8 @@ func (pr *ProductHandler) DeleteProduct(c *gin.Context) {
 	succRes := response.Responses(http.StatusOK, "successfully deleted", nil, nil)
 	c.JSON(http.StatusOK, succRes)
 }
-// @Summary Add Category 
+
+// @Summary Add Category
 // @Description Add Category By Admin
 // @Tags Category Management
 // @Accept json
@@ -102,7 +106,7 @@ func (pr *ProductHandler) DeleteProduct(c *gin.Context) {
 // @Security ApiKeyHeaderAuth
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /admin/category/add [post]
+// @Router /admin/category [post]
 func (pr *ProductHandler) AddCategory(c *gin.Context) {
 	var addCategory models.AddCategory
 
@@ -121,7 +125,8 @@ func (pr *ProductHandler) AddCategory(c *gin.Context) {
 	succRes := response.Responses(http.StatusOK, "successfully added category", nil, nil)
 	c.JSON(http.StatusOK, succRes)
 }
-// @Summary Delete Category 
+
+// @Summary Delete Category
 // @Description Delete Category By Admin
 // @Tags Category Management
 // @Accept json
@@ -130,7 +135,7 @@ func (pr *ProductHandler) AddCategory(c *gin.Context) {
 // @Security ApiKeyHeaderAuth
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /admin/category/delete/{id} [delete]
+// @Router /admin/category/{id} [delete]
 func (pr *ProductHandler) DeleteCategory(c *gin.Context) {
 	id := c.Param("id")
 
@@ -144,7 +149,8 @@ func (pr *ProductHandler) DeleteCategory(c *gin.Context) {
 	succRes := response.Responses(http.StatusOK, "successfully deleted category", nil, nil)
 	c.JSON(http.StatusOK, succRes)
 }
-// @Summary Show All 
+
+// @Summary Show All
 // @Description Show All Product To User
 // @Tags Product View
 // @Accept json
@@ -179,7 +185,8 @@ func (pr *ProductHandler) ShowAll(c *gin.Context) {
 	succRes := response.Responses(http.StatusOK, "successfully showing products", productDetails, nil)
 	c.JSON(http.StatusOK, succRes)
 }
-// @Summary Show Product 
+
+// @Summary Show Product
 // @Description Show Product To User
 // @Tags Product View
 // @Accept json
@@ -201,7 +208,8 @@ func (pr *ProductHandler) ShowProduct(c *gin.Context) {
 	succRes := response.Responses(http.StatusOK, "successfully showing the product", productDetails, nil)
 	c.JSON(http.StatusOK, succRes)
 }
-// @Summary Add Brand 
+
+// @Summary Add Brand
 // @Description Add Brand By Admin
 // @Tags Brand Management
 // @Accept json
@@ -210,7 +218,7 @@ func (pr *ProductHandler) ShowProduct(c *gin.Context) {
 // @Security ApiKeyHeaderAuth
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /admin/brand/add [post]
+// @Router /admin/brand [post]
 func (pr *ProductHandler) AddBrand(c *gin.Context) {
 	var addBrand models.AddBrand
 
@@ -228,7 +236,8 @@ func (pr *ProductHandler) AddBrand(c *gin.Context) {
 	succRes := response.Responses(http.StatusOK, "successfully added the brand", nil, nil)
 	c.JSON(http.StatusOK, succRes)
 }
-// @Summary Delete Brand 
+
+// @Summary Delete Brand
 // @Description Delete Brand By Admin
 // @Tags Brand Management
 // @Accept json
@@ -237,7 +246,7 @@ func (pr *ProductHandler) AddBrand(c *gin.Context) {
 // @Security ApiKeyHeaderAuth
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /admin/brand/delete/{id} [delete]
+// @Router /admin/brand/{id} [delete]
 func (pr *ProductHandler) DeleteBrand(c *gin.Context) {
 	id := c.Param("id")
 	err := pr.Usecase.DeleteBrand(id)
@@ -249,6 +258,7 @@ func (pr *ProductHandler) DeleteBrand(c *gin.Context) {
 	succRes := response.Responses(http.StatusOK, "successfully deleted brand", nil, nil)
 	c.JSON(http.StatusOK, succRes)
 }
+
 // @Summary Show All categories
 // @Description Show All categories To User
 // @Tags Filter
@@ -257,16 +267,17 @@ func (pr *ProductHandler) DeleteBrand(c *gin.Context) {
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /category [get]
-func (pr *ProductHandler) ShowCategory(c *gin.Context){
-	category,err:=pr.Usecase.ShowCategory()
-	if err!=nil{
-		errRes:=response.Responses(http.StatusInternalServerError,"internal server error",nil, err.Error())
-		c.JSON(http.StatusInternalServerError,errRes)
+func (pr *ProductHandler) ShowCategory(c *gin.Context) {
+	category, err := pr.Usecase.ShowCategory()
+	if err != nil {
+		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
 		return
 	}
-	succRes:=response.Responses(http.StatusOK,"successfully showing category",category,nil)
-	c.JSON(http.StatusOK,succRes)
+	succRes := response.Responses(http.StatusOK, "successfully showing category", category, nil)
+	c.JSON(http.StatusOK, succRes)
 }
+
 // @Summary Show All brands
 // @Description Show All brands To User
 // @Tags Filter
@@ -275,16 +286,17 @@ func (pr *ProductHandler) ShowCategory(c *gin.Context){
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /brand [get]
-func (pr *ProductHandler) ShowBrand(c *gin.Context){
-	brand,err:=pr.Usecase.ShowBrand()
-	if err!=nil{
-		errRes:=response.Responses(http.StatusInternalServerError,"internal server error",nil, err.Error())
-		c.JSON(http.StatusInternalServerError,errRes)
+func (pr *ProductHandler) ShowBrand(c *gin.Context) {
+	brand, err := pr.Usecase.ShowBrand()
+	if err != nil {
+		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
 		return
 	}
-	succRes:=response.Responses(http.StatusOK,"successfully showing brand",brand,nil)
-	c.JSON(http.StatusOK,succRes)
+	succRes := response.Responses(http.StatusOK, "successfully showing brand", brand, nil)
+	c.JSON(http.StatusOK, succRes)
 }
+
 // @Summary Filter Products By category
 // @Description Filter Products By category
 // @Tags Filter
@@ -293,18 +305,19 @@ func (pr *ProductHandler) ShowBrand(c *gin.Context){
 // @Param  id path string true "id"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /category/{id} [get]
-func (pr *ProductHandler) FilterProductsByCategory(c *gin.Context){
-	id:=c.Param("id")
-	products,err:=pr.Usecase.FilterProductByCategory(id)
-	if err!=nil{
-		errRes:=response.Responses(http.StatusInternalServerError,"internal server error",nil, err.Error())
-		c.JSON(http.StatusInternalServerError,errRes)
+// @Router /products/category/{id} [get]
+func (pr *ProductHandler) FilterProductsByCategory(c *gin.Context) {
+	id := c.Param("id")
+	products, err := pr.Usecase.FilterProductByCategory(id)
+	if err != nil {
+		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
 		return
 	}
-	succRes:=response.Responses(http.StatusOK,"successfully showing products with given category",products,nil)
-	c.JSON(http.StatusOK,succRes)
+	succRes := response.Responses(http.StatusOK, "successfully showing products with given category", products, nil)
+	c.JSON(http.StatusOK, succRes)
 }
+
 // @Summary Filter Products By Brand
 // @Description Filter Products By Brand
 // @Tags Filter
@@ -313,18 +326,19 @@ func (pr *ProductHandler) FilterProductsByCategory(c *gin.Context){
 // @Param  id path string true "id"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /brand/{id} [get]
-func (pr *ProductHandler) FilterProductsByBrand(c *gin.Context){
-	id:=c.Param("id")
-	products,err:=pr.Usecase.FilterProductByBrand(id)
-	if err!=nil{
-		errRes:=response.Responses(http.StatusInternalServerError,"internal server error",nil, err.Error())
-		c.JSON(http.StatusInternalServerError,errRes)
+// @Router /products/brand/{id} [get]
+func (pr *ProductHandler) FilterProductsByBrand(c *gin.Context) {
+	id := c.Param("id")
+	products, err := pr.Usecase.FilterProductByBrand(id)
+	if err != nil {
+		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
 		return
 	}
-	succRes:=response.Responses(http.StatusOK,"successfully showing products with given category",products,nil)
-	c.JSON(http.StatusOK,succRes)
+	succRes := response.Responses(http.StatusOK, "successfully showing products with given brand", products, nil)
+	c.JSON(http.StatusOK, succRes)
 }
+
 // @Summary Show Products By name
 // @Description Show Products By A Word In The Name Of The Product
 // @Tags Product View
@@ -333,20 +347,20 @@ func (pr *ProductHandler) FilterProductsByBrand(c *gin.Context){
 // @Param  word body models.ProductSearch true "search word"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /products/search [post]
-func (pr *ProductHandler) SearchProduct(c *gin.Context){
+// @Router /products/search [get]
+func (pr *ProductHandler) SearchProduct(c *gin.Context) {
 	var word models.ProductSearch
 	if err := c.ShouldBindJSON(&word); err != nil {
 		errRes := response.Responses(http.StatusBadRequest, "fields are not in proper format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	products,err:=pr.Usecase.ProductSearch(word.Word)
-	if err!=nil{
-		errRes:=response.Responses(http.StatusInternalServerError,"internal server error",nil, err.Error())
-		c.JSON(http.StatusInternalServerError,errRes)
+	products, err := pr.Usecase.ProductSearch(word.Word)
+	if err != nil {
+		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
 		return
 	}
-	succRes:=response.Responses(http.StatusOK,"successfully showing products with given word in name",products,nil)
-	c.JSON(http.StatusOK,succRes)
+	succRes := response.Responses(http.StatusOK, "successfully showing products with given word in name", products, nil)
+	c.JSON(http.StatusOK, succRes)
 }

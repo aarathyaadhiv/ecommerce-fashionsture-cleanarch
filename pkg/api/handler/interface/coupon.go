@@ -7,4 +7,5 @@ type CouponHandler interface{
 	ExpireCoupon(c *gin.Context)
 	BlockCoupon(c *gin.Context)
 	UnBlockCoupon(c *gin.Context)
+	GetCoupon(c *gin.Context)
 }

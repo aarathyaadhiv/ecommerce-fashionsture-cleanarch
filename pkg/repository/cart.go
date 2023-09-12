@@ -27,7 +27,7 @@ func (c *CartRepository) RemoveFromCart(cartId,productId uint)error{
 
 func (c *CartRepository) ShowProductInCart(cartId uint)([]models.CartProducts,error){
 	var cartProducts []models.CartProducts
-	err:= c.DB.Raw(`SELECT p.name,p.description,p.image,c.amount,c.quantity FROM carts AS c JOIN products AS p ON c.product_id=p.id WHERE c.cart_id=? `,cartId).Scan(&cartProducts).Error
+	err:= c.DB.Raw(`SELECT p.id,p.name,p.description,p.image,c.amount,c.quantity FROM carts AS c JOIN products AS p ON c.product_id=p.id WHERE c.cart_id=? `,cartId).Scan(&cartProducts).Error
 	return cartProducts,err
 }
 

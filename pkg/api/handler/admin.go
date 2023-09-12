@@ -1,8 +1,9 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
-	
+
 	handler "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/api/handler/interface"
 	_ "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/domain"
 	services "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/usecase/interface"
@@ -21,6 +22,7 @@ func NewAdminHandler(useCase services.AdminUseCase) handler.AdminHandler {
 		AdminUsecase: useCase,
 	}
 }
+
 // @Summary Admin SignUp
 // @Description SignUp handler for admin
 // @Tags Admin Authentication
@@ -29,7 +31,7 @@ func NewAdminHandler(useCase services.AdminUseCase) handler.AdminHandler {
 // @Param  admin body models.AdminSignUp true "Admin signup details"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /admin/adminSignUp [post]
+// @Router /admin/signup [post]
 func (ad *AdminHandler) AdminSignUpHandler(c *gin.Context) {
 	var adminSignUpDetails models.AdminSignUp
 
@@ -53,6 +55,7 @@ func (ad *AdminHandler) AdminSignUpHandler(c *gin.Context) {
 	sucRes := response.Responses(http.StatusCreated, "successfully signed in", adminDetails, nil)
 	c.JSON(http.StatusOK, sucRes)
 }
+
 // @Summary Admin Login
 // @Description Login handler for admin
 // @Tags Admin Authentication
@@ -61,7 +64,7 @@ func (ad *AdminHandler) AdminSignUpHandler(c *gin.Context) {
 // @Param  admin body models.AdminLogin true "Admin login details"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /admin/adminLogin [post]
+// @Router /admin/login [post]
 func (ad *AdminHandler) AdminLoginHandler(c *gin.Context) {
 	var adminLoginDetails models.AdminLogin
 
@@ -85,7 +88,8 @@ func (ad *AdminHandler) AdminLoginHandler(c *gin.Context) {
 	sucRes := response.Responses(http.StatusOK, "successfully logged in", adminDetails, nil)
 	c.JSON(http.StatusOK, sucRes)
 }
-// @Summary Block User 
+
+// @Summary Block User
 // @Description Block User By Admin
 // @Tags User Management
 // @Accept json
@@ -94,7 +98,7 @@ func (ad *AdminHandler) AdminLoginHandler(c *gin.Context) {
 // @Security ApiKeyHeaderAuth
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /admin/user/blockUser/{id} [post]
+// @Router /admin/user/block/{id} [patch]
 func (ad *AdminHandler) BlockUser(c *gin.Context) {
 	id := c.Param("id")
 
@@ -107,7 +111,8 @@ func (ad *AdminHandler) BlockUser(c *gin.Context) {
 	c.JSON(http.StatusOK, succRes)
 
 }
-// @Summary Unblock User 
+
+// @Summary Unblock User
 // @Description Unblock User By Admin
 // @Tags User Management
 // @Accept json
@@ -116,7 +121,7 @@ func (ad *AdminHandler) BlockUser(c *gin.Context) {
 // @Security ApiKeyHeaderAuth
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /admin/user/unblockUser/{id} [post]
+// @Router /admin/user/unblock/{id} [patch]
 func (ad *AdminHandler) UnblockUser(c *gin.Context) {
 	id := c.Param("id")
 
@@ -129,3 +134,73 @@ func (ad *AdminHandler) UnblockUser(c *gin.Context) {
 	c.JSON(http.StatusOK, succRes)
 }
 
+// @Summary List Users
+// @Description List Users To Admin
+// @Tags User Management
+// @Accept json
+// @Produce json
+// @Security ApiKeyHeaderAuth
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/user [get]
+func (ad *AdminHandler) ListUsers(c *gin.Context) {
+	users, err := ad.AdminUsecase.ListUsers()
+	if err != nil {
+		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
+		return
+	}
+	succRes := response.Responses(http.StatusOK, "successfully showing users", users, nil)
+	c.JSON(http.StatusOK, succRes)
+}
+
+// @Summary Admin Home
+// @Description Show Details Of Admin
+// @Tags User Management
+// @Accept json
+// @Produce json
+// @Security ApiKeyHeaderAuth
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin [get]
+func (ad *AdminHandler) AdminHome(c *gin.Context) {
+	id, ok := c.Get("adminId")
+	if !ok {
+		errRes := response.Responses(http.StatusNotFound, "id not recovered from context", nil, fmt.Errorf("id not recovered from context").Error())
+		c.JSON(http.StatusNotFound, errRes)
+		return
+	}
+	adminDetails, err := ad.AdminUsecase.AdminHome(id.(uint))
+	if err != nil {
+		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
+		return
+	}
+	succRes := response.Responses(http.StatusOK, "successfully showing admin home page", adminDetails, nil)
+	c.JSON(http.StatusOK, succRes)
+}
+
+// @Summary  Sales Report
+// @Description  Sales Report
+// @Tags Sales Report
+// @Accept json
+// @Produce json
+// @Security ApiKeyHeaderAuth
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/salesReport [get]
+func (ad *AdminHandler) SalesReport(c *gin.Context) {
+
+}
+
+// @Summary Admin Dashboard
+// @Description Dashboard Of Admin
+// @Tags Dashboard
+// @Accept json
+// @Produce json
+// @Security ApiKeyHeaderAuth
+// @Failure 500 {object} response.Response{}
+// @Router /admin/dashboard [get]
+func (ad *AdminHandler) Dashboard(c *gin.Context) {
+
+}

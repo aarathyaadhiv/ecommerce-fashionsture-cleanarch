@@ -17,4 +17,5 @@ type CouponRepository interface{
 	UnBlockCoupon(id uint) error
 	UpdateExpiry(couponId string)error
 	ExistWithoutExpiry(coupon string)(bool,error)
+	GetCoupon() ([]domain.Coupon, error)
 }

@@ -21,4 +21,5 @@ type ProductRepository interface {
 	ProductByCategory(id uint)([]models.ProductResponse,error)
 	ProductByBrand(id uint)([]models.ProductResponse,error)
 	ProductSearch(word string)([]models.ProductResponse,error)
+	Quantity(id uint)(uint,error)
 }

@@ -8,30 +8,32 @@ import (
 
 func AdminRoutes(router *gin.RouterGroup, adminHandler handler.AdminHandler, productHandler handler.ProductHandler,orderHandler handler.OrderHandler,couponHandler handler.CouponHandler) {
 
-	router.POST("/adminLogin", adminHandler.AdminLoginHandler)
+	router.POST("/login", adminHandler.AdminLoginHandler)
 	router.Use(middleware.AdminAuthorizationMiddleware)
 	{
-		router.POST("/adminSignUp", adminHandler.AdminSignUpHandler)
+		router.POST("/signup", adminHandler.AdminSignUpHandler)
+		router.GET("",adminHandler.AdminHome)
 		user := router.Group("/user")
 		{
-			user.POST("/blockUser/:id", adminHandler.BlockUser)
-			user.POST("/unblockUser/:id", adminHandler.UnblockUser)
+			user.GET("",adminHandler.ListUsers)
+			user.PATCH("/block/:id", adminHandler.BlockUser)
+			user.PATCH("/unblock/:id", adminHandler.UnblockUser)
 		}
 		product := router.Group("/product")
 		{
-			product.POST("/add", productHandler.AddProduct)
-			product.PATCH("/update", productHandler.UpdateProduct)
-			product.DELETE("/delete/:id", productHandler.DeleteProduct)
+			product.POST("", productHandler.AddProduct)
+			product.PATCH("", productHandler.UpdateProduct)
+			product.DELETE("/:id", productHandler.DeleteProduct)
 		}
 		category := router.Group("/category")
 		{
-			category.POST("/add", productHandler.AddCategory)
-			category.DELETE("/delete/:id", productHandler.DeleteCategory)
+			category.POST("", productHandler.AddCategory)
+			category.DELETE("/:id", productHandler.DeleteCategory)
 		}
 		brand := router.Group("/brand")
 		{
-			brand.POST("/add", productHandler.AddBrand)
-			brand.DELETE("/delete/:id", productHandler.DeleteBrand)
+			brand.POST("", productHandler.AddBrand)
+			brand.DELETE("/:id", productHandler.DeleteBrand)
 		}
 		orders:=router.Group("/orders")
 		{
@@ -42,6 +44,7 @@ func AdminRoutes(router *gin.RouterGroup, adminHandler handler.AdminHandler, pro
 
 		coupon:=router.Group("/coupon")
 		{
+			coupon.GET("",couponHandler.GetCoupon)
 			coupon.POST("",couponHandler.AddCoupon)
 			coupon.PATCH("/expire/:id",couponHandler.ExpireCoupon)
 			coupon.PATCH("/block/:id",couponHandler.BlockCoupon)

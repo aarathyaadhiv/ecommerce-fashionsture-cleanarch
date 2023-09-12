@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"fmt"
+	
 	"time"
 
 	repository "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/repository/interface"
@@ -97,7 +97,7 @@ func (c *OrderRepository) OrderDetailforPayment(id uint)(string,float64,error){
 }
 
 func (c *OrderRepository) UpdatePaymentStatus(status string,orderId uint)error{
-	fmt.Println("reached order")
+	
 	return c.DB.Exec(`UPDATE orders SET payment_status=? WHERE id=?`,status,orderId).Error
 }
 

@@ -37,7 +37,7 @@ func NewUserHandler(usecase services.UserUseCase, cart services.CartUseCase) han
 // @Param  user body models.UserSignUp true "user signup details"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /SignUp [post]
+// @Router /signup [post]
 func (ur *UserHandler) SignUpHandler(c *gin.Context) {
 	var signUpDetails models.UserSignUp
 	if err := c.ShouldBindJSON(&signUpDetails); err != nil {
@@ -104,8 +104,8 @@ func (ur *UserHandler) LoginHandler(c *gin.Context) {
 func (ur *UserHandler) ShowDetails(c *gin.Context) {
 	id, ok := c.Get("userId")
 	if !ok {
-		errRes := response.Responses(http.StatusBadRequest, "id not recovered", nil, fmt.Errorf("error in retrieving id from context").Error())
-		c.JSON(http.StatusBadRequest, errRes)
+		errRes := response.Responses(http.StatusNotFound, "id not recovered", nil, fmt.Errorf("error in retrieving id from context").Error())
+		c.JSON(http.StatusNotFound, errRes)
 		return
 	}
 	userDetails, err := ur.userUseCase.ShowDetails(id.(uint))
@@ -154,7 +154,7 @@ func (ur *UserHandler) ShowAddress(c *gin.Context) {
 // @Security ApiKeyHeaderAuth
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /address/add [post]
+// @Router /address [post]
 func (ur *UserHandler) AddAddress(c *gin.Context) {
 	var address models.ShowAddress
 	if err := c.ShouldBindJSON(&address); err != nil {
@@ -188,7 +188,7 @@ func (ur *UserHandler) AddAddress(c *gin.Context) {
 // @Security ApiKeyHeaderAuth
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /address/update/{id} [patch]
+// @Router /address/{id} [patch]
 func (ur *UserHandler) UpdateAddress(c *gin.Context) {
 	var address models.ShowAddress
 	if err := c.ShouldBindJSON(&address); err != nil {
@@ -222,7 +222,7 @@ func (ur *UserHandler) UpdateAddress(c *gin.Context) {
 // @Security ApiKeyHeaderAuth
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /userProfile/update [patch]
+// @Router /userProfile [patch]
 func (ur *UserHandler) UpdateUserDetails(c *gin.Context) {
 	var userdetails models.UserUpdate
 	if err := c.ShouldBindJSON(&userdetails); err != nil {

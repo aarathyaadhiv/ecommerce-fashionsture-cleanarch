@@ -32,8 +32,7 @@ func AdminAuthorizationMiddleware(c *gin.Context) {
 		return
 	}
 	claims,ok:=token.Claims.(*helper.CustomAdminClaim)
-	fmt.Println(token)
-	fmt.Println(claims,ok)
+	
 	if !ok{
 		errRes := response.Responses(http.StatusUnauthorized, "not authorised", nil, fmt.Errorf("claim not retrieved"))
 		c.JSON(http.StatusUnauthorized, errRes)

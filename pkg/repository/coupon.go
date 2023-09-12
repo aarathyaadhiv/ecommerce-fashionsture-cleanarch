@@ -94,3 +94,12 @@ func (c *CouponRepository) UnBlockCoupon(id uint) error {
 func (c *CouponRepository) UpdateExpiry(couponId string)error{
 	return c.DB.Exec(`UPDATE coupons SET expiry=false WHERE coupon_id=?`,couponId).Error
 }
+
+func (c *CouponRepository) GetCoupon() ([]domain.Coupon, error) {
+	var coupon []domain.Coupon
+	err := c.DB.Raw(`SELECT * FROM coupons `, ).Scan(&coupon).Error
+	if err != nil {
+		return nil, err
+	}
+	return coupon, nil
+}

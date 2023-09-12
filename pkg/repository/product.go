@@ -112,3 +112,12 @@ func (c *ProductRepository) ProductSearch(word string)([]models.ProductResponse,
 	}
 	return product,nil
 }
+
+func (c *ProductRepository) Quantity(id uint)(uint,error){
+	var quantity uint
+	err:=c.DB.Raw(`SELECT quantity FROM products WHERE id=?`,id).Scan(&quantity).Error
+	if err!=nil{
+		return 0,err
+	}
+	return quantity,err
+}

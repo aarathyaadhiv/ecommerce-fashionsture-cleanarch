@@ -55,3 +55,22 @@ func (c *AdminRepository) IsBlocked(id uint) bool {
 	}
 	return block
 }
+
+
+func (c *AdminRepository) ListUsers()([]models.AdminUserResponse,error){
+	var users []models.AdminUserResponse
+	err:=c.DB.Raw(`SELECT id,name,email,ph_no,block as status FROM users WHERE role='user'`).Scan(&users).Error
+	if err!=nil{
+		return nil,err
+	}
+	return users,nil
+}
+
+func (c *AdminRepository) AdminDetails(id uint)(models.AdminDetails,error){
+	var adminDetails models.AdminDetails
+	err:=c.DB.Raw(`SELECT id,name,email,ph_no FROM users WHERE role='admin'`).Scan(&adminDetails).Error
+	if err!=nil{
+		return models.AdminDetails{},err
+	}
+	return adminDetails,nil
+}

@@ -109,3 +109,22 @@ func (co *CouponHandler) UnBlockCoupon(c *gin.Context){
 	succRes:=response.Responses(http.StatusOK,"successsfully unblocked coupon",nil,nil)
 	c.JSON(http.StatusOK,succRes)
 }
+// @Summary Show Coupons 
+// @Description Show Coupons To Admin
+// @Tags Coupon Management
+// @Accept json
+// @Produce json
+// @Security ApiKeyHeaderAuth
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/coupon [get]
+func (co *CouponHandler) GetCoupon(c *gin.Context){
+	coupon,err:=co.Usecase.GetCoupon()
+	if err!=nil{
+		errRes:=response.Responses(http.StatusInternalServerError,"internal server error",nil,err.Error())
+		c.JSON(http.StatusInternalServerError,errRes)
+		return
+	}
+	succRes:=response.Responses(http.StatusOK,"successsfully showing coupons",coupon,nil)
+	c.JSON(http.StatusOK,succRes)
+}

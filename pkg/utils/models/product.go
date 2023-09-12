@@ -30,6 +30,7 @@ type ProductResponse struct {
 	Discount   float64   `json:"discount"`
 	Category    string `json:"category"`
 	Brand       string `json:"brand"`
+	Status      string `json:"status"`
 }
 
 type AddBrand struct {

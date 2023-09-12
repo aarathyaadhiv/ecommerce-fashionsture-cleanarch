@@ -92,4 +92,11 @@ func (c *AdminUseCase) UnblockUser(id string) error {
 	return c.adminRepo.UnblockUser(uint(userId))
 }
 
+func (c *AdminUseCase) ListUsers()([]models.AdminUserResponse,error){
+	return c.adminRepo.ListUsers()
+}
 
+func (c *AdminUseCase) AdminHome(id uint)(models.AdminDetails,error){
+	
+	return c.adminRepo.AdminDetails(id)
+}

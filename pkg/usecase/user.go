@@ -3,6 +3,7 @@ package usecase
 import (
 	_ "context"
 	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/config"
@@ -18,13 +19,15 @@ import (
 type userUseCase struct {
 	userRepo repo.UserRepository
 	cartRepo repo.CartRepository
+	productRepo repo.ProductRepository
 	config   config.Config
 }
 
-func NewUserUseCase(repo repo.UserRepository, cart repo.CartRepository, config config.Config) services.UserUseCase {
+func NewUserUseCase(repo repo.UserRepository, cart repo.CartRepository,product repo.ProductRepository, config config.Config) services.UserUseCase {
 	return &userUseCase{
 		userRepo: repo,
 		cartRepo: cart,
+		productRepo: product,
 		config:   config,
 	}
 }
@@ -111,6 +114,12 @@ func (c *userUseCase) Checkout(id uint) (models.Checkout, error) {
 	products, err := c.cartRepo.ShowProductInCart(id)
 	if err != nil {
 		return models.Checkout{}, err
+	}
+	for _,product:=range products{
+		quantity,_:=c.productRepo.Quantity(product.Id)
+		if quantity<product.Quantity{
+			return models.Checkout{},fmt.Errorf("%v product is only %v",product.Id,quantity)
+		}
 	}
 
 	amount, err := c.cartRepo.TotalAmountInCart(id)

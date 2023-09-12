@@ -7,4 +7,6 @@ type AdminHandler interface {
 	AdminLoginHandler(c *gin.Context)
 	BlockUser(c *gin.Context)
 	UnblockUser(c *gin.Context)
+	ListUsers(c *gin.Context)
+	AdminHome(c *gin.Context)
 }

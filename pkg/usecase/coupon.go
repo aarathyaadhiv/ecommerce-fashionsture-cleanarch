@@ -3,8 +3,10 @@ package usecase
 import (
 	"strconv"
 
+	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/domain"
 	repository "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/repository/interface"
 	interfaces "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/usecase/interface"
+	
 )
 
 
@@ -58,4 +60,8 @@ func (c *CouponUseCase) UnBlockCoupon(id string) error{
 		return err
 	}
 	return c.Repo.UnBlockCoupon(uint(co_id))
+}
+
+func (c *CouponUseCase) GetCoupon()([]domain.Coupon,error){
+	return c.Repo.GetCoupon()
 }

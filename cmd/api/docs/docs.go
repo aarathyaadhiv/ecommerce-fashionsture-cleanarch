@@ -16,46 +16,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/SignUp": {
-            "post": {
-                "description": "SignUp handler for user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User Authentication"
-                ],
-                "summary": "User SignUp",
-                "parameters": [
-                    {
-                        "description": "user signup details",
-                        "name": "user",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.UserSignUp"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
         "/address": {
             "get": {
                 "security": [
@@ -88,9 +48,7 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/address/add": {
+            },
             "post": {
                 "security": [
                     {
@@ -135,7 +93,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/address/update/{id}": {
+        "/address/{id}": {
             "patch": {
                 "security": [
                     {
@@ -187,9 +145,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/adminLogin": {
-            "post": {
-                "description": "Login handler for admin",
+        "/admin": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Show Details Of Admin",
                 "consumes": [
                     "application/json"
                 ],
@@ -197,20 +160,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin Authentication"
+                    "User Management"
                 ],
-                "summary": "Admin Login",
-                "parameters": [
-                    {
-                        "description": "Admin login details",
-                        "name": "admin",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.AdminLogin"
-                        }
-                    }
-                ],
+                "summary": "Admin Home",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -227,47 +179,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/adminSignUp": {
-            "post": {
-                "description": "SignUp handler for admin",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin Authentication"
-                ],
-                "summary": "Admin SignUp",
-                "parameters": [
-                    {
-                        "description": "Admin signup details",
-                        "name": "admin",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.AdminSignUp"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/admin/brand/add": {
+        "/admin/brand": {
             "post": {
                 "security": [
                     {
@@ -312,7 +224,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/brand/delete/{id}": {
+        "/admin/brand/{id}": {
             "delete": {
                 "security": [
                     {
@@ -355,7 +267,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/category/add": {
+        "/admin/category": {
             "post": {
                 "security": [
                     {
@@ -400,7 +312,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/category/delete/{id}": {
+        "/admin/category/{id}": {
             "delete": {
                 "security": [
                     {
@@ -617,6 +529,96 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/login": {
+            "post": {
+                "description": "Login handler for admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin Authentication"
+                ],
+                "summary": "Admin Login",
+                "parameters": [
+                    {
+                        "description": "Admin login details",
+                        "name": "admin",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.AdminLogin"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/orders": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Show All Orders To Admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order Management"
+                ],
+                "summary": "Show All Orders To Admin",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "count",
+                        "name": "count",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/orders/approval/{id}": {
             "patch": {
                 "security": [
@@ -632,7 +634,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Order Management By Admin"
+                    "Order Management"
                 ],
                 "summary": "Approve Order",
                 "parameters": [
@@ -660,7 +662,50 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/product/add": {
+        "/admin/orders/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Search Order By Admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order Management"
+                ],
+                "summary": "Search Order By Admin",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/product": {
             "post": {
                 "security": [
                     {
@@ -703,52 +748,7 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/admin/product/delete/{id}": {
-            "delete": {
-                "security": [
-                    {
-                        "ApiKeyHeaderAuth": []
-                    }
-                ],
-                "description": "Delete Product By Admin",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Product Management"
-                ],
-                "summary": "Delete Product",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/admin/product/update": {
+            },
             "patch": {
                 "security": [
                     {
@@ -793,8 +793,125 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/user/blockUser/{id}": {
+        "/admin/product/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Delete Product By Admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product Management"
+                ],
+                "summary": "Delete Product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/signup": {
             "post": {
+                "description": "SignUp handler for admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin Authentication"
+                ],
+                "summary": "Admin SignUp",
+                "parameters": [
+                    {
+                        "description": "Admin signup details",
+                        "name": "admin",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.AdminSignUp"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/user": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "List Users To Admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Management"
+                ],
+                "summary": "List Users",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/user/block/{id}": {
+            "patch": {
                 "security": [
                     {
                         "ApiKeyHeaderAuth": []
@@ -836,8 +953,8 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/user/unblockUser/{id}": {
-            "post": {
+        "/admin/user/unblock/{id}": {
+            "patch": {
                 "security": [
                     {
                         "ApiKeyHeaderAuth": []
@@ -908,44 +1025,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/brand/{id}": {
-            "get": {
-                "description": "Filter Products By Brand",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Filter"
-                ],
-                "summary": "Filter Products By Brand",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
         "/cart": {
             "get": {
                 "security": [
@@ -978,16 +1057,14 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/cart/add/{id}": {
-            "post": {
+            },
+            "delete": {
                 "security": [
                     {
                         "ApiKeyHeaderAuth": []
                     }
                 ],
-                "description": "Add Products To Cart",
+                "description": "empty Products In Users Cart",
                 "consumes": [
                     "application/json"
                 ],
@@ -997,16 +1074,7 @@ const docTemplate = `{
                 "tags": [
                     "Cart Management"
                 ],
-                "summary": "Add To Cart",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "product_id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
+                "summary": "empty Cart Products",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1066,9 +1134,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/category": {
-            "get": {
-                "description": "Show All categories To User",
+        "/cart/{id}": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Add Products To Cart",
                 "consumes": [
                     "application/json"
                 ],
@@ -1076,9 +1149,18 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Filter"
+                    "Cart Management"
                 ],
-                "summary": "Show All categories",
+                "summary": "Add To Cart",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "product_id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1095,9 +1177,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/category/{id}": {
+        "/category": {
             "get": {
-                "description": "Filter Products By category",
+                "description": "Show All categories To User",
                 "consumes": [
                     "application/json"
                 ],
@@ -1107,16 +1189,7 @@ const docTemplate = `{
                 "tags": [
                     "Filter"
                 ],
-                "summary": "Filter Products By category",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
+                "summary": "Show All categories",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1347,7 +1420,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Order Management"
+                    "Order"
                 ],
                 "summary": "Order History",
                 "parameters": [
@@ -1364,6 +1437,49 @@ const docTemplate = `{
                         "name": "count",
                         "in": "query",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Place order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Place Order",
+                "parameters": [
+                    {
+                        "description": "orderRequest",
+                        "name": "OrderRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.OrderRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -1397,7 +1513,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Order Management"
+                    "Order"
                 ],
                 "summary": "Cancel Order",
                 "parameters": [
@@ -1425,14 +1541,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/orders/placeOrder": {
-            "post": {
+        "/orders/return/{id}": {
+            "patch": {
                 "security": [
                     {
                         "ApiKeyHeaderAuth": []
                     }
                 ],
-                "description": "Place order",
+                "description": "Return Order",
                 "consumes": [
                     "application/json"
                 ],
@@ -1440,18 +1556,16 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Order Management"
+                    "Order"
                 ],
-                "summary": "Place Order",
+                "summary": "Return Order",
                 "parameters": [
                     {
-                        "description": "orderRequest",
-                        "name": "OrderRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.OrderRequest"
-                        }
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1515,8 +1629,84 @@ const docTemplate = `{
                 }
             }
         },
+        "/products/brand/{id}": {
+            "get": {
+                "description": "Filter Products By Brand",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Filter"
+                ],
+                "summary": "Filter Products By Brand",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/products/category/{id}": {
+            "get": {
+                "description": "Filter Products By category",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Filter"
+                ],
+                "summary": "Filter Products By category",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/products/search": {
-            "post": {
+            "get": {
                 "description": "Show Products By A Word In The Name Of The Product",
                 "consumes": [
                     "application/json"
@@ -1633,6 +1823,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/signup": {
+            "post": {
+                "description": "SignUp handler for user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Authentication"
+                ],
+                "summary": "User SignUp",
+                "parameters": [
+                    {
+                        "description": "user signup details",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UserSignUp"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/userProfile": {
             "get": {
                 "security": [
@@ -1665,9 +1895,7 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/userProfile/update": {
+            },
             "patch": {
                 "security": [
                     {

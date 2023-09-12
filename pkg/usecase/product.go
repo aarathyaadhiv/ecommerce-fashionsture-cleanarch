@@ -52,7 +52,20 @@ func (c *ProductUseCase) ShowAll(page, count int) ([]models.ProductResponse, err
 	if err != nil {
 		return nil, err
 	}
-	return productResponse, nil
+	updatedProductResponse:=make([]models.ProductResponse,0)
+	
+	for _,product:=range productResponse{
+		quantity,_:=c.ProductRepo.Quantity(product.ID)
+		if quantity==0{
+			product.Status="out of stock"
+		}else if quantity==1{
+			product.Status="only 1 product remains"
+		}else{
+			product.Status="in stock"
+		}
+		updatedProductResponse = append(updatedProductResponse, product)
+	}
+	return updatedProductResponse, nil
 
 }
 

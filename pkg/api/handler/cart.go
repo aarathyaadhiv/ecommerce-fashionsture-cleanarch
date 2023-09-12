@@ -28,7 +28,7 @@ func NewCartHandler(usecase usecase.CartUseCase) handler.CartHandler {
 // @Security ApiKeyHeaderAuth
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /cart/add/{id} [post]
+// @Router /cart/{id} [post]
 func (cr *CartHandler) AddToCart(c *gin.Context) {
 	id, ok := c.Get("userId")
 	if !ok {
@@ -119,7 +119,6 @@ func (cr *CartHandler) ShowProductInCart(c *gin.Context){
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /cart [delete]
-
 func(cr *CartHandler) EmptyCart(c *gin.Context){
 	id,ok:=c.Get("userId")
 	if !ok {

@@ -9,4 +9,6 @@ type AdminRepository interface {
 	BlockUser(id uint) error
 	UnblockUser(id uint) error
 	IsBlocked(id uint) bool
+	ListUsers()([]models.AdminUserResponse,error)
+	AdminDetails(id uint)(models.AdminDetails,error)
 }

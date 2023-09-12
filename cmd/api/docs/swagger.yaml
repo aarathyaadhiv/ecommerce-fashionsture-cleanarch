@@ -217,32 +217,6 @@ definitions:
 info:
   contact: {}
 paths:
-  /SignUp:
-    post:
-      consumes:
-      - application/json
-      description: SignUp handler for user
-      parameters:
-      - description: user signup details
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/models.UserSignUp'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      summary: User SignUp
-      tags:
-      - User Authentication
   /address:
     get:
       consumes:
@@ -264,7 +238,6 @@ paths:
       summary: Show Address
       tags:
       - User Profile
-  /address/add:
     post:
       consumes:
       - application/json
@@ -292,7 +265,7 @@ paths:
       summary: Add Address
       tags:
       - User Profile
-  /address/update/{id}:
+  /address/{id}:
     patch:
       consumes:
       - application/json
@@ -325,18 +298,11 @@ paths:
       summary: Update Address
       tags:
       - User Profile
-  /admin/adminLogin:
-    post:
+  /admin:
+    get:
       consumes:
       - application/json
-      description: Login handler for admin
-      parameters:
-      - description: Admin login details
-        in: body
-        name: admin
-        required: true
-        schema:
-          $ref: '#/definitions/models.AdminLogin'
+      description: Show Details Of Admin
       produces:
       - application/json
       responses:
@@ -348,36 +314,12 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Response'
-      summary: Admin Login
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Admin Home
       tags:
-      - Admin Authentication
-  /admin/adminSignUp:
-    post:
-      consumes:
-      - application/json
-      description: SignUp handler for admin
-      parameters:
-      - description: Admin signup details
-        in: body
-        name: admin
-        required: true
-        schema:
-          $ref: '#/definitions/models.AdminSignUp'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      summary: Admin SignUp
-      tags:
-      - Admin Authentication
-  /admin/brand/add:
+      - User Management
+  /admin/brand:
     post:
       consumes:
       - application/json
@@ -405,7 +347,7 @@ paths:
       summary: Add Brand
       tags:
       - Brand Management
-  /admin/brand/delete/{id}:
+  /admin/brand/{id}:
     delete:
       consumes:
       - application/json
@@ -432,7 +374,7 @@ paths:
       summary: Delete Brand
       tags:
       - Brand Management
-  /admin/category/add:
+  /admin/category:
     post:
       consumes:
       - application/json
@@ -460,7 +402,7 @@ paths:
       summary: Add Category
       tags:
       - Category Management
-  /admin/category/delete/{id}:
+  /admin/category/{id}:
     delete:
       consumes:
       - application/json
@@ -596,6 +538,91 @@ paths:
       summary: Unblock Coupon
       tags:
       - Coupon Management
+  /admin/login:
+    post:
+      consumes:
+      - application/json
+      description: Login handler for admin
+      parameters:
+      - description: Admin login details
+        in: body
+        name: admin
+        required: true
+        schema:
+          $ref: '#/definitions/models.AdminLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Admin Login
+      tags:
+      - Admin Authentication
+  /admin/orders:
+    get:
+      consumes:
+      - application/json
+      description: Show All Orders To Admin
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: count
+        in: query
+        name: count
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Show All Orders To Admin
+      tags:
+      - Order Management
+  /admin/orders/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Search Order By Admin
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Search Order By Admin
+      tags:
+      - Order Management
   /admin/orders/approval/{id}:
     patch:
       consumes:
@@ -622,63 +649,8 @@ paths:
       - ApiKeyHeaderAuth: []
       summary: Approve Order
       tags:
-      - Order Management By Admin
-  /admin/product/add:
-    post:
-      consumes:
-      - application/json
-      description: Add Product By Admin
-      parameters:
-      - description: product details
-        in: body
-        name: product
-        required: true
-        schema:
-          $ref: '#/definitions/models.AddProduct'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - ApiKeyHeaderAuth: []
-      summary: Add Product
-      tags:
-      - Product Management
-  /admin/product/delete/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete Product By Admin
-      parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - ApiKeyHeaderAuth: []
-      summary: Delete Product
-      tags:
-      - Product Management
-  /admin/product/update:
+      - Order Management
+  /admin/product:
     patch:
       consumes:
       - application/json
@@ -706,8 +678,109 @@ paths:
       summary: Update Product
       tags:
       - Product Management
-  /admin/user/blockUser/{id}:
     post:
+      consumes:
+      - application/json
+      description: Add Product By Admin
+      parameters:
+      - description: product details
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddProduct'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Add Product
+      tags:
+      - Product Management
+  /admin/product/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Product By Admin
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Delete Product
+      tags:
+      - Product Management
+  /admin/signup:
+    post:
+      consumes:
+      - application/json
+      description: SignUp handler for admin
+      parameters:
+      - description: Admin signup details
+        in: body
+        name: admin
+        required: true
+        schema:
+          $ref: '#/definitions/models.AdminSignUp'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Admin SignUp
+      tags:
+      - Admin Authentication
+  /admin/user:
+    get:
+      consumes:
+      - application/json
+      description: List Users To Admin
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: List Users
+      tags:
+      - User Management
+  /admin/user/block/{id}:
+    patch:
       consumes:
       - application/json
       description: Block User By Admin
@@ -733,8 +806,8 @@ paths:
       summary: Block User
       tags:
       - User Management
-  /admin/user/unblockUser/{id}:
-    post:
+  /admin/user/unblock/{id}:
+    patch:
       consumes:
       - application/json
       description: Unblock User By Admin
@@ -779,17 +852,11 @@ paths:
       summary: Show All brands
       tags:
       - Filter
-  /brand/{id}:
-    get:
+  /cart:
+    delete:
       consumes:
       - application/json
-      description: Filter Products By Brand
-      parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: string
+      description: empty Products In Users Cart
       produces:
       - application/json
       responses:
@@ -801,10 +868,11 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Response'
-      summary: Filter Products By Brand
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: empty Cart Products
       tags:
-      - Filter
-  /cart:
+      - Cart Management
     get:
       consumes:
       - application/json
@@ -825,7 +893,7 @@ paths:
       summary: Show Cart Products
       tags:
       - Cart Management
-  /cart/add/{id}:
+  /cart/{id}:
     post:
       consumes:
       - application/json
@@ -896,31 +964,6 @@ paths:
           schema:
             $ref: '#/definitions/response.Response'
       summary: Show All categories
-      tags:
-      - Filter
-  /category/{id}:
-    get:
-      consumes:
-      - application/json
-      description: Filter Products By category
-      parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      summary: Filter Products By category
       tags:
       - Filter
   /checkout:
@@ -1082,35 +1125,7 @@ paths:
       - ApiKeyHeaderAuth: []
       summary: Order History
       tags:
-      - Order Management
-  /orders/cancel/{id}:
-    patch:
-      consumes:
-      - application/json
-      description: Cancel Order By User
-      parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - ApiKeyHeaderAuth: []
-      summary: Cancel Order
-      tags:
-      - Order Management
-  /orders/placeOrder:
+      - Order
     post:
       consumes:
       - application/json
@@ -1137,7 +1152,61 @@ paths:
       - ApiKeyHeaderAuth: []
       summary: Place Order
       tags:
-      - Order Management
+      - Order
+  /orders/cancel/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Cancel Order By User
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Cancel Order
+      tags:
+      - Order
+  /orders/return/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Return Order
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Return Order
+      tags:
+      - Order
   /products:
     get:
       consumes:
@@ -1193,8 +1262,58 @@ paths:
       summary: Show Product
       tags:
       - Product View
+  /products/brand/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Filter Products By Brand
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Filter Products By Brand
+      tags:
+      - Filter
+  /products/category/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Filter Products By category
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Filter Products By category
+      tags:
+      - Filter
   /products/search:
-    post:
+    get:
       consumes:
       - application/json
       description: Show Products By A Word In The Name Of The Product
@@ -1245,6 +1364,32 @@ paths:
       summary: Send Otp
       tags:
       - User Authentication
+  /signup:
+    post:
+      consumes:
+      - application/json
+      description: SignUp handler for user
+      parameters:
+      - description: user signup details
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserSignUp'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: User SignUp
+      tags:
+      - User Authentication
   /userProfile:
     get:
       consumes:
@@ -1266,7 +1411,6 @@ paths:
       summary: View Details
       tags:
       - User Profile
-  /userProfile/update:
     patch:
       consumes:
       - application/json
