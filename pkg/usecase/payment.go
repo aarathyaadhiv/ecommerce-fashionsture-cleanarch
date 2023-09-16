@@ -1,13 +1,15 @@
 package usecase
 
 import (
-	"fmt"
+	"errors"
+
 	"strconv"
 
 	repository "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/repository/interface"
 	interfaces "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/usecase/interface"
 	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/utils/models"
 	"github.com/razorpay/razorpay-go"
+	"github.com/razorpay/razorpay-go/utils"
 )
 
 type PaymentUseCase struct {
@@ -58,18 +60,32 @@ func (c *PaymentUseCase) RazorPayPayment(orderId string) (models.DetailsforPayme
 	return detailsForPayment, nil
 }
 
-func (c *PaymentUseCase) SaveRazorPayPaymentId(orderId string, razorId, paymentId string) error {
+func (c *PaymentUseCase) SaveRazorPayPaymentId(orderId string, signature, paymentId string) error {
 	ordersId, err := strconv.Atoi(orderId)
 	if err != nil {
 		return err
 	}
-	fmt.Println(ordersId)
-	fmt.Println(razorId)
-	fmt.Println(paymentId)
-	err = c.Repo.UpdatePayment(uint(ordersId), razorId, paymentId)
+
+	razor, err := c.Repo.FetchRazorId(uint(ordersId))
 	if err != nil {
 		return err
 	}
-	return c.OrderRepo.UpdatePaymentStatus("paid using razorpay", uint(ordersId))
+
+	params := map[string]interface{}{
+		"razorpay_order_id":   razor,
+		"razorpay_payment_id": paymentId,
+	}
+
+	secret := "AnuJPpqQQqzPnPcoeBtFSKRQ"
+	isValid := utils.VerifyPaymentSignature(params, signature, secret)
+	if isValid {
+		err = c.Repo.UpdatePayment(uint(ordersId), razor, paymentId)
+		if err != nil {
+			return err
+		}
+		return c.OrderRepo.UpdatePaymentStatus("paid", uint(ordersId))
+	}
+
+	return errors.New("payment is not received from an authentic resource")
 
 }

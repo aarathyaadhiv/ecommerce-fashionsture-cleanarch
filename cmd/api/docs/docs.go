@@ -265,6 +265,56 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Update brand By Admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Brand Management"
+                ],
+                "summary": "Update brand",
+                "parameters": [
+                    {
+                        "description": "update brand",
+                        "name": "updateBrand",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateBrand"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
             }
         },
         "/admin/category": {
@@ -353,9 +403,91 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Update categry By Admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Category Management"
+                ],
+                "summary": "Update category",
+                "parameters": [
+                    {
+                        "description": "update category",
+                        "name": "updateCategory",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateCategory"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
             }
         },
         "/admin/coupon": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Show Coupons To Admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Coupon Management"
+                ],
+                "summary": "Show Coupons",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -529,6 +661,34 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/dashboard": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Dashboard Of Admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Admin Dashboard",
+                "responses": {
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/login": {
             "post": {
                 "description": "Login handler for admin",
@@ -662,6 +822,120 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/orders/filterbyapproval": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Filter Order By Approval",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order Management"
+                ],
+                "summary": "Filter Order By Approval",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "count",
+                        "name": "count",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "keyword",
+                        "name": "keyword",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/orders/filterbypaymentstatus": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Filter Order By Approval",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order Management"
+                ],
+                "summary": "Filter Order By Approval",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "count",
+                        "name": "count",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "keyword",
+                        "name": "keyword",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/orders/{id}": {
             "get": {
                 "security": [
@@ -706,6 +980,63 @@ const docTemplate = `{
             }
         },
         "/admin/product": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Get Product To Admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product Management"
+                ],
+                "summary": "Get Product",
+                "parameters": [
+                    {
+                        "description": "update brand",
+                        "name": "updateBrand",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateBrand"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "count",
+                        "name": "count",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -731,49 +1062,6 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/models.AddProduct"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            },
-            "patch": {
-                "security": [
-                    {
-                        "ApiKeyHeaderAuth": []
-                    }
-                ],
-                "description": "Update Product By Admin",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Product Management"
-                ],
-                "summary": "Update Product",
-                "parameters": [
-                    {
-                        "description": "update details",
-                        "name": "product",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.ProductUpdate"
                         }
                     }
                 ],
@@ -817,6 +1105,99 @@ const docTemplate = `{
                         "description": "id",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Update Product By Admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product Management"
+                ],
+                "summary": "Update Product",
+                "parameters": [
+                    {
+                        "description": "update details",
+                        "name": "product",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ProductUpdate"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/salesReport": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Sales Report",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Sales Report"
+                ],
+                "summary": "Sales Report",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "keyword",
+                        "name": "keyword",
+                        "in": "query",
                         "required": true
                     }
                 ],
@@ -1979,6 +2360,40 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/wallet": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyHeaderAuth": []
+                    }
+                ],
+                "description": "Wallet Of The User",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Wallet Of The User",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -2165,9 +2580,6 @@ const docTemplate = `{
         "models.ProductUpdate": {
             "type": "object",
             "properties": {
-                "id": {
-                    "type": "integer"
-                },
                 "quantity": {
                     "type": "integer"
                 }
@@ -2211,6 +2623,28 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "state": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UpdateBrand": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UpdateCategory": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
                     "type": "string"
                 }
             }

@@ -7,6 +7,8 @@ type AdminUseCase interface {
 	Login(admin models.AdminLogin) (models.AdminTokenResponse, error)
 	BlockUser(id string) error
 	UnblockUser(id string) error
-	ListUsers()([]models.AdminUserResponse,error)
+	ListUsers(pages,counts string)([]models.AdminUserResponse,error)
 	AdminHome(id uint)(models.AdminDetails,error)
+	Dashboard() (models.Dashboard, error)
+	SalesReport(timeWord string)(models.SalesReport,error)
 }

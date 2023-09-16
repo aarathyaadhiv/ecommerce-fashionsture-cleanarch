@@ -115,11 +115,15 @@ func (co *CouponHandler) UnBlockCoupon(c *gin.Context){
 // @Accept json
 // @Produce json
 // @Security ApiKeyHeaderAuth
+// @Param  page query string true "page"
+// @Param  count query string true "count"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/coupon [get]
 func (co *CouponHandler) GetCoupon(c *gin.Context){
-	coupon,err:=co.Usecase.GetCoupon()
+	page:=c.DefaultQuery("page","1")
+	count:=c.DefaultQuery("count","3")
+	coupon,err:=co.Usecase.GetCoupon(page,count)
 	if err!=nil{
 		errRes:=response.Responses(http.StatusInternalServerError,"internal server error",nil,err.Error())
 		c.JSON(http.StatusInternalServerError,errRes)

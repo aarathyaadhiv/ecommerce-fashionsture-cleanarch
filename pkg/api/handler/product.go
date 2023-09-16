@@ -53,10 +53,11 @@ func (pr *ProductHandler) AddProduct(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param  product body models.ProductUpdate true "update details"
+// @Param  id path string true "id"
 // @Security ApiKeyHeaderAuth
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /admin/product [patch]
+// @Router /admin/product/{id} [patch]
 func (pr *ProductHandler) UpdateProduct(c *gin.Context) {
 	var updateProduct models.ProductUpdate
 
@@ -65,8 +66,8 @@ func (pr *ProductHandler) UpdateProduct(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-
-	err := pr.Usecase.UpdateProduct(updateProduct)
+	id:=c.Param("id")
+	err := pr.Usecase.UpdateProduct(updateProduct,id)
 	if err != nil {
 		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errRes)
@@ -264,11 +265,15 @@ func (pr *ProductHandler) DeleteBrand(c *gin.Context) {
 // @Tags Filter
 // @Accept json
 // @Produce json
+// @Param  page query string true "page"
+// @Param  count query string true "count"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /category [get]
 func (pr *ProductHandler) ShowCategory(c *gin.Context) {
-	category, err := pr.Usecase.ShowCategory()
+	page:=c.DefaultQuery("page","1")
+	count:=c.DefaultQuery("count","3")
+	category, err := pr.Usecase.ShowCategory(page,count)
 	if err != nil {
 		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errRes)
@@ -283,11 +288,15 @@ func (pr *ProductHandler) ShowCategory(c *gin.Context) {
 // @Tags Filter
 // @Accept json
 // @Produce json
+// @Param  page query string true "page"
+// @Param  count query string true "count"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /brand [get]
 func (pr *ProductHandler) ShowBrand(c *gin.Context) {
-	brand, err := pr.Usecase.ShowBrand()
+	page:=c.DefaultQuery("page","1")
+	count:=c.DefaultQuery("count","3")
+	brand, err := pr.Usecase.ShowBrand(page,count)
 	if err != nil {
 		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errRes)
@@ -303,12 +312,16 @@ func (pr *ProductHandler) ShowBrand(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param  id path string true "id"
+// @Param  page query string true "page"
+// @Param  count query string true "count"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /products/category/{id} [get]
 func (pr *ProductHandler) FilterProductsByCategory(c *gin.Context) {
 	id := c.Param("id")
-	products, err := pr.Usecase.FilterProductByCategory(id)
+	page:=c.DefaultQuery("page","1")
+	count:=c.DefaultQuery("count","3")
+	products, err := pr.Usecase.FilterProductByCategory(id,page,count)
 	if err != nil {
 		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errRes)
@@ -324,12 +337,16 @@ func (pr *ProductHandler) FilterProductsByCategory(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param  id path string true "id"
+// @Param  page query string true "page"
+// @Param  count query string true "count"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /products/brand/{id} [get]
 func (pr *ProductHandler) FilterProductsByBrand(c *gin.Context) {
 	id := c.Param("id")
-	products, err := pr.Usecase.FilterProductByBrand(id)
+	page:=c.DefaultQuery("page","1")
+	count:=c.DefaultQuery("count","3")
+	products, err := pr.Usecase.FilterProductByBrand(id,page,count)
 	if err != nil {
 		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errRes)
@@ -345,6 +362,8 @@ func (pr *ProductHandler) FilterProductsByBrand(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param  word body models.ProductSearch true "search word"
+// @Param  page query string true "page"
+// @Param  count query string true "count"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /products/search [get]
@@ -355,7 +374,9 @@ func (pr *ProductHandler) SearchProduct(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	products, err := pr.Usecase.ProductSearch(word.Word)
+	page:=c.DefaultQuery("page","1")
+	count:=c.DefaultQuery("count","3")
+	products, err := pr.Usecase.ProductSearch(word.Word,page,count)
 	if err != nil {
 		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errRes)
@@ -363,4 +384,89 @@ func (pr *ProductHandler) SearchProduct(c *gin.Context) {
 	}
 	succRes := response.Responses(http.StatusOK, "successfully showing products with given word in name", products, nil)
 	c.JSON(http.StatusOK, succRes)
+}
+
+// @Summary Update category
+// @Description Update categry By Admin
+// @Tags Category Management
+// @Accept json
+// @Produce json
+// @Param  updateCategory body models.UpdateCategory true "update category"
+// @Param  id path string true "id"
+// @Security ApiKeyHeaderAuth
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/category/{id} [patch]
+func (pr *ProductHandler) UpdateCategory(c *gin.Context) {
+	var updateCategory models.UpdateCategory
+
+	if err := c.ShouldBindJSON(&updateCategory); err != nil {
+		errRes := response.Responses(http.StatusBadRequest, "fields are not in correct manner", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	id := c.Param("id")
+	err := pr.Usecase.UpdateCategory(updateCategory, id)
+	if err != nil {
+		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
+		return
+	}
+	succRes := response.Responses(http.StatusOK, "successfully updated category", nil, nil)
+	c.JSON(http.StatusOK, succRes)
+}
+
+// @Summary Update brand
+// @Description Update brand By Admin
+// @Tags Brand Management
+// @Accept json
+// @Produce json
+// @Param  updateBrand body models.UpdateBrand true "update brand"
+// @Param  id path string true "id"
+// @Security ApiKeyHeaderAuth
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/brand/{id} [patch]
+func (pr *ProductHandler) UpdateBrand(c *gin.Context) {
+	var updateBrand models.UpdateBrand
+
+	if err := c.ShouldBindJSON(&updateBrand); err != nil {
+		errRes := response.Responses(http.StatusBadRequest, "fields are not in correct manner", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	id := c.Param("id")
+	err := pr.Usecase.UpdateBrand(updateBrand, id)
+	if err != nil {
+		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
+		return
+	}
+	succRes := response.Responses(http.StatusOK, "successfully updated brand", nil, nil)
+	c.JSON(http.StatusOK, succRes)
+}
+
+// @Summary Get Product
+// @Description Get Product To Admin
+// @Tags Product Management
+// @Accept json
+// @Produce json
+// @Param  updateBrand body models.UpdateBrand true "update brand"
+// @Param  page query string true "page"
+// @Param  count query string true "count"
+// @Security ApiKeyHeaderAuth
+// @Success 200 {object} response.Response{}
+// @Failure 500 {object} response.Response{}
+// @Router /admin/product [get]
+func (pr *ProductHandler) GetProductsToAdmin(c *gin.Context){
+	page:=c.DefaultQuery("page","1")
+	count:=c.DefaultQuery("count","3")
+	product,err:=pr.Usecase.GetProductToAdmin(page,count)
+	if err!=nil{
+		errRes:=response.Responses(http.StatusInternalServerError,"internal serverr error",nil,err.Error())
+		c.JSON(http.StatusInternalServerError,errRes)
+		return
+	}
+	succRes:=response.Responses(http.StatusOK,"successfully showing products",product,nil)
+	c.JSON(http.StatusOK,succRes)
 }

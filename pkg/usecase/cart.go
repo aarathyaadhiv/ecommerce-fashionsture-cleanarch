@@ -50,12 +50,33 @@ func (c *CartUseCase) RemoveFromCart(cartId uint, productId string) error {
 	return c.Repo.RemoveFromCart(cartId, uint(product))
 }
 
-func (c *CartUseCase) ShowProductInCart(cartId uint) ([]models.CartProducts, error) {
-	Products, err := c.Repo.ShowProductInCart(cartId)
+func (c *CartUseCase) ShowProductInCart(cartId uint,pages,counts string) ([]models.CartProducts, error) {
+	page,err:=strconv.Atoi(pages)
+	if err!=nil{
+		return nil,err
+	}
+	count,err:=strconv.Atoi(counts)
+	if err!=nil{
+		return nil,err
+	}
+	Products, err := c.Repo.ShowProductInCart(cartId,page,count)
 	if err != nil {
 		return nil, err
 	}
-	return Products, nil
+	updatedCartProduct:=make([]models.CartProducts,0)
+	
+	for _,product:=range Products{
+		quantity,_:=c.product.Quantity(product.Id)
+		if quantity==0{
+			product.Status="out of stock"
+		}else if quantity==1{
+			product.Status="only 1 product remains"
+		}else{
+			product.Status="in stock"
+		}
+		updatedCartProduct = append(updatedCartProduct, product)
+	}
+	return updatedCartProduct, nil
 }
 
 func (c *CartUseCase) TotalAmountInCart(cartId uint) (float64, error) {

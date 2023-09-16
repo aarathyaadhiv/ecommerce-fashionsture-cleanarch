@@ -14,8 +14,8 @@ type Order struct {
 	Status        string        `json:"status" gorm:"default:processing"`
 	PaymentStatus string        `json:"payment_status" gorm:"default:not paid"`
 	Approval      bool          `json:"approval" gorm:"default:false"`
-	UsersID       uint			`json:"users_id"`
-	Users         Users			`json:"users" gorm:"foreignKey:UsersID"`
+	UsersID       uint          `json:"users_id"`
+	Users         Users         `json:"users" gorm:"foreignKey:UsersID"`
 }
 
 type OrderProduct struct {
@@ -26,4 +26,11 @@ type OrderProduct struct {
 	OrderId   uint     `json:"order_id"`
 	Order     Order    `json:"order" gorm:"foreignKey:OrderId;constraint:OnDelete:CASCADE"`
 	Amount    float64  `json:"amount"`
+}
+
+type Wallet struct {
+	ID      uint    `json:"id" gorm:"primaryKey"`
+	UsersID uint    `json:"users_id"`
+	Users   Users   `json:"users" gorm:"foreignKey:UsersID"`
+	Amount  float64 `json:"amount"`
 }

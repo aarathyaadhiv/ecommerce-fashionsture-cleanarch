@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"errors"
 	
 	"strconv"
 
@@ -63,14 +64,25 @@ func (c *OrderUseCase) PlaceOrder(addressId, paymentId, userId uint, couponId st
 			}
 
 			amount = amount - ((amount * float64(couponDetails.Discount)) / 100)
-			
+
 		}
 	}
-
-	id, err := c.repo.PlaceOrder(addressId, paymentId, userId, amount)
+	var status string
+	if paymentId==3{
+		err:=c.PaymentUsingWallet(userId,amount)
+		if err!=nil{
+			return err
+		}
+		status="paid"
+	}else{
+		status="not paid"
+	}
+	
+	id, err := c.repo.PlaceOrder(addressId, paymentId, userId, amount,status)
 	if err != nil {
 		return err
 	}
+	
 	cartProducts, err := c.cart.ProductsInCart(userId)
 	if err != nil {
 		return err
@@ -94,6 +106,15 @@ func (c *OrderUseCase) CancelOrder(id string) error {
 	if err != nil {
 		return err
 	}
+	orderDetails, err := c.repo.OrderDetail(uint(orderId))
+
+	if err != nil {
+		return err
+	}
+	if orderDetails.Status == "delivered" {
+		return errors.New("cannot cancel the order as it is delivered")
+	}
+
 	return c.repo.CancelOrder(uint(orderId))
 }
 
@@ -102,6 +123,21 @@ func (c *OrderUseCase) AdminApproval(id string) error {
 	if err != nil {
 		return err
 	}
+	orderDetails, err := c.repo.OrderDetail(uint(orderId))
+
+	if err != nil {
+		return err
+	}
+
+	status := orderDetails.Status
+	payment := orderDetails.PaymentStatus
+	if (status == "returned" && payment == "paid") || (status == "cancelled" && payment == "paid") {
+		err := c.AddToWallet(orderDetails.UsersID, orderDetails.Amount)
+		if err != nil {
+			return err
+		}
+		return c.repo.AdminApprovalWithStatus(uint(orderId))
+	}
 	return c.repo.AdminApproval(uint(orderId))
 }
 
@@ -109,6 +145,14 @@ func (c *OrderUseCase) ReturnOrder(id string) error {
 	orderId, err := strconv.Atoi(id)
 	if err != nil {
 		return err
+	}
+	orderDetails, err := c.repo.OrderDetail(uint(orderId))
+
+	if err != nil {
+		return err
+	}
+	if orderDetails.Status != "delivered" {
+		return errors.New(" The order is still in transit, unable to return order")
 	}
 	return c.repo.ReturnOrder(uint(orderId))
 }
@@ -123,4 +167,67 @@ func (c *OrderUseCase) SearchOrder(id string) (models.OrderDetailsToAdmin, error
 		return models.OrderDetailsToAdmin{}, err
 	}
 	return c.repo.SearchOrder(uint(orderId))
+}
+
+func (c *OrderUseCase) AddToWallet(userId uint, amount float64) error {
+	isWalletExist, err := c.repo.IsWalletExist(userId)
+	if err != nil {
+		return err
+	}
+	if isWalletExist {
+		return c.repo.UpdateWallet(userId, amount)
+	}
+	return c.repo.AddToWallet(userId, amount)
+}
+
+func (c *OrderUseCase) PaymentUsingWallet(userId uint,amount float64)error{
+	isWalletExist,err:=c.repo.IsWalletExist(userId)
+	if err!=nil{
+		return err
+	}
+	if isWalletExist{
+		walletAmount,err:=c.repo.FetchAmountInWallet(userId)
+		if err!=nil{
+			return err
+		}
+		if walletAmount>=amount{
+			return c.repo.PaymentUsingWallet(userId,amount)
+		}
+		return errors.New("wallet has no sufficient balance")
+	}
+	return errors.New("no wallet for user")
+}
+
+func(c *OrderUseCase) FilterOrderByApproval(pages,counts string,keyword string)([]models.OrderDetailsToAdmin,error){
+	page,err:=strconv.Atoi(pages)
+	if err!=nil{
+		return nil,err
+	}
+	count,err:=strconv.Atoi(counts)
+	if err!=nil{
+		return nil,err
+	}
+	var approval bool
+	if keyword=="approved"{
+		approval=true
+	}else if keyword=="not approved"{
+		approval=false
+	}
+	return c.repo.FilterOrderByApproval(page,count,approval)
+}
+
+func (c *OrderUseCase) FilterOrderByPaymentStatus(pages,counts ,keyword string)([]models.OrderDetailsToAdmin,error){
+	page,err:=strconv.Atoi(pages)
+	if err!=nil{
+		return nil,err
+	}
+	count,err:=strconv.Atoi(counts)
+	if err!=nil{
+		return nil,err
+	}
+	return c.repo.FilterOrderByPaymentStatus(page,count,keyword)
+}
+
+func (c *OrderUseCase) GetWallet(userId uint)(models.GetWallet,error){
+	return c.repo.GetWallet(userId)
 }

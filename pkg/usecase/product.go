@@ -24,8 +24,12 @@ func (c *ProductUseCase) AddProduct(product models.AddProduct) error {
 	return c.ProductRepo.AddProduct(product, sellingPrice)
 }
 
-func (c *ProductUseCase) UpdateProduct(product models.ProductUpdate) error {
-	return c.ProductRepo.UpdateProduct(product)
+func (c *ProductUseCase) UpdateProduct(product models.ProductUpdate,id string) error {
+	productId,err:=strconv.Atoi(id)
+	if err!=nil{
+		return err
+	}
+	return c.ProductRepo.UpdateProduct(product,uint(productId))
 }
 func (c *ProductUseCase) DeleteProduct(id string) error {
 	productID, err := strconv.Atoi(id)
@@ -80,6 +84,14 @@ func (c *ProductUseCase) ShowProduct(id string) (models.ProductResponse, error) 
 	if err != nil {
 		return models.ProductResponse{}, nil
 	}
+	quantity,_:=c.ProductRepo.Quantity(productResponse.ID)
+	if quantity==0{
+		productResponse.Status="out of stock"
+	}else if quantity==1{
+		productResponse.Status="only 1 product remains"
+	}else{
+		productResponse.Status="in stock"
+	}
 	return productResponse, nil
 
 }
@@ -96,32 +108,100 @@ func (c *ProductUseCase) DeleteBrand(id string) error {
 	return c.ProductRepo.DeleteBrand(uint(brandId))
 }
 
-func (c *ProductUseCase) ShowCategory() ([]domain.Category, error) {
-	return c.ProductRepo.ShowCategory()
+func (c *ProductUseCase) ShowCategory(pages,counts string) ([]domain.Category, error) {
+	page,err:=strconv.Atoi(pages)
+	if err!=nil{
+		return nil,err
+	}
+	count,err:=strconv.Atoi(counts)
+	if err!=nil{
+		return nil,err
+	}
+	return c.ProductRepo.ShowCategory(page,count)
 }
 
-func (c *ProductUseCase) ShowBrand() ([]domain.Brand, error) {
-	return c.ProductRepo.ShowBrand()
+func (c *ProductUseCase) ShowBrand(pages,counts string) ([]domain.Brand, error) {
+	page,err:=strconv.Atoi(pages)
+	if err!=nil{
+		return nil,err
+	}
+	count,err:=strconv.Atoi(counts)
+	if err!=nil{
+		return nil,err
+	}
+	return c.ProductRepo.ShowBrand(page,count)
 }
 
-func (c *ProductUseCase) FilterProductByCategory(id string) ([]models.ProductResponse, error) {
+func (c *ProductUseCase) FilterProductByCategory(id string,pages,counts string) ([]models.ProductResponse, error) {
+	page,err:=strconv.Atoi(pages)
+	if err!=nil{
+		return nil,err
+	}
+	count,err:=strconv.Atoi(counts)
+	if err!=nil{
+		return nil,err
+	}
 	categoryId, err := strconv.Atoi(id)
 	if err != nil {
 		return nil, err
 	}
-	return c.ProductRepo.ProductByCategory(uint(categoryId))
+	return c.ProductRepo.ProductByCategory(uint(categoryId),page,count)
 }
 
-func (c *ProductUseCase) FilterProductByBrand(id string) ([]models.ProductResponse, error) {
+func (c *ProductUseCase) FilterProductByBrand(id string,pages,counts string) ([]models.ProductResponse, error) {
+	page,err:=strconv.Atoi(pages)
+	if err!=nil{
+		return nil,err
+	}
+	count,err:=strconv.Atoi(counts)
+	if err!=nil{
+		return nil,err
+	}
 	brandId, err := strconv.Atoi(id)
 	if err != nil {
 		return nil, err
 	}
-	return c.ProductRepo.ProductByBrand(uint(brandId))
+	return c.ProductRepo.ProductByBrand(uint(brandId),page,count)
 }
 
-func (c *ProductUseCase) ProductSearch(word string)([]models.ProductResponse,error){
+func (c *ProductUseCase) ProductSearch(word string,pages,counts string)([]models.ProductResponse,error){
+	page,err:=strconv.Atoi(pages)
+	if err!=nil{
+		return nil,err
+	}
+	count,err:=strconv.Atoi(counts)
+	if err!=nil{
+		return nil,err
+	}
 	words:=fmt.Sprint(word)
 	searchWord:="%"+words+"%"
-	return c.ProductRepo.ProductSearch(searchWord)
+	return c.ProductRepo.ProductSearch(searchWord,page,count)
+}
+
+func (c *ProductUseCase) UpdateCategory(update models.UpdateCategory,id string)error{
+	categoryId,err:=strconv.Atoi(id)
+	if err!=nil{
+		return err
+	}
+	return c.ProductRepo.UpdateCategory(update,uint(categoryId))
+}
+
+func (c *ProductUseCase) UpdateBrand(update models.UpdateBrand,id string)error{
+	brandId,err:=strconv.Atoi(id)
+	if err!=nil{
+		return err
+	}
+	return c.ProductRepo.UpdateBrand(update,uint(brandId))
+}
+
+func (c *ProductUseCase) GetProductToAdmin(pages,counts string)([]models.ProductResponseToAdmin,error){
+	page,err:=strconv.Atoi(pages)
+	if err!=nil{
+		return nil,err
+	}
+	count,err:=strconv.Atoi(counts)
+	if err!=nil{
+		return nil,err
+	}
+	return c.ProductRepo.FetchProductDetailsToAdmin(page,count)
 }

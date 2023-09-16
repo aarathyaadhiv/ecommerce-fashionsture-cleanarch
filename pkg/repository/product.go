@@ -19,8 +19,8 @@ func (c *ProductRepository) AddProduct(product models.AddProduct,sellingPrice fl
 	return c.DB.Exec(`insert into products (name,description,quantity,price,selling_price,image,discount,category_id,brand_id) values(?,?,?,?,?,?,?,?,?)`, product.Name, product.Description, product.Quantity, product.Price,sellingPrice, product.Image, product.Discount, product.CategoryID, product.BrandID).Error
 }
 
-func (c *ProductRepository) UpdateProduct(product models.ProductUpdate) error {
-	return c.DB.Exec(`update products set quantity=? where id=?`, product.Quantity, product.ID).Error
+func (c *ProductRepository) UpdateProduct(product models.ProductUpdate,id uint) error {
+	return c.DB.Exec(`update products set quantity=? where id=?`, product.Quantity, id).Error
 }
 
 func (c *ProductRepository) DeleteProduct(id uint) error {
@@ -68,45 +68,50 @@ func (c *ProductRepository) FetchProductDetails(productId uint)( models.Product,
 	return product,err
 }
 
-func (c *ProductRepository) ShowCategory()([]domain.Category,error){
+func (c *ProductRepository) ShowCategory(page,count int)([]domain.Category,error){
+	offset:=(page-1)*count
 	var category []domain.Category
-	err:=c.DB.Raw(`SELECT * FROM categories`).Scan(&category).Error
+	err:=c.DB.Raw(`SELECT * FROM categories limit ? offset ?`,count,offset).Scan(&category).Error
 	if err!=nil{
 		return nil,err
 	}
 	return category,nil
 }
 
-func (c *ProductRepository) ShowBrand()([]domain.Brand,error){
+func (c *ProductRepository) ShowBrand(page,count int)([]domain.Brand,error){
+	offset:=(page-1)*count
 	var brand []domain.Brand
-	err:=c.DB.Raw(`SELECT * FROM brands`).Scan(&brand).Error
+	err:=c.DB.Raw(`SELECT * FROM brands limit ? offset ?`,count,offset).Scan(&brand).Error
 	if err!=nil{
 		return nil,err
 	}
 	return brand,nil
 }
 
-func (c *ProductRepository) ProductByCategory(id uint)([]models.ProductResponse,error){
+func (c *ProductRepository) ProductByCategory(id uint,page,count int)([]models.ProductResponse,error){
+	offset:=(page-1)*count
 	var product []models.ProductResponse
-	err:=c.DB.Raw(`select p.id,p.name,p.description,p.price,p.selling_price,p.image,p.discount,c.name as category,b.name as brand from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id where p.category_id=?`,id).Scan(&product).Error
+	err:=c.DB.Raw(`select p.id,p.name,p.description,p.price,p.selling_price,p.image,p.discount,c.name as category,b.name as brand from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id where p.category_id=? limit ? offset ?`,id,count,offset).Scan(&product).Error
 	if err!=nil{
 		return nil,err
 	}
 	return product,nil
 }
 
-func (c *ProductRepository) ProductByBrand(id uint)([]models.ProductResponse,error){
+func (c *ProductRepository) ProductByBrand(id uint,page,count int)([]models.ProductResponse,error){
+	offset:=(page-1)*count
 	var product []models.ProductResponse
-	err:=c.DB.Raw(`select p.id,p.name,p.description,p.price,p.selling_price,p.image,p.discount,c.name as category,b.name as brand from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id where p.brand_id=?`,id).Scan(&product).Error
+	err:=c.DB.Raw(`select p.id,p.name,p.description,p.price,p.selling_price,p.image,p.discount,c.name as category,b.name as brand from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id where p.brand_id=? limit ? offset ?`,id,count,offset).Scan(&product).Error
 	if err!=nil{
 		return nil,err
 	}
 	return product,nil
 }
 
-func (c *ProductRepository) ProductSearch(word string)([]models.ProductResponse,error){
+func (c *ProductRepository) ProductSearch(word string,page,count int)([]models.ProductResponse,error){
+	offset:=(page-1)*count
 	var product []models.ProductResponse
-	err:=c.DB.Raw(`select p.id,p.name,p.description,p.price,p.selling_price,p.image,p.discount,c.name as category,b.name as brand from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id where p.name ILIKE ?`,word).Scan(&product).Error
+	err:=c.DB.Raw(`select p.id,p.name,p.description,p.price,p.selling_price,p.image,p.discount,c.name as category,b.name as brand from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id where p.name ILIKE ? limit ? offset ?`,word,count,offset).Scan(&product).Error
 	if err!=nil{
 		return nil,err
 	}
@@ -120,4 +125,22 @@ func (c *ProductRepository) Quantity(id uint)(uint,error){
 		return 0,err
 	}
 	return quantity,err
+}
+
+func (c *ProductRepository) UpdateCategory(update models.UpdateCategory,id uint)error{
+	return c.DB.Exec(`UPDATE categories SET name=? WHERE id=?`,update.Name,id).Error
+}
+
+func (c *ProductRepository) UpdateBrand(update models.UpdateBrand,id uint)error{
+	return c.DB.Exec(`UPDATE brands SET name=? WHERE id=?`,update.Name,id).Error
+}
+
+func (c *ProductRepository) FetchProductDetailsToAdmin(page,count int)([]models.ProductResponseToAdmin,error){
+	var product []models.ProductResponseToAdmin
+	offset:=(page-1)*count
+	err:= c.DB.Raw(`SELECT id,name,price,selling_price,image,discount,quantity FROM products limit ? offset ?`,count,offset).Scan(&product).Error
+	if err!=nil{
+		return nil,err
+	}
+	return product,nil
 }

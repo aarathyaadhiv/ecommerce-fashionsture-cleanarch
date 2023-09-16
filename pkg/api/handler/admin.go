@@ -140,11 +140,15 @@ func (ad *AdminHandler) UnblockUser(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyHeaderAuth
+// @Param  page query string true "page"
+// @Param  count query string true "count"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/user [get]
 func (ad *AdminHandler) ListUsers(c *gin.Context) {
-	users, err := ad.AdminUsecase.ListUsers()
+	page:=c.DefaultQuery("page","1")
+	count:=c.DefaultQuery("count","3")
+	users, err := ad.AdminUsecase.ListUsers(page,count)
 	if err != nil {
 		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errRes)
@@ -186,11 +190,20 @@ func (ad *AdminHandler) AdminHome(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyHeaderAuth
+// @Param  keyword query string true "keyword"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/salesReport [get]
 func (ad *AdminHandler) SalesReport(c *gin.Context) {
-
+	keyword:=c.Query("keyword")
+	salesReport,err:=ad.AdminUsecase.SalesReport(keyword)
+	if err!=nil{
+		errRes:=response.Responses(http.StatusInternalServerError,"internal server error",nil,err.Error())
+		c.JSON(http.StatusInternalServerError,errRes)
+		return
+	}
+	succRes:=response.Responses(http.StatusOK,"successfully showing sales report",salesReport,nil)
+	c.JSON(http.StatusOK,succRes)
 }
 
 // @Summary Admin Dashboard
@@ -202,5 +215,12 @@ func (ad *AdminHandler) SalesReport(c *gin.Context) {
 // @Failure 500 {object} response.Response{}
 // @Router /admin/dashboard [get]
 func (ad *AdminHandler) Dashboard(c *gin.Context) {
-
+	dashboard,err:=ad.AdminUsecase.Dashboard()
+	if err!=nil{
+		errRes:=response.Responses(http.StatusInternalServerError,"internal server error",nil,err.Error())
+		c.JSON(http.StatusInternalServerError,errRes)
+		return
+	}
+	succRes:=response.Responses(http.StatusOK,"successfully showing dashboard",dashboard,nil)
+	c.JSON(http.StatusOK,succRes)
 }

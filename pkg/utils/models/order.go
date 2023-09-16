@@ -53,3 +53,8 @@ type OrderDetailsToAdmin struct{
 	PaymentMethod string `json:"payment_method"`
 	Approval bool `json:"approval"`
 }
+
+type GetWallet struct{
+	Name string `json:"name"`
+	Amount float64 `json:"amount"`
+}

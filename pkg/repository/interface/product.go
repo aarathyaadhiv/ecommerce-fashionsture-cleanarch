@@ -7,7 +7,7 @@ import (
 
 type ProductRepository interface {
 	AddProduct(product models.AddProduct,sellingPrice float64) error
-	UpdateProduct(product models.ProductUpdate) error
+	UpdateProduct(product models.ProductUpdate,id uint) error
 	DeleteProduct(id uint) error
 	AddCategory(category models.AddCategory) error
 	DeleteCategory(id uint) error
@@ -16,10 +16,13 @@ type ProductRepository interface {
 	AddBrand(brand models.AddBrand) error
 	DeleteBrand(id uint) error
 	FetchProductDetails(productId uint)( models.Product,error)
-	ShowCategory()([]domain.Category,error)
-	ShowBrand()([]domain.Brand,error)
-	ProductByCategory(id uint)([]models.ProductResponse,error)
-	ProductByBrand(id uint)([]models.ProductResponse,error)
-	ProductSearch(word string)([]models.ProductResponse,error)
+	ShowCategory(page,count int)([]domain.Category,error)
+	ShowBrand(page,count int)([]domain.Brand,error)
+	ProductByCategory(id uint,page,count int)([]models.ProductResponse,error)
+	ProductByBrand(id uint,page,count int)([]models.ProductResponse,error)
+	ProductSearch(word string,page,count int)([]models.ProductResponse,error)
 	Quantity(id uint)(uint,error)
+	UpdateCategory(update models.UpdateCategory,id uint)error
+	UpdateBrand(update models.UpdateBrand,id uint)error
+	FetchProductDetailsToAdmin(page,count int)([]models.ProductResponseToAdmin,error)
 }

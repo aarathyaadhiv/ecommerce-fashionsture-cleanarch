@@ -8,5 +8,5 @@ type CouponUseCase interface{
 	ExpireCoupon(id string)error
 	BlockCoupon(id string) error
 	UnBlockCoupon(id string) error
-	GetCoupon()([]domain.Coupon,error)
+	GetCoupon(pages,counts string)([]domain.Coupon,error)
 }

@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"fmt"
+	
 	"net/http"
 
 	interfaces "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/api/handler/interface"
@@ -37,12 +37,9 @@ func (ph *PaymentHandler) MakePaymentUsingRazorPay(c *gin.Context){
 func (ph *PaymentHandler) VerifyPayment(c *gin.Context){
 	orderId:=c.Query("order_id")
 	paymentId:=c.Query("payment_id")
-	razorId:=c.Query("razor_id")
-	fmt.Println("code enters")
-	fmt.Println(orderId)
-	fmt.Println(razorId)
-	fmt.Println(paymentId)
-	err:=ph.Usecase.SaveRazorPayPaymentId(orderId,razorId,paymentId)
+	signature:=c.Query("signature")
+	
+	err:=ph.Usecase.SaveRazorPayPaymentId(orderId,signature,paymentId)
 	if err!=nil{
 		errRes:=response.Responses(http.StatusInternalServerError,"internal server error",nil,err.Error())
 		c.JSON(http.StatusInternalServerError,errRes)

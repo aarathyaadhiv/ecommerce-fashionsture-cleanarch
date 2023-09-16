@@ -108,6 +108,7 @@ func (ur *UserHandler) ShowDetails(c *gin.Context) {
 		c.JSON(http.StatusNotFound, errRes)
 		return
 	}
+	
 	userDetails, err := ur.userUseCase.ShowDetails(id.(uint))
 
 	if err != nil {
@@ -125,6 +126,8 @@ func (ur *UserHandler) ShowDetails(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyHeaderAuth
+// @Param  page query string true "page"
+// @Param  count query string true "count"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /address [get]
@@ -135,7 +138,9 @@ func (ur *UserHandler) ShowAddress(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	address, err := ur.userUseCase.ShowAddress(id.(uint))
+	page:=c.DefaultQuery("page","1")
+	count:=c.DefaultQuery("count","3")
+	address, err := ur.userUseCase.ShowAddress(id.(uint),page,count)
 	if err != nil {
 		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errRes)
@@ -262,6 +267,7 @@ func (ur *UserHandler) Checkout(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
+	
 	checkoutDetails, err := ur.userUseCase.Checkout(id.(uint))
 	if err != nil {
 		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())

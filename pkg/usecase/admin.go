@@ -3,6 +3,7 @@ package usecase
 import (
 	"errors"
 	"strconv"
+	"time"
 
 	_ "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/domain"
 	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/helper"
@@ -75,7 +76,7 @@ func (c *AdminUseCase) BlockUser(id string) error {
 	if err != nil {
 		return err
 	}
-	if ok:=c.adminRepo.IsBlocked(uint(userId));ok{
+	if ok := c.adminRepo.IsBlocked(uint(userId)); ok {
 		return errors.New("already blocked user")
 	}
 	return c.adminRepo.BlockUser(uint(userId))
@@ -86,17 +87,71 @@ func (c *AdminUseCase) UnblockUser(id string) error {
 	if err != nil {
 		return err
 	}
-	if ok:=c.adminRepo.IsBlocked(uint(userId));!ok{
+	if ok := c.adminRepo.IsBlocked(uint(userId)); !ok {
 		return errors.New("already unblocked user")
 	}
 	return c.adminRepo.UnblockUser(uint(userId))
 }
 
-func (c *AdminUseCase) ListUsers()([]models.AdminUserResponse,error){
-	return c.adminRepo.ListUsers()
+func (c *AdminUseCase) ListUsers(pages,counts string) ([]models.AdminUserResponse, error) {
+	page,err:=strconv.Atoi(pages)
+	if err!=nil{
+		return nil,err
+	}
+	count,err:=strconv.Atoi(counts)
+	if err!=nil{
+		return nil,err
+	}
+	return c.adminRepo.ListUsers(page,count)
 }
 
-func (c *AdminUseCase) AdminHome(id uint)(models.AdminDetails,error){
-	
+func (c *AdminUseCase) AdminHome(id uint) (models.AdminDetails, error) {
+
 	return c.adminRepo.AdminDetails(id)
+}
+
+func (c *AdminUseCase) Dashboard() (models.Dashboard, error) {
+	revenue, err := c.adminRepo.DashboardRevenue()
+	if err != nil {
+		return models.Dashboard{}, err
+	}
+	orders, err := c.adminRepo.DashboardOrders()
+	if err != nil {
+		return models.Dashboard{}, err
+	}
+	amount, err := c.adminRepo.DashboardAmount()
+	if err != nil {
+		return models.Dashboard{}, err
+	}
+	users, err := c.adminRepo.DashboardUsers()
+	if err != nil {
+		return models.Dashboard{}, err
+	}
+	product, err := c.adminRepo.DashboardProduct()
+	if err != nil {
+		return models.Dashboard{}, err
+	}
+	return models.Dashboard{DashboardRevenue: revenue,
+		DashboardOrders:  orders,
+		DashboardAmount:  amount,
+		DashboardUsers:   users,
+		DashboardProduct: product}, nil
+}
+
+
+func (c *AdminUseCase) SalesReport(timeWord string)(models.SalesReport,error){
+	var startDate,endDate time.Time
+	if timeWord=="day"{
+		startDate,endDate=time.Now().AddDate(0,0,-1),time.Now()
+	}else if timeWord=="week"{
+		startDate,endDate=time.Now().AddDate(0,0,-7),time.Now()
+	}else if timeWord=="year"{
+		startDate,endDate=time.Now().AddDate(-1,0,0),time.Now()
+	}
+	salesReport,err:=c.adminRepo.SalesReport(startDate,endDate)
+	if err!=nil{
+		return models.SalesReport{},err
+	}
+	return salesReport,nil
+
 }

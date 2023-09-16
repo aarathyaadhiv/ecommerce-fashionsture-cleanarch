@@ -122,8 +122,6 @@ definitions:
     type: object
   models.ProductUpdate:
     properties:
-      id:
-        type: integer
       quantity:
         type: integer
     type: object
@@ -155,6 +153,20 @@ definitions:
     - name
     - pincode
     - state
+    type: object
+  models.UpdateBrand:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  models.UpdateCategory:
+    properties:
+      name:
+        type: string
+    required:
+    - name
     type: object
   models.UserLogin:
     properties:
@@ -374,6 +386,38 @@ paths:
       summary: Delete Brand
       tags:
       - Brand Management
+    patch:
+      consumes:
+      - application/json
+      description: Update brand By Admin
+      parameters:
+      - description: update brand
+        in: body
+        name: updateBrand
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateBrand'
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Update brand
+      tags:
+      - Brand Management
   /admin/category:
     post:
       consumes:
@@ -429,7 +473,59 @@ paths:
       summary: Delete Category
       tags:
       - Category Management
+    patch:
+      consumes:
+      - application/json
+      description: Update categry By Admin
+      parameters:
+      - description: update category
+        in: body
+        name: updateCategory
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateCategory'
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Update category
+      tags:
+      - Category Management
   /admin/coupon:
+    get:
+      consumes:
+      - application/json
+      description: Show Coupons To Admin
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Show Coupons
+      tags:
+      - Coupon Management
     post:
       consumes:
       - application/json
@@ -538,6 +634,23 @@ paths:
       summary: Unblock Coupon
       tags:
       - Coupon Management
+  /admin/dashboard:
+    get:
+      consumes:
+      - application/json
+      description: Dashboard Of Admin
+      produces:
+      - application/json
+      responses:
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Admin Dashboard
+      tags:
+      - Dashboard
   /admin/login:
     post:
       consumes:
@@ -650,18 +763,27 @@ paths:
       summary: Approve Order
       tags:
       - Order Management
-  /admin/product:
-    patch:
+  /admin/orders/filterbyapproval:
+    get:
       consumes:
       - application/json
-      description: Update Product By Admin
+      description: Filter Order By Approval
       parameters:
-      - description: update details
-        in: body
-        name: product
+      - description: page
+        in: query
+        name: page
         required: true
-        schema:
-          $ref: '#/definitions/models.ProductUpdate'
+        type: string
+      - description: count
+        in: query
+        name: count
+        required: true
+        type: string
+      - description: keyword
+        in: query
+        name: keyword
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -675,7 +797,82 @@ paths:
             $ref: '#/definitions/response.Response'
       security:
       - ApiKeyHeaderAuth: []
-      summary: Update Product
+      summary: Filter Order By Approval
+      tags:
+      - Order Management
+  /admin/orders/filterbypaymentstatus:
+    get:
+      consumes:
+      - application/json
+      description: Filter Order By Approval
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: count
+        in: query
+        name: count
+        required: true
+        type: string
+      - description: keyword
+        in: query
+        name: keyword
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Filter Order By Approval
+      tags:
+      - Order Management
+  /admin/product:
+    get:
+      consumes:
+      - application/json
+      description: Get Product To Admin
+      parameters:
+      - description: update brand
+        in: body
+        name: updateBrand
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateBrand'
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: count
+        in: query
+        name: count
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Get Product
       tags:
       - Product Management
     post:
@@ -732,6 +929,65 @@ paths:
       summary: Delete Product
       tags:
       - Product Management
+    patch:
+      consumes:
+      - application/json
+      description: Update Product By Admin
+      parameters:
+      - description: update details
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProductUpdate'
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Update Product
+      tags:
+      - Product Management
+  /admin/salesReport:
+    get:
+      consumes:
+      - application/json
+      description: Sales Report
+      parameters:
+      - description: keyword
+        in: query
+        name: keyword
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Sales Report
+      tags:
+      - Sales Report
   /admin/signup:
     post:
       consumes:
@@ -1464,4 +1720,25 @@ paths:
       summary: Verify Otp
       tags:
       - User Authentication
+  /wallet:
+    get:
+      consumes:
+      - application/json
+      description: Wallet Of The User
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyHeaderAuth: []
+      summary: Wallet Of The User
+      tags:
+      - User Profile
 swagger: "2.0"

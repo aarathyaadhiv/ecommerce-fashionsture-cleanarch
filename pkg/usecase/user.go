@@ -17,22 +17,30 @@ import (
 )
 
 type userUseCase struct {
-	userRepo repo.UserRepository
-	cartRepo repo.CartRepository
+	userRepo    repo.UserRepository
+	cartRepo    repo.CartRepository
 	productRepo repo.ProductRepository
-	config   config.Config
+	config      config.Config
 }
 
-func NewUserUseCase(repo repo.UserRepository, cart repo.CartRepository,product repo.ProductRepository, config config.Config) services.UserUseCase {
+func NewUserUseCase(repo repo.UserRepository, cart repo.CartRepository, product repo.ProductRepository, config config.Config) services.UserUseCase {
 	return &userUseCase{
-		userRepo: repo,
-		cartRepo: cart,
+		userRepo:    repo,
+		cartRepo:    cart,
 		productRepo: product,
-		config:   config,
+		config:      config,
 	}
 }
 
 func (c *userUseCase) UserSignUp(user models.UserSignUp) (models.TokenResponse, error) {
+	isValidEmail := helper.IsValidEmail(user.Email)
+	if !isValidEmail {
+		return models.TokenResponse{}, errors.New("please enter a valid email")
+	}
+	isValidNumber := helper.IsValidPhoneNumber(user.PhNo)
+	if !isValidNumber {
+		return models.TokenResponse{}, errors.New("please enter a valid phone number")
+	}
 	if ok := c.userRepo.CheckUserAvailability(user.Email); ok {
 		return models.TokenResponse{}, errors.New("already existing email")
 	}
@@ -85,8 +93,16 @@ func (c *userUseCase) ShowDetails(id uint) (models.UserDetails, error) {
 	return c.userRepo.FindByID(id)
 }
 
-func (c *userUseCase) ShowAddress(id uint) ([]models.ShowAddress, error) {
-	return c.userRepo.ShowAddress(id)
+func (c *userUseCase) ShowAddress(id uint, pages, counts string) ([]models.ShowAddress, error) {
+	page, err := strconv.Atoi(pages)
+	if err != nil {
+		return nil, err
+	}
+	count, err := strconv.Atoi(counts)
+	if err != nil {
+		return nil, err
+	}
+	return c.userRepo.ShowAddress(id, page, count)
 }
 
 func (c *userUseCase) AddAddress(address models.ShowAddress, userId uint) error {
@@ -106,20 +122,30 @@ func (c *userUseCase) UpdateUserDetails(userId uint, userdetails models.UserUpda
 }
 
 func (c *userUseCase) Checkout(id uint) (models.Checkout, error) {
-	address, err := c.userRepo.ShowAddress(id)
+	
+	address, err := c.userRepo.ShowAddress(id,1,5)
 	if err != nil {
 		return models.Checkout{}, err
 	}
 
-	products, err := c.cartRepo.ShowProductInCart(id)
+	products, err := c.cartRepo.ShowProductInCart(id,1,6)
 	if err != nil {
 		return models.Checkout{}, err
 	}
-	for _,product:=range products{
-		quantity,_:=c.productRepo.Quantity(product.Id)
-		if quantity<product.Quantity{
-			return models.Checkout{},fmt.Errorf("%v product is only %v",product.Id,quantity)
+	updatedCartProduct := make([]models.CartProducts, 0)
+	for _, product := range products {
+		quantity, _ := c.productRepo.Quantity(product.Id)
+		if quantity < product.Quantity {
+			return models.Checkout{}, fmt.Errorf("%v product is only %v", product.Id, quantity)
 		}
+		if quantity == 0 {
+			product.Status = "out of stock"
+		} else if quantity == 1 {
+			product.Status = "only 1 product remains"
+		} else {
+			product.Status = "in stock"
+		}
+		updatedCartProduct = append(updatedCartProduct, product)
 	}
 
 	amount, err := c.cartRepo.TotalAmountInCart(id)
@@ -135,7 +161,7 @@ func (c *userUseCase) Checkout(id uint) (models.Checkout, error) {
 	return models.Checkout{
 		Address:       address,
 		Amount:        amount,
-		Products:      products,
+		Products:      updatedCartProduct,
 		PaymentMethod: payment,
 	}, nil
 }

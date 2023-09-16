@@ -1,5 +1,7 @@
 package models
 
+import "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/domain"
+
 type UserSignUp struct {
 	Name     string `json:"name" binding:"required"`
 	Email    string `json:"email" binding:"required" validate:"email"`
@@ -33,38 +35,35 @@ type UserLoginCheck struct {
 }
 
 type ShowAddress struct {
-	
 	HouseName string `json:"house_name" binding:"required"`
 	Name      string `json:"name" binding:"required"`
 	City      string `json:"city" binding:"required"`
 	State     string `json:"state" binding:"required"`
 	Landmark  string `json:"landmark" binding:"required"`
 	Pincode   uint   `json:"pincode" binding:"required"`
-	
 }
-type UserUpdate struct{
+type UserUpdate struct {
 	Name  string `json:"name" binding:"required"`
 	Email string `json:"email" binding:"required" validate:"email"`
 	PhNo  string `json:"phno" binding:"required"`
 }
 
-
-type Checkout struct{
-	Address []ShowAddress `json:"address"`
-	PaymentMethod []string  `json:"payment_methods"`
-	Amount float64 `json:"amount"`
-	Products []CartProducts `json:"products"`
+type Checkout struct {
+	Address       []ShowAddress        `json:"address"`
+	PaymentMethod []domain.PaymentMethod `json:"payment_methods"`
+	Amount        float64              `json:"amount"`
+	Products      []CartProducts       `json:"products"`
 }
 
-type Forgot struct{
-	Email  string`json:"email"  binding:"required" validate:"email"`
+type Forgot struct {
+	Email string `json:"email"  binding:"required" validate:"email"`
 }
 
-type ForgotVerify struct{
-	Email  string`json:"email"  binding:"required" validate:"email"`
-	Code   string `json:"code" binding:"required"`    
+type ForgotVerify struct {
+	Email string `json:"email"  binding:"required" validate:"email"`
+	Code  string `json:"code" binding:"required"`
 }
 
-type Reset struct{
-	NewPassword string  `json:"new_password" binding:"required"`  
+type Reset struct {
+	NewPassword string `json:"new_password" binding:"required"`
 }

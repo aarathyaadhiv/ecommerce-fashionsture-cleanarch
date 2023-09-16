@@ -95,9 +95,10 @@ func (c *CouponRepository) UpdateExpiry(couponId string)error{
 	return c.DB.Exec(`UPDATE coupons SET expiry=false WHERE coupon_id=?`,couponId).Error
 }
 
-func (c *CouponRepository) GetCoupon() ([]domain.Coupon, error) {
+func (c *CouponRepository) GetCoupon(page,count int) ([]domain.Coupon, error) {
+	offset:=(page-1)*count
 	var coupon []domain.Coupon
-	err := c.DB.Raw(`SELECT * FROM coupons `, ).Scan(&coupon).Error
+	err := c.DB.Raw(`SELECT * FROM coupons limit ? offset ?`,count,offset ).Scan(&coupon).Error
 	if err != nil {
 		return nil, err
 	}

@@ -36,9 +36,10 @@ func (c *userDatabase) FindByEmail(email string) (models.UserLoginCheck, error) 
 	return user, nil
 }
 
-func (c *userDatabase) FindAll() ([]models.UserDetails, error) {
+func (c *userDatabase) FindAll(page,count int) ([]models.UserDetails, error) {
 	var users []models.UserDetails
-	if err := c.DB.Raw(`select id,name,email,ph_no from users where role='user'`).Scan(&users).Error; err != nil {
+	offset:=(page-1)*count
+	if err := c.DB.Raw(`select id,name,email,ph_no from users where role='user' limit ? offset ?`,count,offset).Scan(&users).Error; err != nil {
 		return []models.UserDetails{}, errors.New("error in fetching userdetails")
 	}
 
@@ -71,9 +72,10 @@ func (c *userDatabase) IsBlocked(email string) bool {
 	return block
 }
 
-func (c *userDatabase) ShowAddress(id uint) ([]models.ShowAddress, error) {
+func (c *userDatabase) ShowAddress(id uint,page,count int) ([]models.ShowAddress, error) {
 	var showAddress []models.ShowAddress
-	if err := c.DB.Raw(`SELECT house_name,name,city,state,landmark,pincode FROM addresses WHERE users_id=?`, id).Scan(&showAddress).Error; err != nil {
+	offset:=(page-1)*count
+	if err := c.DB.Raw(`SELECT house_name,name,city,state,landmark,pincode FROM addresses WHERE users_id=? limit ? offset ?`, id,count,offset).Scan(&showAddress).Error; err != nil {
 		return nil, err
 	}
 	return showAddress, nil

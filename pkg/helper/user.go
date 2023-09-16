@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"regexp"
 	"time"
 
 	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/utils/models"
@@ -50,4 +51,18 @@ func GenerateResetToken(user models.UserLoginCheck) (string, error) {
 		return "", err
 	}
 	return tokenString, nil
+}
+
+func IsValidEmail(email string) bool {
+    // Define a regex pattern for a valid email address
+    pattern := `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
+    match, _ := regexp.MatchString(pattern,email)
+    return match
+}
+
+func IsValidPhoneNumber(phoneNumber string) bool {
+    // Define a regex pattern for the format "+919847256365" (plus sign and 12 digits)
+    pattern := `^\+\d{12}$`
+    match, _ := regexp.MatchString(pattern, phoneNumber)
+    return match
 }

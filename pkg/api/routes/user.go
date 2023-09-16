@@ -64,6 +64,7 @@ func UserRoutes(router *gin.RouterGroup, userHandler handler.UserHandler, produc
 			order.PATCH("/cancel/:id", orderHandler.CancelOrder)
 			order.PATCH("/return/:id",orderHandler.ReturnOrder)
 		}
+		router.GET("/wallet",orderHandler.GetWallet)
 		
 	}
 }

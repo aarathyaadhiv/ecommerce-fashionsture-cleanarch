@@ -62,6 +62,14 @@ func (c *CouponUseCase) UnBlockCoupon(id string) error{
 	return c.Repo.UnBlockCoupon(uint(co_id))
 }
 
-func (c *CouponUseCase) GetCoupon()([]domain.Coupon,error){
-	return c.Repo.GetCoupon()
+func (c *CouponUseCase) GetCoupon(pages,counts string)([]domain.Coupon,error){
+	page,err:=strconv.Atoi(pages)
+	if err!=nil{
+		return nil,err
+	}
+	count,err:=strconv.Atoi(counts)
+	if err!=nil{
+		return nil,err
+	}
+	return c.Repo.GetCoupon(page,count)
 }

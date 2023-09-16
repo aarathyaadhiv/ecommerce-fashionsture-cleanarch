@@ -17,4 +17,7 @@ type ProductHandler interface {
 	FilterProductsByCategory(c *gin.Context)
 	FilterProductsByBrand(c *gin.Context)
 	SearchProduct(c *gin.Context)
+	UpdateCategory(c *gin.Context)
+	UpdateBrand(c *gin.Context)
+	GetProductsToAdmin(c *gin.Context)
 }

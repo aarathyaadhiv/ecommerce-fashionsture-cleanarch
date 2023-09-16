@@ -1,8 +1,7 @@
 package repository
 
 import (
-	"fmt"
-
+	
 	interfaces "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/repository/interface"
 	"gorm.io/gorm"
 )
@@ -21,6 +20,15 @@ func (c *PaymentRepository) AddRazorPayDetails(orderId uint,razorId string)error
 }
 
 func (c *PaymentRepository) UpdatePayment(orderId uint,razorId,paymentId string)error{
-	fmt.Println("reached repohere")
+	
 	return c.DB.Exec(`UPDATE razor_pays SET payment_id=? WHERE order_id=? AND razor_id=? `,paymentId,orderId,razorId).Error
+}
+
+func (c *PaymentRepository) FetchRazorId(id uint)(string,error){
+	var razorId string
+	err:=c.DB.Raw(`SELECT razor_id FROM razor_pays WHERE order_id=?`,id).Scan(&razorId).Error
+	if err!=nil{
+		return "",err
+	}
+	return razorId,nil
 }

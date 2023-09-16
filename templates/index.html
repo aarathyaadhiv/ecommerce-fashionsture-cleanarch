@@ -40,6 +40,8 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+   var userid = document.getElementById("user").innerHTML;
+   var orderid = document.getElementById("order").innerHTML;
 var options = {
     "key": "rzp_test_AVJtv4tbQM9Bps", 
     "amount": "{{.TotalPrice}}", 
@@ -52,6 +54,7 @@ var options = {
         alert(response.razorpay_payment_id);
         alert(response.razorpay_order_id);
         alert(response.razorpay_signature)
+        verifyPayment(response,orderid)
     },
     "prefill": {
         "name": "Gaurav Kumar",

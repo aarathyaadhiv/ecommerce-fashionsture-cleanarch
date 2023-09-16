@@ -10,11 +10,11 @@ import (
 type UserRepository interface {
 	CheckUserAvailability(email string) bool
 	FindByEmail(email string) (models.UserLoginCheck, error)
-	FindAll() ([]models.UserDetails, error)
+	FindAll(page,count int) ([]models.UserDetails, error)
 	FindByID(id uint) (models.UserDetails, error)
 	Save(user models.UserSignUp) (models.UserDetails, error)
 	IsBlocked(email string) bool
-	ShowAddress(id uint) ([]models.ShowAddress, error)
+	ShowAddress(id uint,page,count int) ([]models.ShowAddress, error)
 	AddAddress(address models.ShowAddress,userId uint)error
 	UpdateAddress(address models.ShowAddress,addressId,userId uint)error
 	UpdateUserDetails(userId uint,userDetails models.UserUpdate)error

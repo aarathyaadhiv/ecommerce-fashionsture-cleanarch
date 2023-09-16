@@ -9,4 +9,6 @@ type AdminHandler interface {
 	UnblockUser(c *gin.Context)
 	ListUsers(c *gin.Context)
 	AdminHome(c *gin.Context)
+	Dashboard(c *gin.Context)
+	SalesReport(c *gin.Context)
 }

@@ -90,6 +90,8 @@ func (cr *CartHandler) RemoveFromCart(c *gin.Context){
 // @Accept json
 // @Produce json
 // @Security ApiKeyHeaderAuth
+// @Param  page query string true "page"
+// @Param  count query string true "count"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /cart [get]
@@ -100,7 +102,9 @@ func (cr *CartHandler) ShowProductInCart(c *gin.Context){
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	products,err:=cr.Usecase.ShowProductInCart(id.(uint))
+	page:=c.DefaultQuery("page","1")
+	count:=c.DefaultQuery("count","3")
+	products,err:=cr.Usecase.ShowProductInCart(id.(uint),page,count)
 	if err!=nil{
 		errRes:=response.Responses(http.StatusInternalServerError,"internal server error",nil,err.Error())
 		c.JSON(http.StatusInternalServerError,errRes)
