@@ -144,3 +144,22 @@ func (c *ProductRepository) FetchProductDetailsToAdmin(page,count int)([]models.
 	}
 	return product,nil
 }
+
+func (c *ProductRepository) IsCategoryExist(name string)(bool,error){
+	var count int
+	err:=c.DB.Raw(`SELECT COUNT(*) FROM categories WHERE name=?`,name).Scan(&count).Error
+	if err!=nil{
+		return false,err
+	}
+	return count>0,nil
+}
+
+
+func (c *ProductRepository) IsBrandExist(name string)(bool,error){
+	var count int
+	err:=c.DB.Raw(`SELECT COUNT(*) FROM brands WHERE name=?`,name).Scan(&count).Error
+	if err!=nil{
+		return false,err
+	}
+	return count>0,nil
+}

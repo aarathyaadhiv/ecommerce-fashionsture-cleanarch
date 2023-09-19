@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"errors"
-	
+
 	"strconv"
 
 	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/domain"
@@ -68,21 +68,21 @@ func (c *OrderUseCase) PlaceOrder(addressId, paymentId, userId uint, couponId st
 		}
 	}
 	var status string
-	if paymentId==3{
-		err:=c.PaymentUsingWallet(userId,amount)
-		if err!=nil{
+	if paymentId == 3 {
+		err := c.PaymentUsingWallet(userId, amount)
+		if err != nil {
 			return err
 		}
-		status="paid"
-	}else{
-		status="not paid"
+		status = "paid"
+	} else {
+		status = "not paid"
 	}
-	
-	id, err := c.repo.PlaceOrder(addressId, paymentId, userId, amount,status)
+
+	id, err := c.repo.PlaceOrder(addressId, paymentId, userId, amount, status)
 	if err != nil {
 		return err
 	}
-	
+
 	cartProducts, err := c.cart.ProductsInCart(userId)
 	if err != nil {
 		return err
@@ -180,54 +180,54 @@ func (c *OrderUseCase) AddToWallet(userId uint, amount float64) error {
 	return c.repo.AddToWallet(userId, amount)
 }
 
-func (c *OrderUseCase) PaymentUsingWallet(userId uint,amount float64)error{
-	isWalletExist,err:=c.repo.IsWalletExist(userId)
-	if err!=nil{
+func (c *OrderUseCase) PaymentUsingWallet(userId uint, amount float64) error {
+	isWalletExist, err := c.repo.IsWalletExist(userId)
+	if err != nil {
 		return err
 	}
-	if isWalletExist{
-		walletAmount,err:=c.repo.FetchAmountInWallet(userId)
-		if err!=nil{
+	if isWalletExist {
+		walletAmount, err := c.repo.FetchAmountInWallet(userId)
+		if err != nil {
 			return err
 		}
-		if walletAmount>=amount{
-			return c.repo.PaymentUsingWallet(userId,amount)
+		if walletAmount >= amount {
+			return c.repo.PaymentUsingWallet(userId, amount)
 		}
 		return errors.New("wallet has no sufficient balance")
 	}
 	return errors.New("no wallet for user")
 }
 
-func(c *OrderUseCase) FilterOrderByApproval(pages,counts string,keyword string)([]models.OrderDetailsToAdmin,error){
-	page,err:=strconv.Atoi(pages)
-	if err!=nil{
-		return nil,err
+func (c *OrderUseCase) FilterOrderByApproval(pages, counts string, keyword string) ([]models.OrderDetailsToAdmin, error) {
+	page, err := strconv.Atoi(pages)
+	if err != nil {
+		return nil, err
 	}
-	count,err:=strconv.Atoi(counts)
-	if err!=nil{
-		return nil,err
+	count, err := strconv.Atoi(counts)
+	if err != nil {
+		return nil, err
 	}
 	var approval bool
-	if keyword=="approved"{
-		approval=true
-	}else if keyword=="not approved"{
-		approval=false
+	if keyword == "approved" {
+		approval = true
+	} else if keyword == "not approved" {
+		approval = false
 	}
-	return c.repo.FilterOrderByApproval(page,count,approval)
+	return c.repo.FilterOrderByApproval(page, count, approval)
 }
 
-func (c *OrderUseCase) FilterOrderByPaymentStatus(pages,counts ,keyword string)([]models.OrderDetailsToAdmin,error){
-	page,err:=strconv.Atoi(pages)
-	if err!=nil{
-		return nil,err
+func (c *OrderUseCase) FilterOrderByPaymentStatus(pages, counts, keyword string) ([]models.OrderDetailsToAdmin, error) {
+	page, err := strconv.Atoi(pages)
+	if err != nil {
+		return nil, err
 	}
-	count,err:=strconv.Atoi(counts)
-	if err!=nil{
-		return nil,err
+	count, err := strconv.Atoi(counts)
+	if err != nil {
+		return nil, err
 	}
-	return c.repo.FilterOrderByPaymentStatus(page,count,keyword)
+	return c.repo.FilterOrderByPaymentStatus(page, count, keyword)
 }
 
-func (c *OrderUseCase) GetWallet(userId uint)(models.GetWallet,error){
+func (c *OrderUseCase) GetWallet(userId uint) (models.GetWallet, error) {
 	return c.repo.GetWallet(userId)
 }

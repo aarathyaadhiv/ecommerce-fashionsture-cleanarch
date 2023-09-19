@@ -25,4 +25,6 @@ type ProductRepository interface {
 	UpdateCategory(update models.UpdateCategory,id uint)error
 	UpdateBrand(update models.UpdateBrand,id uint)error
 	FetchProductDetailsToAdmin(page,count int)([]models.ProductResponseToAdmin,error)
+	IsCategoryExist(name string)(bool,error)
+	IsBrandExist(name string)(bool,error)
 }

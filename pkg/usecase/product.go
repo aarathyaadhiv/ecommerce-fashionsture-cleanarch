@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 
@@ -40,6 +41,13 @@ func (c *ProductUseCase) DeleteProduct(id string) error {
 }
 
 func (c *ProductUseCase) AddCategory(category models.AddCategory) error {
+	isExist,err:=c.ProductRepo.IsCategoryExist(category.Name)
+	if err!=nil{
+		return err
+	}
+	if isExist{
+		return errors.New("category already existing")
+	}
 	return c.ProductRepo.AddCategory(category)
 }
 
@@ -97,6 +105,13 @@ func (c *ProductUseCase) ShowProduct(id string) (models.ProductResponse, error) 
 }
 
 func (c *ProductUseCase) AddBrand(brand models.AddBrand) error {
+	isExist,err:=c.ProductRepo.IsBrandExist(brand.Name)
+	if err!=nil{
+		return err
+	}
+	if isExist{
+		return errors.New("brand already existing")
+	}
 	return c.ProductRepo.AddBrand(brand)
 }
 
