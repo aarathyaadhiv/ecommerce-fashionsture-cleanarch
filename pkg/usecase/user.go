@@ -122,15 +122,18 @@ func (c *userUseCase) UpdateUserDetails(userId uint, userdetails models.UserUpda
 }
 
 func (c *userUseCase) Checkout(id uint) (models.Checkout, error) {
-	
-	address, err := c.userRepo.ShowAddress(id,1,5)
+
+	address, err := c.userRepo.ShowAddress(id, 1, 5)
 	if err != nil {
 		return models.Checkout{}, err
 	}
 
-	products, err := c.cartRepo.ShowProductInCart(id,1,6)
+	products, err := c.cartRepo.ShowProductInCart(id, 1, 6)
 	if err != nil {
 		return models.Checkout{}, err
+	}
+	if products == nil {
+		return models.Checkout{}, errors.New("no products in cart")
 	}
 	updatedCartProduct := make([]models.CartProducts, 0)
 	for _, product := range products {

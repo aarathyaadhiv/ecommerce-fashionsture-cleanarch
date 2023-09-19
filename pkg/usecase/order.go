@@ -26,47 +26,79 @@ func (c *OrderUseCase) PlaceOrder(addressId, paymentId, userId uint, couponId st
 	if err != nil {
 		return err
 	}
-
-	ValidCouponExist, err := c.coupon.ExistWithoutExpiry(couponId)
+	cartProducts, err := c.cart.ProductsInCart(userId)
+	if err != nil {
+		return err
+	}
+	if cartProducts==nil{
+		return errors.New("no products in cart")
+	}
+	isCouponExist, err := c.coupon.IsExist(couponId)
 	if err != nil {
 		return err
 	}
 
-	if ValidCouponExist {
-		var couponDetails domain.Coupon
+	if isCouponExist {
+		isnotValid, err := c.coupon.IsExpired(couponId)
+		if err != nil {
+			return err
+		}
 
-		IsUserUsed, err := c.coupon.IsUserUsed(couponId, userId)
-		if err != nil {
-			return err
-		}
-		couponDetails, err = c.coupon.CouponDetails(couponId)
-		if err != nil {
-			return err
-		}
-		if IsUserUsed {
-			count, err := c.coupon.UsageCount(couponId, userId)
+		if !isnotValid {
+			var couponDetails domain.Coupon
+			couponDetails, err = c.coupon.CouponDetails(couponId)
 			if err != nil {
 				return err
 			}
-			if count < couponDetails.Usage {
-				err := c.coupon.UpdateUserCount(couponId, userId)
+
+			if amount >= couponDetails.MinimumPurchase {
+				IsUserUsed, err := c.coupon.IsUserUsed(couponId, userId)
 				if err != nil {
 					return err
 				}
 
-				amount = amount - ((amount * float64(couponDetails.Discount)) / 100)
+				if IsUserUsed {
+					count, err := c.coupon.UsageCount(couponId, userId)
+					if err != nil {
+						return err
+					}
 
+					if count < couponDetails.Usage {
+						err := c.coupon.UpdateUserCount(couponId, userId)
+						if err != nil {
+							return err
+						}
+						discount := (amount * float64(couponDetails.Discount)) / 100
+
+						if discount > couponDetails.MaximumAmount {
+							amount = amount - couponDetails.MaximumAmount
+						} else {
+							amount = amount - discount
+
+						}
+
+					}
+				} else {
+					err := c.coupon.AddUserCoupon(couponId, userId, 1)
+					if err != nil {
+						return err
+					}
+
+					discount := (amount * float64(couponDetails.Discount)) / 100
+
+					if discount > couponDetails.MaximumAmount {
+						amount = amount - couponDetails.MaximumAmount
+					} else {
+						amount = amount - discount
+
+					}
+
+				}
 			}
-		} else {
-			err := c.coupon.AddUserCoupon(couponId, userId, 1)
-			if err != nil {
-				return err
-			}
-
-			amount = amount - ((amount * float64(couponDetails.Discount)) / 100)
-
 		}
+
 	}
+
 	var status string
 	if paymentId == 3 {
 		err := c.PaymentUsingWallet(userId, amount)
@@ -83,10 +115,7 @@ func (c *OrderUseCase) PlaceOrder(addressId, paymentId, userId uint, couponId st
 		return err
 	}
 
-	cartProducts, err := c.cart.ProductsInCart(userId)
-	if err != nil {
-		return err
-	}
+	
 	for _, ct := range cartProducts {
 		err := c.repo.AddProductToOrder(id, ct.ProductId, ct.Quantity, userId, ct.Amount)
 		if err != nil {

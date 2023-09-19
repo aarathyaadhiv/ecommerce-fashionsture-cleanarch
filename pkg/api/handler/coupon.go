@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"time"
 
 	interfaces "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/api/handler/interface"
 	usecase "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/usecase/interface"
@@ -37,7 +38,14 @@ func (co *CouponHandler) AddCoupon(c *gin.Context){
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	err:=co.Usecase.AddCoupon(coupon.CouponId,coupon.Discount,coupon.Usage)
+	parsedExpiry,err:=time.Parse("2006-01-02",coupon.Expiry)
+	if err!=nil{
+		errRes := response.Responses(http.StatusBadRequest, "expiry date is not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	coupon.ExpiryTime=parsedExpiry
+	err=co.Usecase.AddCoupon(coupon)
 	if err!=nil{
 		errRes:=response.Responses(http.StatusInternalServerError,"internal server error",nil,err.Error())
 		c.JSON(http.StatusInternalServerError,errRes)

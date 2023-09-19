@@ -1,12 +1,16 @@
 package domain
 
+import "time"
+
 type Coupon struct {
-	ID       uint   `json:"id" gorm:"primaryKey"`
-	CouponId string `json:"coupon_id"`
-	Discount int    `json:"discount"`
-	Expiry   bool   `json:"expiry" gorm:"default:false"`
-	Usage    uint   `json:"usage"`
-	Block    bool   `json:"block" gorm:"default:false"`
+	ID              uint      `json:"id" gorm:"primaryKey"`
+	CouponId        string    `json:"coupon_id"`
+	Discount        int       `json:"discount"`
+	Expiry          time.Time `json:"expiry"`
+	MinimumPurchase float64   `json:"minimum_purchase"`
+	MaximumAmount   float64   `json:"maximum_amount"`
+	Usage           uint      `json:"usage"`
+	Block           bool      `json:"block" gorm:"default:false"`
 }
 
 type UserCoupon struct {

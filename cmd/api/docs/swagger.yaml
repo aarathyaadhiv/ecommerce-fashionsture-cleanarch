@@ -19,6 +19,12 @@ definitions:
         type: string
       discount:
         type: integer
+      expiry:
+        type: string
+      maximum_amount:
+        type: number
+      minimum_purchase:
+        type: number
       usage:
         type: integer
     type: object
@@ -234,6 +240,17 @@ paths:
       consumes:
       - application/json
       description: Show Addresses of the user
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: count
+        in: query
+        name: count
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -510,6 +527,17 @@ paths:
       consumes:
       - application/json
       description: Show Coupons To Admin
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: count
+        in: query
+        name: count
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1019,6 +1047,17 @@ paths:
       consumes:
       - application/json
       description: List Users To Admin
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: count
+        in: query
+        name: count
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1094,6 +1133,17 @@ paths:
       consumes:
       - application/json
       description: Show All brands To User
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: count
+        in: query
+        name: count
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1133,6 +1183,17 @@ paths:
       consumes:
       - application/json
       description: Show Products In Users Cart
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: count
+        in: query
+        name: count
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1208,6 +1269,17 @@ paths:
       consumes:
       - application/json
       description: Show All categories To User
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: count
+        in: query
+        name: count
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1529,6 +1601,16 @@ paths:
         name: id
         required: true
         type: string
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: count
+        in: query
+        name: count
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1552,6 +1634,16 @@ paths:
       - description: id
         in: path
         name: id
+        required: true
+        type: string
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: count
+        in: query
+        name: count
         required: true
         type: string
       produces:
@@ -1580,6 +1672,16 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/models.ProductSearch'
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: count
+        in: query
+        name: count
+        required: true
+        type: string
       produces:
       - application/json
       responses:

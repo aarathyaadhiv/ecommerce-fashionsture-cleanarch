@@ -1,8 +1,11 @@
 package repository
 
 import (
+	"time"
+
 	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/domain"
 	interfaces "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/repository/interface"
+	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/utils/models"
 	"gorm.io/gorm"
 )
 
@@ -24,22 +27,15 @@ func (c *CouponRepository) IsExist(couponId string) (bool, error) {
 }
 
 func (c *CouponRepository) IsExpired(coupon string) (bool, error) {
-	var expiry bool
+	var expiry time.Time
 	err := c.DB.Raw(`SELECT expiry FROM coupons WHERE coupon_id=? `, coupon).Scan(&expiry).Error
 	if err != nil {
 		return false, err
 	}
-	return expiry, nil
+
+	return expiry.Unix() < time.Now().Unix(), nil
 }
 
-func (c *CouponRepository) ExistWithoutExpiry(coupon string)(bool,error){
-	var count int
-	err:=c.DB.Raw(`SELECT COUNT(*) FROM coupons WHERE coupon_id=? AND expiry=false`,coupon).Scan(&count).Error
-	if err != nil {
-		return false, err
-	}
-	return count>0,nil
-}
 func (c *CouponRepository) CouponDetails(couponId string) (domain.Coupon, error) {
 	var coupon domain.Coupon
 	err := c.DB.Raw(`SELECT * FROM coupons WHERE coupon_id=?`, couponId).Scan(&coupon).Error
@@ -49,8 +45,8 @@ func (c *CouponRepository) CouponDetails(couponId string) (domain.Coupon, error)
 	return coupon, nil
 }
 
-func (c *CouponRepository) AddCoupon(couponId string, discount int, usage uint) error {
-	return c.DB.Exec(`INSERT INTO coupons(coupon_id,discount,usage) VALUES(?,?,?)`, couponId, discount, usage).Error
+func (c *CouponRepository) AddCoupon(coupon models.AddCoupon) error {
+	return c.DB.Exec(`INSERT INTO coupons(coupon_id,discount,usage,expiry,minimum_purchase,maximum_amount) VALUES(?,?,?,?,?,?)`, coupon.CouponId, coupon.Discount, coupon.Usage, coupon.ExpiryTime, coupon.MinimumPurchase, coupon.MaximumAmount).Error
 }
 
 func (c *CouponRepository) AddUserCoupon(couponId string, userId, count uint) error {
@@ -80,7 +76,7 @@ func (c *CouponRepository) UsageCount(couponId string, userId uint) (uint, error
 }
 
 func (c *CouponRepository) ExpireCoupon(id uint) error {
-	return c.DB.Exec(`UPDATE coupons SET expiry=true WHERE id=?`, id).Error
+	return c.DB.Exec(`UPDATE coupons SET expiry=? WHERE id=?`, time.Now(), id).Error
 }
 
 func (c *CouponRepository) BlockCoupon(id uint) error {
@@ -91,14 +87,10 @@ func (c *CouponRepository) UnBlockCoupon(id uint) error {
 	return c.DB.Exec(`UPDATE coupons SET block=false WHERE id=?`, id).Error
 }
 
-func (c *CouponRepository) UpdateExpiry(couponId string)error{
-	return c.DB.Exec(`UPDATE coupons SET expiry=false WHERE coupon_id=?`,couponId).Error
-}
-
-func (c *CouponRepository) GetCoupon(page,count int) ([]domain.Coupon, error) {
-	offset:=(page-1)*count
+func (c *CouponRepository) GetCoupon(page, count int) ([]domain.Coupon, error) {
+	offset := (page - 1) * count
 	var coupon []domain.Coupon
-	err := c.DB.Raw(`SELECT * FROM coupons limit ? offset ?`,count,offset ).Scan(&coupon).Error
+	err := c.DB.Raw(`SELECT * FROM coupons limit ? offset ?`, count, offset).Scan(&coupon).Error
 	if err != nil {
 		return nil, err
 	}
