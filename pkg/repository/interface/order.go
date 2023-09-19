@@ -26,4 +26,5 @@ type OrderRepository interface {
 	FilterOrderByApproval(page, count int,approval bool) ([]models.OrderDetailsToAdmin, error) 
 	FilterOrderByPaymentStatus(page, count int,status string) ([]models.OrderDetailsToAdmin, error)
 	GetWallet(userId uint)(models.GetWallet,error)
+	FilterOrderByApprovalAndPaymentStatus(page, count int,status string,approval bool) ([]models.OrderDetailsToAdmin, error) 
 }

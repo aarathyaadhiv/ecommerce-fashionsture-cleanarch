@@ -21,7 +21,7 @@ func NewCartHandler(usecase usecase.CartUseCase) handler.CartHandler {
 }
 // @Summary Add To Cart
 // @Description Add Products To Cart
-// @Tags Cart Management
+// @Tags Cart 
 // @Accept json
 // @Produce json
 // @Param  id path string true "product_id"
@@ -57,7 +57,7 @@ func (cr *CartHandler) AddToCart(c *gin.Context) {
 }
 // @Summary Remove From Cart 
 // @Description Remove Product From Cart
-// @Tags Cart Management
+// @Tags Cart 
 // @Accept json
 // @Produce json
 // @Param  id path string true "product_id"
@@ -86,7 +86,7 @@ func (cr *CartHandler) RemoveFromCart(c *gin.Context){
 }
 // @Summary Show Cart Products 
 // @Description Show Products In Users Cart
-// @Tags Cart Management
+// @Tags Cart 
 // @Accept json
 // @Produce json
 // @Security ApiKeyHeaderAuth
@@ -116,7 +116,7 @@ func (cr *CartHandler) ShowProductInCart(c *gin.Context){
 
 // @Summary empty Cart Products 
 // @Description empty Products In Users Cart
-// @Tags Cart Management
+// @Tags Cart 
 // @Accept json
 // @Produce json
 // @Security ApiKeyHeaderAuth

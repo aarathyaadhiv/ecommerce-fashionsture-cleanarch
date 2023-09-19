@@ -176,7 +176,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User Management"
+                    "Admin Home"
                 ],
                 "summary": "Admin Home",
                 "responses": {
@@ -334,6 +334,49 @@ const docTemplate = `{
             }
         },
         "/admin/category": {
+            "get": {
+                "description": "Show All categories To Admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Category Management"
+                ],
+                "summary": "Show All categories",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "count",
+                        "name": "count",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -708,7 +751,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Dashboard"
+                    "Admin Home"
                 ],
                 "summary": "Admin Dashboard",
                 "responses": {
@@ -793,6 +836,20 @@ const docTemplate = `{
                         "name": "count",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "approval",
+                        "name": "approval",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "payment_status",
+                        "name": "payment",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -835,120 +892,6 @@ const docTemplate = `{
                         "description": "id",
                         "name": "id",
                         "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/admin/orders/filterbyapproval": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyHeaderAuth": []
-                    }
-                ],
-                "description": "Filter Order By Approval",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Order Management"
-                ],
-                "summary": "Filter Order By Approval",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "page",
-                        "name": "page",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "count",
-                        "name": "count",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "keyword",
-                        "name": "keyword",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/admin/orders/filterbypaymentstatus": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyHeaderAuth": []
-                    }
-                ],
-                "description": "Filter Order By Approval",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Order Management"
-                ],
-                "summary": "Filter Order By Approval",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "page",
-                        "name": "page",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "count",
-                        "name": "count",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "keyword",
-                        "name": "keyword",
-                        "in": "query",
                         "required": true
                     }
                 ],
@@ -1221,7 +1164,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Sales Report"
+                    "Admin Home"
                 ],
                 "summary": "Sales Report",
                 "parameters": [
@@ -1425,9 +1368,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/brand": {
+        "/brand/brand": {
             "get": {
-                "description": "Show All brands To User",
+                "description": "Show All brands To Admin",
                 "consumes": [
                     "application/json"
                 ],
@@ -1435,7 +1378,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Filter"
+                    "Brand Management"
                 ],
                 "summary": "Show All brands",
                 "parameters": [
@@ -1485,7 +1428,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Cart Management"
+                    "Cart"
                 ],
                 "summary": "Show Cart Products",
                 "parameters": [
@@ -1533,7 +1476,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Cart Management"
+                    "Cart"
                 ],
                 "summary": "empty Cart Products",
                 "responses": {
@@ -1567,7 +1510,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Cart Management"
+                    "Cart"
                 ],
                 "summary": "Remove From Cart",
                 "parameters": [
@@ -1610,7 +1553,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Cart Management"
+                    "Cart"
                 ],
                 "summary": "Add To Cart",
                 "parameters": [
@@ -1619,51 +1562,6 @@ const docTemplate = `{
                         "description": "product_id",
                         "name": "id",
                         "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/category": {
-            "get": {
-                "description": "Show All categories To User",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Filter"
-                ],
-                "summary": "Show All categories",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "page",
-                        "name": "page",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "count",
-                        "name": "count",
-                        "in": "query",
                         "required": true
                     }
                 ],
@@ -2088,108 +1986,18 @@ const docTemplate = `{
                         "name": "count",
                         "in": "query",
                         "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/products/brand/{id}": {
-            "get": {
-                "description": "Filter Products By Brand",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Filter"
-                ],
-                "summary": "Filter Products By Brand",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
                     },
                     {
                         "type": "string",
-                        "description": "page",
-                        "name": "page",
+                        "description": "category_id",
+                        "name": "category",
                         "in": "query",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "description": "count",
-                        "name": "count",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/products/category/{id}": {
-            "get": {
-                "description": "Filter Products By category",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Filter"
-                ],
-                "summary": "Filter Products By category",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "page",
-                        "name": "page",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "count",
-                        "name": "count",
+                        "description": "brand_id",
+                        "name": "brand",
                         "in": "query",
                         "required": true
                     }

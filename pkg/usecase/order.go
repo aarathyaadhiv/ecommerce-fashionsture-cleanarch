@@ -30,7 +30,7 @@ func (c *OrderUseCase) PlaceOrder(addressId, paymentId, userId uint, couponId st
 	if err != nil {
 		return err
 	}
-	if cartProducts==nil{
+	if cartProducts == nil {
 		return errors.New("no products in cart")
 	}
 	isCouponExist, err := c.coupon.IsExist(couponId)
@@ -115,7 +115,6 @@ func (c *OrderUseCase) PlaceOrder(addressId, paymentId, userId uint, couponId st
 		return err
 	}
 
-	
 	for _, ct := range cartProducts {
 		err := c.repo.AddProductToOrder(id, ct.ProductId, ct.Quantity, userId, ct.Amount)
 		if err != nil {
@@ -127,6 +126,7 @@ func (c *OrderUseCase) PlaceOrder(addressId, paymentId, userId uint, couponId st
 }
 
 func (c *OrderUseCase) ShowOrderDetails(userId uint, page, count int) ([]models.OrderResponse, error) {
+
 	return c.repo.ShowOrderDetails(userId, page, count)
 }
 
@@ -186,7 +186,22 @@ func (c *OrderUseCase) ReturnOrder(id string) error {
 	return c.repo.ReturnOrder(uint(orderId))
 }
 
-func (c *OrderUseCase) ShowOrderToAdmin(page, count int) ([]models.OrderDetailsToAdmin, error) {
+func (c *OrderUseCase) ShowOrderToAdmin(page, count int, approval, paymentStatus string) ([]models.OrderDetailsToAdmin, error) {
+	if approval != "" && paymentStatus != "" {
+		return c.FilterOrderByApprovalAndPaymentStatus(page, count, approval, paymentStatus)
+	}
+	if approval != "" {
+		var approvalStatus bool
+		if approval == "approved" {
+			approvalStatus = true
+		} else if approval == "not approved" {
+			approvalStatus = false
+		}
+		return c.repo.FilterOrderByApproval(page, count, approvalStatus)
+	}
+	if paymentStatus != "" {
+		return c.repo.FilterOrderByPaymentStatus(page, count, paymentStatus)
+	}
 	return c.repo.OrderDetailsToAdmin(page, count)
 }
 
@@ -227,34 +242,15 @@ func (c *OrderUseCase) PaymentUsingWallet(userId uint, amount float64) error {
 	return errors.New("no wallet for user")
 }
 
-func (c *OrderUseCase) FilterOrderByApproval(pages, counts string, keyword string) ([]models.OrderDetailsToAdmin, error) {
-	page, err := strconv.Atoi(pages)
-	if err != nil {
-		return nil, err
-	}
-	count, err := strconv.Atoi(counts)
-	if err != nil {
-		return nil, err
-	}
-	var approval bool
-	if keyword == "approved" {
-		approval = true
-	} else if keyword == "not approved" {
-		approval = false
-	}
-	return c.repo.FilterOrderByApproval(page, count, approval)
-}
+func (c *OrderUseCase) FilterOrderByApprovalAndPaymentStatus(page, count int, approval, paymentStatus string) ([]models.OrderDetailsToAdmin, error) {
 
-func (c *OrderUseCase) FilterOrderByPaymentStatus(pages, counts, keyword string) ([]models.OrderDetailsToAdmin, error) {
-	page, err := strconv.Atoi(pages)
-	if err != nil {
-		return nil, err
+	var approvalStatus bool
+	if approval == "approved" {
+		approvalStatus = true
+	} else if approval == "not approved" {
+		approvalStatus = false
 	}
-	count, err := strconv.Atoi(counts)
-	if err != nil {
-		return nil, err
-	}
-	return c.repo.FilterOrderByPaymentStatus(page, count, keyword)
+	return c.repo.FilterOrderByApprovalAndPaymentStatus(page, count, paymentStatus, approvalStatus)
 }
 
 func (c *OrderUseCase) GetWallet(userId uint) (models.GetWallet, error) {

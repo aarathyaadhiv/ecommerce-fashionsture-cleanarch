@@ -9,9 +9,7 @@ type OrderUseCase interface{
 	CancelOrder(id string)error
 	AdminApproval(id string)error
 	ReturnOrder(id string)error
-	ShowOrderToAdmin(page,count int)([]models.OrderDetailsToAdmin,error)
+	ShowOrderToAdmin(page,count int,approval,paymentStatus string)([]models.OrderDetailsToAdmin,error)
 	SearchOrder(id string)(models.OrderDetailsToAdmin,error)
-	FilterOrderByApproval(pages,counts ,keyword string)([]models.OrderDetailsToAdmin,error)
-	FilterOrderByPaymentStatus(pages,counts ,keyword string)([]models.OrderDetailsToAdmin,error)
 	GetWallet(userId uint)(models.GetWallet,error)
 }

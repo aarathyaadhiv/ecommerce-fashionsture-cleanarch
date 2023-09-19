@@ -47,8 +47,7 @@ func AdminRoutes(router *gin.RouterGroup, adminHandler handler.AdminHandler, pro
 			orders.PATCH("/approval/:id", orderHandler.AdminApproval)
 			orders.GET("", orderHandler.ShowOrdersToAdmin)
 			orders.GET("/:id", orderHandler.SearchOrder)
-			orders.GET("/filterbyapproval", orderHandler.FilterOrderByApproval)
-			orders.GET("/filterbypaymentstatus", orderHandler.FilterOrderByPaymentStatus)
+			
 		}
 
 		coupon := router.Group("/coupon")

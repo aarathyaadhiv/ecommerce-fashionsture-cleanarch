@@ -168,6 +168,8 @@ func (or *OrderHandler) ReturnOrder(c *gin.Context) {
 // @Security ApiKeyHeaderAuth
 // @Param  page query string true "page"
 // @Param  count query string true "count"
+// @Param  approval query string true "approval"
+// @Param  payment query string true "payment_status"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/orders [get]
@@ -185,7 +187,9 @@ func (or *OrderHandler) ShowOrdersToAdmin(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	orderDetails, err := or.UseCase.ShowOrderToAdmin(page, count)
+	approval:=c.Query("approval")
+	paymentStatus:=c.Query("payment")
+	orderDetails, err := or.UseCase.ShowOrderToAdmin(page, count,approval,paymentStatus)
 	if err != nil {
 		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errRes)
@@ -218,57 +222,6 @@ func (or *OrderHandler) SearchOrder(c *gin.Context) {
 	c.JSON(http.StatusOK, succRes)
 }
 
-// @Summary Filter Order By Approval
-// @Description Filter Order By Approval
-// @Tags Order Management
-// @Accept json
-// @Produce json
-// @Security ApiKeyHeaderAuth
-// @Param  page query string true "page"
-// @Param  count query string true "count"
-// @Param  keyword query string true "keyword"
-// @Success 200 {object} response.Response{}
-// @Failure 500 {object} response.Response{}
-// @Router /admin/orders/filterbyapproval [get]
-func (or *OrderHandler) FilterOrderByApproval(c *gin.Context) {
-	keyword := c.Query("keyword")
-	page := c.DefaultQuery("page", "1")
-	count := c.DefaultQuery("count", "3")
-	orderDetails, err := or.UseCase.FilterOrderByApproval(page, count, keyword)
-	if err != nil {
-		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
-		c.JSON(http.StatusInternalServerError, errRes)
-		return
-	}
-	succRes := response.Responses(http.StatusOK, "successfully showing filtered order", orderDetails, nil)
-	c.JSON(http.StatusOK, succRes)
-}
-
-// @Summary Filter Order By Approval
-// @Description Filter Order By Approval
-// @Tags Order Management
-// @Accept json
-// @Produce json
-// @Security ApiKeyHeaderAuth
-// @Param  page query string true "page"
-// @Param  count query string true "count"
-// @Param  keyword query string true "keyword"
-// @Success 200 {object} response.Response{}
-// @Failure 500 {object} response.Response{}
-// @Router /admin/orders/filterbypaymentstatus [get]
-func (or *OrderHandler) FilterOrderByPaymentStatus(c *gin.Context) {
-	keyword := c.Query("keyword")
-	page := c.DefaultQuery("page", "1")
-	count := c.DefaultQuery("count", "3")
-	orderDetails, err := or.UseCase.FilterOrderByPaymentStatus(page, count, keyword)
-	if err != nil {
-		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
-		c.JSON(http.StatusInternalServerError, errRes)
-		return
-	}
-	succRes := response.Responses(http.StatusOK, "successfully showing filtered order", orderDetails, nil)
-	c.JSON(http.StatusOK, succRes)
-}
 
 // @Summary Wallet Of The User
 // @Description Wallet Of The User

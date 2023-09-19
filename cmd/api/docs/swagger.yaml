@@ -347,7 +347,7 @@ paths:
       - ApiKeyHeaderAuth: []
       summary: Admin Home
       tags:
-      - User Management
+      - Admin Home
   /admin/brand:
     post:
       consumes:
@@ -436,6 +436,35 @@ paths:
       tags:
       - Brand Management
   /admin/category:
+    get:
+      consumes:
+      - application/json
+      description: Show All categories To Admin
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: count
+        in: query
+        name: count
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Show All categories
+      tags:
+      - Category Management
     post:
       consumes:
       - application/json
@@ -678,7 +707,7 @@ paths:
       - ApiKeyHeaderAuth: []
       summary: Admin Dashboard
       tags:
-      - Dashboard
+      - Admin Home
   /admin/login:
     post:
       consumes:
@@ -719,6 +748,16 @@ paths:
       - description: count
         in: query
         name: count
+        required: true
+        type: string
+      - description: approval
+        in: query
+        name: approval
+        required: true
+        type: string
+      - description: payment_status
+        in: query
+        name: payment
         required: true
         type: string
       produces:
@@ -789,80 +828,6 @@ paths:
       security:
       - ApiKeyHeaderAuth: []
       summary: Approve Order
-      tags:
-      - Order Management
-  /admin/orders/filterbyapproval:
-    get:
-      consumes:
-      - application/json
-      description: Filter Order By Approval
-      parameters:
-      - description: page
-        in: query
-        name: page
-        required: true
-        type: string
-      - description: count
-        in: query
-        name: count
-        required: true
-        type: string
-      - description: keyword
-        in: query
-        name: keyword
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - ApiKeyHeaderAuth: []
-      summary: Filter Order By Approval
-      tags:
-      - Order Management
-  /admin/orders/filterbypaymentstatus:
-    get:
-      consumes:
-      - application/json
-      description: Filter Order By Approval
-      parameters:
-      - description: page
-        in: query
-        name: page
-        required: true
-        type: string
-      - description: count
-        in: query
-        name: count
-        required: true
-        type: string
-      - description: keyword
-        in: query
-        name: keyword
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - ApiKeyHeaderAuth: []
-      summary: Filter Order By Approval
       tags:
       - Order Management
   /admin/product:
@@ -1015,7 +980,7 @@ paths:
       - ApiKeyHeaderAuth: []
       summary: Sales Report
       tags:
-      - Sales Report
+      - Admin Home
   /admin/signup:
     post:
       consumes:
@@ -1128,11 +1093,11 @@ paths:
       summary: Unblock User
       tags:
       - User Management
-  /brand:
+  /brand/brand:
     get:
       consumes:
       - application/json
-      description: Show All brands To User
+      description: Show All brands To Admin
       parameters:
       - description: page
         in: query
@@ -1157,7 +1122,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Show All brands
       tags:
-      - Filter
+      - Brand Management
   /cart:
     delete:
       consumes:
@@ -1178,7 +1143,7 @@ paths:
       - ApiKeyHeaderAuth: []
       summary: empty Cart Products
       tags:
-      - Cart Management
+      - Cart
     get:
       consumes:
       - application/json
@@ -1209,7 +1174,7 @@ paths:
       - ApiKeyHeaderAuth: []
       summary: Show Cart Products
       tags:
-      - Cart Management
+      - Cart
   /cart/{id}:
     post:
       consumes:
@@ -1236,7 +1201,7 @@ paths:
       - ApiKeyHeaderAuth: []
       summary: Add To Cart
       tags:
-      - Cart Management
+      - Cart
   /cart/remove/{id}:
     delete:
       consumes:
@@ -1263,37 +1228,7 @@ paths:
       - ApiKeyHeaderAuth: []
       summary: Remove From Cart
       tags:
-      - Cart Management
-  /category:
-    get:
-      consumes:
-      - application/json
-      description: Show All categories To User
-      parameters:
-      - description: page
-        in: query
-        name: page
-        required: true
-        type: string
-      - description: count
-        in: query
-        name: count
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      summary: Show All categories
-      tags:
-      - Filter
+      - Cart
   /checkout:
     get:
       consumes:
@@ -1551,6 +1486,16 @@ paths:
         name: count
         required: true
         type: string
+      - description: category_id
+        in: query
+        name: category
+        required: true
+        type: string
+      - description: brand_id
+        in: query
+        name: brand
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1590,76 +1535,6 @@ paths:
       summary: Show Product
       tags:
       - Product View
-  /products/brand/{id}:
-    get:
-      consumes:
-      - application/json
-      description: Filter Products By Brand
-      parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: page
-        in: query
-        name: page
-        required: true
-        type: string
-      - description: count
-        in: query
-        name: count
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      summary: Filter Products By Brand
-      tags:
-      - Filter
-  /products/category/{id}:
-    get:
-      consumes:
-      - application/json
-      description: Filter Products By category
-      parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: page
-        in: query
-        name: page
-        required: true
-        type: string
-      - description: count
-        in: query
-        name: count
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      summary: Filter Products By category
-      tags:
-      - Filter
   /products/search:
     get:
       consumes:

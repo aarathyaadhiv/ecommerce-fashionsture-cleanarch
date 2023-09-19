@@ -11,7 +11,5 @@ type OrderHandler interface{
 	ReturnOrder(c *gin.Context)
 	ShowOrdersToAdmin(c *gin.Context)
 	SearchOrder(c *gin.Context)
-	FilterOrderByApproval(c *gin.Context)
-	FilterOrderByPaymentStatus(c *gin.Context)
 	GetWallet(c *gin.Context)
 }

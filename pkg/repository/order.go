@@ -192,3 +192,13 @@ func (c *OrderRepository) GetWallet(userId uint)(models.GetWallet,error){
 	}
 	return wallet,nil
 }
+
+func (c *OrderRepository) FilterOrderByApprovalAndPaymentStatus(page, count int,status string,approval bool) ([]models.OrderDetailsToAdmin, error) {
+	var OrderDetails []models.OrderDetailsToAdmin
+	offset := (page - 1) * count
+	err := c.DB.Raw(`SELECT o.id,u.name as user,o.order_date,o.delivery_date,o.status as order_status,o.amount as total,o.payment_status,p.method as payment_method,o.approval FROM orders AS o JOIN users AS u ON o.users_id=u.id JOIN payment_methods AS p ON o.payment_id=p.id WHERE o.payment_status=? AND o.approval=? limit ? offset ?`, status,approval,count, offset).Scan(&OrderDetails).Error
+	if err != nil {
+		return nil, err
+	}
+	return OrderDetails, nil
+}
