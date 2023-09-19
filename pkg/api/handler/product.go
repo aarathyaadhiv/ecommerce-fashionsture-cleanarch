@@ -158,6 +158,8 @@ func (pr *ProductHandler) DeleteCategory(c *gin.Context) {
 // @Produce json
 // @Param  page query string true "page"
 // @Param  count query string true "count"
+// @Param  category query string true "category_id"
+// @Param  brand query string true "brand_id"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /products [get]
@@ -175,8 +177,10 @@ func (pr *ProductHandler) ShowAll(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-
-	productDetails, err := pr.Usecase.ShowAll(page, count)
+	
+	category:=c.Query("category")
+	brand:=c.Query("brand")
+	productDetails, err := pr.Usecase.ShowAll(page, count,category,brand)
 
 	if err != nil {
 		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
@@ -261,15 +265,15 @@ func (pr *ProductHandler) DeleteBrand(c *gin.Context) {
 }
 
 // @Summary Show All categories
-// @Description Show All categories To User
-// @Tags Filter
+// @Description Show All categories To Admin
+// @Tags Category Management
 // @Accept json
 // @Produce json
 // @Param  page query string true "page"
 // @Param  count query string true "count"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /category [get]
+// @Router /admin/category [get]
 func (pr *ProductHandler) ShowCategory(c *gin.Context) {
 	page:=c.DefaultQuery("page","1")
 	count:=c.DefaultQuery("count","3")
@@ -284,15 +288,15 @@ func (pr *ProductHandler) ShowCategory(c *gin.Context) {
 }
 
 // @Summary Show All brands
-// @Description Show All brands To User
-// @Tags Filter
+// @Description Show All brands To Admin
+// @Tags Brand Management
 // @Accept json
 // @Produce json
 // @Param  page query string true "page"
 // @Param  count query string true "count"
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
-// @Router /brand [get]
+// @Router /brand/brand [get]
 func (pr *ProductHandler) ShowBrand(c *gin.Context) {
 	page:=c.DefaultQuery("page","1")
 	count:=c.DefaultQuery("count","3")
@@ -306,55 +310,7 @@ func (pr *ProductHandler) ShowBrand(c *gin.Context) {
 	c.JSON(http.StatusOK, succRes)
 }
 
-// @Summary Filter Products By category
-// @Description Filter Products By category
-// @Tags Filter
-// @Accept json
-// @Produce json
-// @Param  id path string true "id"
-// @Param  page query string true "page"
-// @Param  count query string true "count"
-// @Success 200 {object} response.Response{}
-// @Failure 500 {object} response.Response{}
-// @Router /products/category/{id} [get]
-func (pr *ProductHandler) FilterProductsByCategory(c *gin.Context) {
-	id := c.Param("id")
-	page:=c.DefaultQuery("page","1")
-	count:=c.DefaultQuery("count","3")
-	products, err := pr.Usecase.FilterProductByCategory(id,page,count)
-	if err != nil {
-		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
-		c.JSON(http.StatusInternalServerError, errRes)
-		return
-	}
-	succRes := response.Responses(http.StatusOK, "successfully showing products with given category", products, nil)
-	c.JSON(http.StatusOK, succRes)
-}
 
-// @Summary Filter Products By Brand
-// @Description Filter Products By Brand
-// @Tags Filter
-// @Accept json
-// @Produce json
-// @Param  id path string true "id"
-// @Param  page query string true "page"
-// @Param  count query string true "count"
-// @Success 200 {object} response.Response{}
-// @Failure 500 {object} response.Response{}
-// @Router /products/brand/{id} [get]
-func (pr *ProductHandler) FilterProductsByBrand(c *gin.Context) {
-	id := c.Param("id")
-	page:=c.DefaultQuery("page","1")
-	count:=c.DefaultQuery("count","3")
-	products, err := pr.Usecase.FilterProductByBrand(id,page,count)
-	if err != nil {
-		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
-		c.JSON(http.StatusInternalServerError, errRes)
-		return
-	}
-	succRes := response.Responses(http.StatusOK, "successfully showing products with given brand", products, nil)
-	c.JSON(http.StatusOK, succRes)
-}
 
 // @Summary Show Products By name
 // @Description Show Products By A Word In The Name Of The Product

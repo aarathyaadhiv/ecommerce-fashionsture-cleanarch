@@ -27,4 +27,5 @@ type ProductRepository interface {
 	FetchProductDetailsToAdmin(page,count int)([]models.ProductResponseToAdmin,error)
 	IsCategoryExist(name string)(bool,error)
 	IsBrandExist(name string)(bool,error)
+	ProductByBrandAndCategory(page,count int,category,brand uint)([]models.ProductResponse,error)
 }

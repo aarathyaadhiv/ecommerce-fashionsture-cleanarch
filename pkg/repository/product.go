@@ -163,3 +163,13 @@ func (c *ProductRepository) IsBrandExist(name string)(bool,error){
 	}
 	return count>0,nil
 }
+
+func (c *ProductRepository) ProductByBrandAndCategory(page,count int,category,brand uint)([]models.ProductResponse,error){
+	offset:=(page-1)*count
+	var product []models.ProductResponse
+	err:=c.DB.Raw(`select p.id,p.name,p.description,p.price,p.selling_price,p.image,p.discount,c.name as category,b.name as brand from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id where p.brand_id=? AND p.category_id=? limit ? offset ?`,brand,category,count,offset).Scan(&product).Error
+	if err!=nil{
+		return nil,err
+	}
+	return product,nil
+}

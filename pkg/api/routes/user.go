@@ -29,13 +29,7 @@ func UserRoutes(router *gin.RouterGroup, userHandler handler.UserHandler, produc
 		products.GET("/:id", productHandler.ShowProduct)
 		products.POST("/search",productHandler.SearchProduct)
 	}
-	filter:=router.Group("/filter")
-	{
-		filter.GET("/category",productHandler.ShowCategory)
-		filter.GET("/products/category/:id",productHandler.FilterProductsByCategory)
-		filter.GET("/brand",productHandler.ShowBrand)
-		filter.GET("/products/brand/:id",productHandler.FilterProductsByBrand)
-	}
+	
 	router.Use(middleware.UserAuthorizationMiddleware)
 	{
 		profile := router.Group("/userProfile")

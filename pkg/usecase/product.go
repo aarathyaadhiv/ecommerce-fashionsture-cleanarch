@@ -59,7 +59,16 @@ func (c *ProductUseCase) DeleteCategory(id string) error {
 	return c.ProductRepo.DeleteCategory(uint(categoryID))
 }
 
-func (c *ProductUseCase) ShowAll(page, count int) ([]models.ProductResponse, error) {
+func (c *ProductUseCase) ShowAll(page, count int,category,brand string) ([]models.ProductResponse, error) {
+	if category!="" && brand!=""{
+		return c.FilterProductByBrandAndCategory(brand,category,page,count)
+	}
+	if category!=""{
+		return c.FilterProductByCategory(category,page,count)
+	}
+	if brand!=""{
+		return c.FilterProductByBrand(brand,page,count)
+	}
 	productResponse, err := c.ProductRepo.ShowAll(page, count)
 	if err != nil {
 		return nil, err
@@ -147,36 +156,86 @@ func (c *ProductUseCase) ShowBrand(pages,counts string) ([]domain.Brand, error) 
 	return c.ProductRepo.ShowBrand(page,count)
 }
 
-func (c *ProductUseCase) FilterProductByCategory(id string,pages,counts string) ([]models.ProductResponse, error) {
-	page,err:=strconv.Atoi(pages)
-	if err!=nil{
-		return nil,err
-	}
-	count,err:=strconv.Atoi(counts)
-	if err!=nil{
-		return nil,err
-	}
+func (c *ProductUseCase) FilterProductByCategory(id string,page,count int) ([]models.ProductResponse, error) {
+	
 	categoryId, err := strconv.Atoi(id)
 	if err != nil {
 		return nil, err
 	}
-	return c.ProductRepo.ProductByCategory(uint(categoryId),page,count)
+	products,err:= c.ProductRepo.ProductByCategory(uint(categoryId),page,count)
+	if err!=nil{
+		return nil,err
+	}
+	updatedProductResponse:=make([]models.ProductResponse,0)
+	
+	for _,product:=range products{
+		quantity,_:=c.ProductRepo.Quantity(product.ID)
+		if quantity==0{
+			product.Status="out of stock"
+		}else if quantity==1{
+			product.Status="only 1 product remains"
+		}else{
+			product.Status="in stock"
+		}
+		updatedProductResponse = append(updatedProductResponse, product)
+	}
+	return updatedProductResponse, nil
 }
 
-func (c *ProductUseCase) FilterProductByBrand(id string,pages,counts string) ([]models.ProductResponse, error) {
-	page,err:=strconv.Atoi(pages)
-	if err!=nil{
-		return nil,err
-	}
-	count,err:=strconv.Atoi(counts)
-	if err!=nil{
-		return nil,err
-	}
+func (c *ProductUseCase) FilterProductByBrand(id string,page,count int) ([]models.ProductResponse, error) {
+	
 	brandId, err := strconv.Atoi(id)
 	if err != nil {
 		return nil, err
 	}
-	return c.ProductRepo.ProductByBrand(uint(brandId),page,count)
+	products,err:= c.ProductRepo.ProductByBrand(uint(brandId),page,count)
+	if err!=nil{
+		return nil,err
+	}
+	updatedProductResponse:=make([]models.ProductResponse,0)
+	
+	for _,product:=range products{
+		quantity,_:=c.ProductRepo.Quantity(product.ID)
+		if quantity==0{
+			product.Status="out of stock"
+		}else if quantity==1{
+			product.Status="only 1 product remains"
+		}else{
+			product.Status="in stock"
+		}
+		updatedProductResponse = append(updatedProductResponse, product)
+	}
+	return updatedProductResponse, nil
+}
+
+func (c *ProductUseCase) FilterProductByBrandAndCategory(brand,category string,page,count int) ([]models.ProductResponse, error) {
+	
+	brandId, err := strconv.Atoi(brand)
+	if err != nil {
+		return nil, err
+	}
+	categoryId, err := strconv.Atoi(category)
+	if err != nil {
+		return nil, err
+	}
+	products,err:= c.ProductRepo.ProductByBrandAndCategory(page,count,uint(categoryId),uint(brandId))
+	if err!=nil{
+		return nil,err
+	}
+	updatedProductResponse:=make([]models.ProductResponse,0)
+	
+	for _,product:=range products{
+		quantity,_:=c.ProductRepo.Quantity(product.ID)
+		if quantity==0{
+			product.Status="out of stock"
+		}else if quantity==1{
+			product.Status="only 1 product remains"
+		}else{
+			product.Status="in stock"
+		}
+		updatedProductResponse = append(updatedProductResponse, product)
+	}
+	return updatedProductResponse, nil
 }
 
 func (c *ProductUseCase) ProductSearch(word string,pages,counts string)([]models.ProductResponse,error){
