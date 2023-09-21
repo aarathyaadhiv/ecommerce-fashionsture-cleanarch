@@ -28,34 +28,6 @@ definitions:
       usage:
         type: integer
     type: object
-  models.AddProduct:
-    properties:
-      brand_id:
-        type: integer
-      category_id:
-        type: integer
-      description:
-        type: string
-      discount:
-        type: number
-      image:
-        type: string
-      name:
-        type: string
-      price:
-        type: number
-      quantity:
-        type: integer
-    required:
-    - brand_id
-    - category_id
-    - description
-    - discount
-    - image
-    - name
-    - price
-    - quantity
-    type: object
   models.AdminLogin:
     properties:
       email:
@@ -870,15 +842,52 @@ paths:
       - Product Management
     post:
       consumes:
-      - application/json
+      - multipart/form-data
       description: Add Product By Admin
       parameters:
-      - description: product details
-        in: body
-        name: product
+      - description: name
+        in: formData
+        name: name
         required: true
-        schema:
-          $ref: '#/definitions/models.AddProduct'
+        type: string
+      - description: description
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: quantity
+        in: formData
+        name: quantity
+        required: true
+        type: integer
+      - description: price
+        in: formData
+        name: price
+        required: true
+        type: number
+      - collectionFormat: csv
+        description: image
+        in: formData
+        items:
+          type: file
+        name: image
+        required: true
+        type: array
+      - description: discount
+        in: formData
+        name: discount
+        required: true
+        type: number
+      - description: category
+        in: formData
+        name: category
+        required: true
+        type: integer
+      - description: brand
+        in: formData
+        name: brand
+        required: true
+        type: integer
       produces:
       - application/json
       responses:

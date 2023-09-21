@@ -1,18 +1,25 @@
 package domain
 
 type Products struct {
-	ID          uint     `json:"id" gorm:"primaryKey"`
-	Name        string   `json:"name" `
-	Description string   `json:"description" `
-	Quantity    uint     `json:"quantity"`
-	Price       float64  `json:"price"`
-	SellingPrice float64 `json:"selling_price"`
-	Image       string   `json:"image"`
-	Discount    float64  `json:"discount"`
-	CategoryID  uint     `json:"category_id"`
-	Category    Category `json:"category" gorm:"foreignKey:CategoryID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
-	BrandID     uint     `json:"brand_id"`
-	Brand       Brand    `json:"brand" gorm:"foreignKey:BrandID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	ID           uint     `json:"id" gorm:"primaryKey"`
+	Name         string   `json:"name" `
+	Description  string   `json:"description" `
+	Quantity     uint     `json:"quantity"`
+	Price        float64  `json:"price"`
+	SellingPrice float64  `json:"selling_price"`
+	Discount     float64  `json:"discount"`
+	CategoryID   uint     `json:"category_id"`
+	Category     Category `json:"category" gorm:"foreignKey:CategoryID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	BrandID      uint     `json:"brand_id"`
+	Brand        Brand    `json:"brand" gorm:"foreignKey:BrandID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	
+}
+
+type Images struct {
+	ID        uint     `json:"id" gorm:"primaryKey"`
+	ProductID uint     `json:"product_id"`
+	Product   Products `json:"product" gorm:"foreignKey:ProductID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	ImageUrl  string   `json:"image_url"`
 }
 
 type Brand struct {

@@ -1,12 +1,14 @@
 package interfaces
 
 import (
+	"mime/multipart"
+
 	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/domain"
 	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/utils/models"
 )
 
 type ProductUseCase interface {
-	AddProduct(product models.AddProduct) error
+	AddProduct(product models.AddProduct,form *multipart.Form) error
 	UpdateProduct(product models.ProductUpdate, id string) error
 	DeleteProduct(id string) error
 	AddCategory(category models.AddCategory) error

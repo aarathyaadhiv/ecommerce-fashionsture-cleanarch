@@ -1020,7 +1020,7 @@ const docTemplate = `{
                 ],
                 "description": "Add Product By Admin",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -1031,13 +1031,64 @@ const docTemplate = `{
                 "summary": "Add Product",
                 "parameters": [
                     {
-                        "description": "product details",
-                        "name": "product",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.AddProduct"
-                        }
+                        "type": "string",
+                        "description": "name",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "description",
+                        "name": "description",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "quantity",
+                        "name": "quantity",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "price",
+                        "name": "price",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "file"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "image",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "discount",
+                        "name": "discount",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "category",
+                        "name": "category",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "brand",
+                        "name": "brand",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -2384,45 +2435,6 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "usage": {
-                    "type": "integer"
-                }
-            }
-        },
-        "models.AddProduct": {
-            "type": "object",
-            "required": [
-                "brand_id",
-                "category_id",
-                "description",
-                "discount",
-                "image",
-                "name",
-                "price",
-                "quantity"
-            ],
-            "properties": {
-                "brand_id": {
-                    "type": "integer"
-                },
-                "category_id": {
-                    "type": "integer"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "discount": {
-                    "type": "number"
-                },
-                "image": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "price": {
-                    "type": "number"
-                },
-                "quantity": {
                     "type": "integer"
                 }
             }

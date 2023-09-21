@@ -22,22 +22,70 @@ func NewProductHandler(usecase services.ProductUseCase) handler.ProductHandler {
 // @Summary Add Product
 // @Description Add Product By Admin
 // @Tags Product Management
-// @Accept json
+// @Accept multipart/form-data
 // @Produce json
-// @Param  product body models.AddProduct true "product details"
+// @Param  name formData string true "name"
+// @Param  description formData string true "description"
+// @Param  quantity formData string true "quantity"
+// @Param  price formData string true "price"
+// @Param  image formData []file true "image"
+// @Param  discount formData string true "discount"
+// @Param  category formData string true "category"
+// @Param  brand formData string true "brand"
 // @Security ApiKeyHeaderAuth
 // @Success 200 {object} response.Response{}
 // @Failure 500 {object} response.Response{}
 // @Router /admin/product [post]
 func (pr *ProductHandler) AddProduct(c *gin.Context) {
 	var addProduct models.AddProduct
-
-	if err := c.ShouldBindJSON(&addProduct); err != nil {
-		errRes := response.Responses(http.StatusBadRequest, "fields are not in the required format", nil, err.Error())
+	name:=c.Request.FormValue("name")
+	description:=c.Request.FormValue("description")
+	quantity,err1:=strconv.Atoi(c.Request.FormValue("quantity"))
+	if err1 != nil {
+		errRes := response.Responses(http.StatusBadRequest, "fields are not in the required format", nil, err1.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	err := pr.Usecase.AddProduct(addProduct)
+	price,err2:=strconv.Atoi(c.Request.FormValue("price"))
+	if err2 != nil {
+		errRes := response.Responses(http.StatusBadRequest, "fields are not in the required format", nil, err2.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	discount,err3:=strconv.Atoi(c.Request.FormValue("discount"))
+	if err3 != nil {
+		errRes := response.Responses(http.StatusBadRequest, "fields are not in the required format", nil, err3.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	category,err4:=strconv.Atoi(c.Request.FormValue("category"))
+	if err4 != nil {
+		errRes := response.Responses(http.StatusBadRequest, "fields are not in the required format", nil, err4.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	brand,err5:=strconv.Atoi(c.Request.FormValue("brand"))
+
+	if err5 != nil {
+		errRes := response.Responses(http.StatusBadRequest, "fields are not in the required format", nil, err5.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	form, formErr := c.MultipartForm()
+    if formErr != nil {
+        errorRes := response.Responses(http.StatusBadRequest, "form file error", nil, formErr.Error())
+        c.JSON(http.StatusBadRequest, errorRes)
+        return
+    }
+	addProduct.Name=name
+	addProduct.Description=description
+	addProduct.Quantity=uint(quantity)
+	addProduct.Price=float64(price)
+	addProduct.Discount=float64(discount)
+	addProduct.CategoryID=uint(category)
+	addProduct.BrandID=uint(brand)
+	err := pr.Usecase.AddProduct(addProduct,form)
 	if err != nil {
 		errRes := response.Responses(http.StatusInternalServerError, "internal server error", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errRes)

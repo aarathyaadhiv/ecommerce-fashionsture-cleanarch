@@ -3,6 +3,8 @@ package usecase
 import (
 	"errors"
 	"fmt"
+	"mime/multipart"
+	
 	"strconv"
 
 	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/domain"
@@ -20,9 +22,19 @@ func NewProductUseCase(repo repo.ProductRepository) services.ProductUseCase {
 	return &ProductUseCase{repo}
 }
 
-func (c *ProductUseCase) AddProduct(product models.AddProduct) error {
+func (c *ProductUseCase) AddProduct(product models.AddProduct,form *multipart.Form) error {
 	sellingPrice := helper.SellingPrice(product.Price, product.Discount)
-	return c.ProductRepo.AddProduct(product, sellingPrice)
+	images:=make([]string,0)
+	for _,form:=range form.File{
+		for _,file:=range form{
+			url,err:=helper.AddImageToS3(file)
+			if err!=nil{
+				return err
+			}
+			images = append(images, url)
+		}
+	}
+	return c.ProductRepo.AddProduct(product, sellingPrice,images)
 }
 
 func (c *ProductUseCase) UpdateProduct(product models.ProductUpdate,id string) error {

@@ -15,10 +15,14 @@ type Config struct {
 	TwilioAccountSID string `mapstructure:"TWILIO_ACCOUNT_SID"`
 	TwilioAuthToken  string `mapstructure:"TWILIO_AUTHTOKEN"`
 	TwilioServicesId string `mapstructure:"TWILIO_SERVICES_ID"`
+
+	AWS_REGION            string `mapstructure:"AWS_REGION"`
+	AWS_ACCESS_KEY_ID     string `mapstructure:"AWS_ACCESS_KEY_ID"`
+	AWS_SECRET_ACCESS_KEY string `mapstructure:"AWS_SECRET_ACCESS_KEY"`
 }
 
 var envs = []string{
-	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT", "DB_PASSWORD", "TWILIO_ACCOUNT_SID", "TWILIO_AUTHTOKEN", "TWILIO_SERVICES_ID",
+	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT", "DB_PASSWORD", "TWILIO_ACCOUNT_SID", "TWILIO_AUTHTOKEN", "TWILIO_SERVICES_ID","AWS_REGION","AWS_ACCESS_KEY_ID","AWS_SECRET_ACCESS_KEY",
 }
 
 func LoadConfig() (Config, error) {
@@ -33,6 +37,7 @@ func LoadConfig() (Config, error) {
 		if err := viper.BindEnv(env); err != nil {
 			return config, err
 		}
+		
 	}
 
 	if err := viper.Unmarshal(&config); err != nil {

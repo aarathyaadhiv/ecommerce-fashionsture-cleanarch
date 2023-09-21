@@ -9,7 +9,6 @@ type AddProduct struct {
 	Description string  `json:"description" binding:"required"`
 	Quantity    uint    `json:"quantity" binding:"required"`
 	Price       float64 `json:"price" binding:"required"`
-	Image       string  `json:"image" binding:"required"`
 	Discount    float64 `json:"discount" binding:"required"`
 	CategoryID  uint    `json:"category_id" binding:"required"`
 	BrandID     uint    `json:"brand_id" binding:"required"`

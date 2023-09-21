@@ -2,10 +2,13 @@ package main
 
 import (
 	"log"
+	
 
 	docs "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/cmd/api/docs"
 	config "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/config"
 	di "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/di"
+	"github.com/joho/godotenv"
+	
 )
 
 func main() {
@@ -15,6 +18,12 @@ func main() {
 	docs.SwaggerInfo.Host = "localhost:3000"
 	docs.SwaggerInfo.BasePath = ""
 	docs.SwaggerInfo.Schemes = []string{"http"}
+	err:=godotenv.Load()
+
+	if err!=nil{
+		log.Fatal("cannot load env:",err)
+	}
+	
 	config, configErr := config.LoadConfig()
 	if configErr != nil {
 		log.Fatal("cannot load config: ", configErr)
