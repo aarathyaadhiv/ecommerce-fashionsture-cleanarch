@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/domain"
 	repo "github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/repository/interface"
 	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/utils/models"
@@ -49,18 +51,76 @@ func (c *ProductRepository) ShowAll(page, count int) ([]models.ProductResponse, 
 	offset := (page - 1) * count
 
 	var productResponse []models.ProductResponse
-	if err := c.DB.Raw(`select p.id,p.name,p.description,p.price,p.selling_price,i.image_url as image,p.discount,c.name as category,b.name as brand from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id JOIN images i ON i.product_id=p.id limit ? offset ?`, count, offset).Scan(&productResponse).Error; err != nil {
+	if err := c.DB.Raw(`
+        SELECT
+            p.id,
+            p.name,
+            p.description,
+            p.price,
+            p.selling_price,
+            
+            p.discount,
+            c.name AS category,
+            b.name AS brand
+        FROM
+            products p
+        JOIN
+            categories c ON c.id = p.category_id
+        JOIN
+            brands b ON b.id = p.brand_id
+        
+        
+        LIMIT ? OFFSET ?
+    `, count, offset).Scan(&productResponse).Error; err != nil {
 		return nil, err
 	}
-	return productResponse, nil
+	updatedProductResponse:=make([]models.ProductResponse,0)
+	for _,p:=range productResponse{
+		var image_url []string
+	err:=c.DB.Raw(`SELECT image_url FROM images WHERE product_id=?`,p.ID).Scan(&image_url).Error
+	if err != nil {
+		return nil, err
+	}
+	p.Image=image_url
+	updatedProductResponse = append(updatedProductResponse, p)
+	}
+
+	return updatedProductResponse, nil
 }
 
 func (c *ProductRepository) ShowProduct(id uint) (models.ProductResponse, error) {
 	var productDetails models.ProductResponse
 
-	if err := c.DB.Raw(`select p.id,p.name,p.description,p.price,p.selling_price,i.image_url as image,p.discount,c.name as category,b.name as brand from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id JOIN images i ON i.product_id=p.id where p.id=?`, id).Scan(&productDetails).Error; err != nil {
+	if err := c.DB.Raw(`SELECT
+    p.id,
+    p.name,
+    p.description,
+    p.price,
+    p.selling_price,
+    
+    p.discount,
+    c.name AS category,
+    b.name AS brand
+FROM
+    products p
+JOIN
+    categories c ON c.id = p.category_id
+JOIN
+    brands b ON b.id = p.brand_id
+
+WHERE
+    p.id = ?
+
+`, id).Scan(&productDetails).Error; err != nil {
 		return models.ProductResponse{}, err
 	}
+	var image_url []string
+	err:=c.DB.Raw(`SELECT image_url FROM images WHERE product_id=?`,id).Scan(&image_url).Error
+	if err != nil {
+		return models.ProductResponse{}, err
+	}
+	productDetails.Image=image_url
+	fmt.Println(productDetails.Image)
 	return productDetails, nil
 }
 
@@ -101,31 +161,64 @@ func (c *ProductRepository) ShowBrand(page, count int) ([]domain.Brand, error) {
 func (c *ProductRepository) ProductByCategory(id uint, page, count int) ([]models.ProductResponse, error) {
 	offset := (page - 1) * count
 	var product []models.ProductResponse
-	err := c.DB.Raw(`select p.id,p.name,p.description,p.price,p.selling_price,i.image_url as image,p.discount,c.name as category,b.name as brand from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id JOIN images i ON i.product_id=p.id where p.category_id=? limit ? offset ?`, id, count, offset).Scan(&product).Error
+	err := c.DB.Raw(`select p.id,p.name,p.description,p.price,p.selling_price,p.discount,c.name as category,b.name as brand from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id  where p.category_id=? limit ? offset ?`, id, count, offset).Scan(&product).Error
 	if err != nil {
 		return nil, err
 	}
-	return product, nil
+	updatedProductResponse:=make([]models.ProductResponse,0)
+	for _,p:=range product{
+		var image_url []string
+	err:=c.DB.Raw(`SELECT image_url FROM images WHERE product_id=?`,p.ID).Scan(&image_url).Error
+	if err != nil {
+		return nil, err
+	}
+	p.Image=image_url
+	updatedProductResponse = append(updatedProductResponse, p)
+	}
+
+	return updatedProductResponse, nil
 }
 
 func (c *ProductRepository) ProductByBrand(id uint, page, count int) ([]models.ProductResponse, error) {
 	offset := (page - 1) * count
 	var product []models.ProductResponse
-	err := c.DB.Raw(`select p.id,p.name,p.description,p.price,p.selling_price,i.image_url as image,p.discount,c.name as category,b.name as brand from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id JOIN images i ON i.product_id=p.id where p.brand_id=? limit ? offset ?`, id, count, offset).Scan(&product).Error
+	err := c.DB.Raw(`select p.id,p.name,p.description,p.price,p.selling_price,p.discount,c.name as category,b.name as brand from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id  where p.brand_id=? limit ? offset ?`, id, count, offset).Scan(&product).Error
 	if err != nil {
 		return nil, err
 	}
-	return product, nil
+	updatedProductResponse:=make([]models.ProductResponse,0)
+	for _,p:=range product{
+		var image_url []string
+	err:=c.DB.Raw(`SELECT image_url FROM images WHERE product_id=?`,p.ID).Scan(&image_url).Error
+	if err != nil {
+		return nil, err
+	}
+	p.Image=image_url
+	updatedProductResponse = append(updatedProductResponse, p)
+	}
+
+	return updatedProductResponse, nil
 }
 
 func (c *ProductRepository) ProductSearch(word string, page, count int) ([]models.ProductResponse, error) {
 	offset := (page - 1) * count
 	var product []models.ProductResponse
-	err := c.DB.Raw(`select p.id,p.name,p.description,p.price,p.selling_price,i.image_url as image,p.discount,c.name as category,b.name as brand from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id JOIN images i ON i.product_id=p.id where p.name ILIKE ? limit ? offset ?`, word, count, offset).Scan(&product).Error
+	err := c.DB.Raw(`select p.id,p.name,p.description,p.price,p.selling_price,p.discount,c.name as category,b.name as brand from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id  where p.name ILIKE ? limit ? offset ?`, word, count, offset).Scan(&product).Error
 	if err != nil {
 		return nil, err
 	}
-	return product, nil
+	updatedProductResponse:=make([]models.ProductResponse,0)
+	for _,p:=range product{
+		var image_url []string
+	err:=c.DB.Raw(`SELECT image_url FROM images WHERE product_id=?`,p.ID).Scan(&image_url).Error
+	if err != nil {
+		return nil, err
+	}
+	p.Image=image_url
+	updatedProductResponse = append(updatedProductResponse, p)
+	}
+
+	return updatedProductResponse, nil
 }
 
 func (c *ProductRepository) Quantity(id uint) (uint, error) {
@@ -148,11 +241,22 @@ func (c *ProductRepository) UpdateBrand(update models.UpdateBrand, id uint) erro
 func (c *ProductRepository) FetchProductDetailsToAdmin(page, count int) ([]models.ProductResponseToAdmin, error) {
 	var product []models.ProductResponseToAdmin
 	offset := (page - 1) * count
-	err := c.DB.Raw(`SELECT p.id,p.name,p.price,p.selling_price,i.image_url as image,p.discount,p.quantity FROM products p JOIN images i ON i.product_id=p.id limit ? offset ?`, count, offset).Scan(&product).Error
+	err := c.DB.Raw(`SELECT id,name,price,selling_price,discount,quantity FROM products  limit ? offset ?`, count, offset).Scan(&product).Error
 	if err != nil {
 		return nil, err
 	}
-	return product, nil
+	updatedProductResponse:=make([]models.ProductResponseToAdmin,0)
+	for _,p:=range product{
+		var image_url []string
+	err:=c.DB.Raw(`SELECT image_url FROM images WHERE product_id=?`,p.ID).Scan(&image_url).Error
+	if err != nil {
+		return nil, err
+	}
+	p.Image=image_url
+	updatedProductResponse = append(updatedProductResponse, p)
+	}
+
+	return updatedProductResponse, nil
 }
 
 func (c *ProductRepository) IsCategoryExist(name string) (bool, error) {
@@ -176,9 +280,21 @@ func (c *ProductRepository) IsBrandExist(name string) (bool, error) {
 func (c *ProductRepository) ProductByBrandAndCategory(page, count int, category, brand uint) ([]models.ProductResponse, error) {
 	offset := (page - 1) * count
 	var product []models.ProductResponse
-	err := c.DB.Raw(`select p.id,p.name,p.description,p.price,p.selling_price,i.image_url as image,p.discount,c.name as category,b.name as brand from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id JOIN images i ON i.product_id=p.id where p.brand_id=? AND p.category_id=? limit ? offset ?`, brand, category, count, offset).Scan(&product).Error
+	err := c.DB.Raw(`select p.id,p.name,p.description,p.price,p.selling_price,p.discount,c.name as category,b.name as brand from products p join categories c on c.id=p.category_id join brands b on b.id=p.brand_id  where p.brand_id=? AND p.category_id=? limit ? offset ?`, brand, category, count, offset).Scan(&product).Error
+	
 	if err != nil {
 		return nil, err
 	}
-	return product, nil
+	updatedProductResponse:=make([]models.ProductResponse,0)
+	for _,p:=range product{
+		var image_url []string
+	err:=c.DB.Raw(`SELECT image_url FROM images WHERE product_id=?`,p.ID).Scan(&image_url).Error
+	if err != nil {
+		return nil, err
+	}
+	p.Image=image_url
+	updatedProductResponse = append(updatedProductResponse, p)
+	}
+
+	return updatedProductResponse, nil
 }

@@ -26,8 +26,23 @@ func (c *CartRepository) RemoveFromCart(cartId, productId uint) error {
 func (c *CartRepository) ShowProductInCart(cartId uint, page, count int) ([]models.CartProducts, error) {
 	offset := (page - 1) * count
 	var cartProducts []models.CartProducts
-	err := c.DB.Raw(`SELECT p.id,p.name,p.description,i.image_url as image,c.amount,c.quantity FROM carts AS c JOIN products AS p ON c.product_id=p.id JOIN images i ON c.product_id=i.product_id WHERE c.cart_id=? limit ? offset ?`, cartId, count, offset).Scan(&cartProducts).Error
-	return cartProducts, err
+	err := c.DB.Raw(`SELECT p.id,p.name,p.description,c.amount,c.quantity FROM carts AS c JOIN products AS p ON c.product_id=p.id WHERE c.cart_id=? limit ? offset ?`, cartId, count, offset).Scan(&cartProducts).Error
+	if err!=nil{
+		return nil,err
+	}
+	updatedProductResponse:=make([]models.CartProducts,0)
+	for _,p:=range cartProducts{
+		var image_url []string
+	err:=c.DB.Raw(`SELECT image_url FROM images WHERE product_id=?`,p.Id).Scan(&image_url).Error
+	if err != nil {
+		return nil, err
+	}
+	p.Image=image_url
+	updatedProductResponse = append(updatedProductResponse, p)
+	}
+
+	return updatedProductResponse, nil
+
 }
 
 func (c *CartRepository) QuantityOfProductInCart(cartId, productId uint) (uint, error) {

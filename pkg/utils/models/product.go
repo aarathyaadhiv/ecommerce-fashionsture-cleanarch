@@ -27,17 +27,19 @@ type UpdateBrand struct {
 }
 
 type ProductResponse struct {
-	ID           uint    `json:"id"`
-	Name         string  `json:"name"`
-	Description  string  `json:"description"`
-	Price        float64 `json:"price"`
-	SellingPrice float64 `json:"selling_price" `
-	Image        string  `json:"image"`
-	Discount     float64 `json:"discount"`
-	Category     string  `json:"category"`
-	Brand        string  `json:"brand"`
-	Status       string  `json:"status"`
+	ID           uint     `json:"id"`
+	Name         string   `json:"name"`
+	Description  string   `json:"description"`
+	Price        float64  `json:"price"`
+	SellingPrice float64  `json:"selling_price" `
+	Image        []string `json:"image"`
+	Discount     float64  `json:"discount"`
+	Category     string   `json:"category"`
+	Brand        string   `json:"brand"`
+	Status       string   `json:"status"`
 }
+
+
 
 type AddBrand struct {
 	Name string `json:"name" binding:"required"`
@@ -53,11 +55,11 @@ type ProductSearch struct {
 }
 
 type ProductResponseToAdmin struct {
-	ID           uint    `json:"id"`
-	Name         string  `json:"name"`
-	Price        float64 `json:"price"`
-	SellingPrice float64 `json:"selling_price" `
-	Image        string  `json:"image"`
-	Discount     float64 `json:"discount"`
-	Quantity     uint    `json:"quantity"`
+	ID           uint     `json:"id"`
+	Name         string   `json:"name"`
+	Price        float64  `json:"price"`
+	SellingPrice float64  `json:"selling_price" `
+	Image        []string `json:"image"`
+	Discount     float64  `json:"discount"`
+	Quantity     uint     `json:"quantity"`
 }
