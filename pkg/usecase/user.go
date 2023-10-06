@@ -65,7 +65,7 @@ func (c *userUseCase) UserLogin(user models.UserLogin) (models.TokenResponse, er
 	if ok := c.userRepo.CheckUserAvailability(user.Email); !ok {
 		return models.TokenResponse{}, errors.New("no such user exist")
 	}
-	if ok := c.userRepo.IsBlocked(user.Email); ok {
+	if ok,_ := c.userRepo.IsBlocked(user.Email); ok {
 		return models.TokenResponse{}, errors.New("user is blocked")
 	}
 	userCompare, err := c.userRepo.FindByEmail(user.Email)
@@ -173,7 +173,7 @@ func (c *userUseCase) ForgotPassword(forgot models.Forgot) error {
 	if ok := c.userRepo.CheckUserAvailability(forgot.Email); !ok {
 		return errors.New("no such user exist")
 	}
-	if ok := c.userRepo.IsBlocked(forgot.Email); ok {
+	if ok,_ := c.userRepo.IsBlocked(forgot.Email); ok {
 		return errors.New("user is blocked")
 	}
 	user, err := c.userRepo.FindByEmail(forgot.Email)
@@ -190,7 +190,7 @@ func (c *userUseCase) VerifyResetOtp(data models.ForgotVerify) (string, error) {
 	if ok := c.userRepo.CheckUserAvailability(data.Email); !ok {
 		return "", errors.New("no such user exist")
 	}
-	if ok := c.userRepo.IsBlocked(data.Email); ok {
+	if ok,_ := c.userRepo.IsBlocked(data.Email); ok {
 		return "", errors.New("user is blocked")
 	}
 	user, err := c.userRepo.FindByEmail(data.Email)

@@ -30,7 +30,7 @@ func (c *userDatabase) CheckUserAvailability(email string) bool {
 func (c *userDatabase) FindByEmail(email string) (models.UserLoginCheck, error) {
 	var user models.UserLoginCheck
 
-	if err := c.DB.Raw(`select id,name,email,Ph_no,password from users where email=? and role='user'`, email).Scan(&user).Error; err != nil {
+	if err := c.DB.Raw(`select id,name,email,ph_no as phno,password from users where email=? and role='user'`, email).Scan(&user).Error; err != nil {
 		return models.UserLoginCheck{}, errors.New("error in checking userdetails")
 	}
 	return user, nil
@@ -58,18 +58,18 @@ func (c *userDatabase) FindByID(id uint) (models.UserDetails, error) {
 func (c *userDatabase) Save(user models.UserSignUp) (models.UserDetails, error) {
 	var userdetails models.UserDetails
 	if err := c.DB.Raw(`insert into users(name,email,ph_no,password,role) values($1,$2,$3,$4,$5) returning id,name,email,ph_no`, user.Name, user.Email, user.PhNo, user.Password, "user").Scan(&userdetails).Error; err != nil {
-		return models.UserDetails{}, errors.New("error in saving in database")
+		return models.UserDetails{}, errors.New("error saving in database")
 	}
 
 	return userdetails, nil
 }
 
-func (c *userDatabase) IsBlocked(email string) bool {
+func (c *userDatabase) IsBlocked(email string) (bool,error) {
 	var block bool
 	if err := c.DB.Raw(`select block from users where email=?`, email).Scan(&block).Error; err != nil {
-		return false
+		return false,errors.New("error in fetching block detail")
 	}
-	return block
+	return block,nil
 }
 
 func (c *userDatabase) ShowAddress(id uint,page,count int) ([]models.ShowAddress, error) {
@@ -90,7 +90,11 @@ func (c *userDatabase) UpdateAddress(address models.ShowAddress, addressId, user
 }
 
 func (c *userDatabase) UpdateUserDetails(userId uint, userDetails models.UserUpdate) error {
-	return c.DB.Exec(`UPDATE users SET name=?,email=?,ph_no=? WHERE id=?`, userDetails.Name, userDetails.Email, userDetails.PhNo, userId).Error
+	err:= c.DB.Exec(`UPDATE users SET name=?,email=?,ph_no=? WHERE id=?`, userDetails.Name, userDetails.Email, userDetails.PhNo, userId).Error
+	if err!=nil{
+		return errors.New("error while updating")
+	}
+	return nil
 }
 
 func (c *userDatabase) UpdatePassword(id uint, password string) error {
