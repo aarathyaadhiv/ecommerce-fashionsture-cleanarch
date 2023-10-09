@@ -14,7 +14,7 @@ jobs:
         - name: Set up Go
           uses: actions/setup-go@v4
           with:
-            go-version: '1.18.1'
+            go-version: '1.21.2'
         
         - name : Install Make
           run : |
@@ -33,4 +33,10 @@ jobs:
             host: ${{secrets.IP_ADDRESS}} 
             username: ubuntu
             key: ${{secrets.SSH_KEY}}
+            script: |
+             cd ecommerce-fashionsture-cleanarch/
+             git pull
+             make build
+             sudo systemctl restart myapp.service
+
 
