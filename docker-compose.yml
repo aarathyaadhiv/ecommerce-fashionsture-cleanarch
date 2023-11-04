@@ -1,0 +1,36 @@
+version: "3"
+services:
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: aarathy
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: fashionstore
+    networks:
+      - postgresstore
+    volumes:
+      - database-postgres:/var/lib/postgresql/data
+
+  fashionstore:
+    image: aarathy29/ecommerce:latest
+    restart: on-failure
+    environment:
+      DB_HOST: "postgres"
+      DB_USER: "aarathy"
+      DB_PASSWORD: "12345"
+      DB_PORT: "5432"
+      DB_NAME: "fashionstore"
+    depends_on:
+      - postgres
+    networks:
+      - postgresstore
+    ports:
+      - "3000:3000"
+
+volumes:
+  database-postgres:
+
+networks:
+  postgresstore:
+    driver: bridge

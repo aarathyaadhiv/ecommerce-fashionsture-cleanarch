@@ -9,6 +9,7 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/aarathyaadhiv/ecommerce-fashionsture-cleanarch.git/pkg/utils/models"
 	"github.com/go-playground/assert/v2"
+	
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -228,6 +229,52 @@ func TestIsBlocked(t *testing.T){
 
 			if !reflect.DeepEqual(got,tt.want){
 				t.Errorf("userDatabse_IsBlocked()=%v want %v ",got,tt.want)
+			}
+		})
+	}
+}
+
+
+func Test_userDatabase_checkUserAvailability(t *testing.T) {
+	type args struct{
+		email string
+	}
+	tests:=[]struct{
+		name string
+		args args
+		beforeTest func(sqlmock.Sqlmock)
+		want bool
+	}{
+		{
+			name: "user available",
+			args: args{email: "aarathy@gmail.com"},
+			beforeTest: func(s sqlmock.Sqlmock) {
+				s.ExpectQuery(regexp.QuoteMeta(`select count(*) from users where email=$1 and role='user'`)).WithArgs("aarathy@gmail.com").WillReturnRows(sqlmock.NewRows([]string{"count(*)"}).AddRow(1))
+			},
+			want: true,
+		},
+		{
+			name: "user not avilable",
+			args: args{email: "aarathy@gmail.com"},
+			beforeTest: func(s sqlmock.Sqlmock) {
+				s.ExpectQuery(regexp.QuoteMeta(`select count(*) from users where email=$1 and role='user'`)).WithArgs("aarathy@gmail.com").WillReturnRows(sqlmock.NewRows([]string{"count(*)"}).AddRow(0))
+			},
+			want: false,
+		},
+	}
+	for _,tt:=range tests{
+		t.Run(tt.name,func(t *testing.T) {
+			mockDB,mockSQL,_:=sqlmock.New()
+			defer mockDB.Close()
+
+			gormDB,_:=gorm.Open(postgres.New(postgres.Config{Conn: mockDB}))
+			tt.beforeTest(mockSQL)
+
+			u:=NewUserRepository(gormDB)
+
+			got:=u.CheckUserAvailability(tt.args.email)
+			if !reflect.DeepEqual(got,tt.want){
+				t.Errorf("userDatabase_CheckUserAvailability()=%v want %v",got,tt.want)
 			}
 		})
 	}

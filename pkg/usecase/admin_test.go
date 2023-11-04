@@ -183,3 +183,91 @@ func TestBlockUser(t *testing.T) {
 		})
 	}
 }
+
+func TestDashboard(t *testing.T) {
+	ctrl:=gomock.NewController(t)
+
+	adminRepo:=mock.NewMockAdminRepository(ctrl)
+	adminUseCase:=NewAdminUseCase(adminRepo)
+	tests:=[]struct{
+		name string
+		
+		beforeTest func(mock.MockAdminRepository)
+		want models.Dashboard
+		wantErr error
+	}{
+		{
+			name: "success dashboard",
+			
+			beforeTest: func(mar mock.MockAdminRepository) {
+				gomock.InOrder(
+					mar.EXPECT().DashboardRevenue().Times(1).Return(models.DashboardRevenue{
+						DayRevenue: 1200,
+						MonthRevenue: 5000,
+						YearlyRevenue: 10000,
+					},nil),
+					mar.EXPECT().DashboardOrders().Times(1).Return(models.DashboardOrders{
+						CompleteOrder: 5,
+						PendingOrder: 4,
+						CancelledOrder: 2,
+						TotalOrder: 11,
+						TotalOrderedUsers: 2,
+					},nil),
+					mar.EXPECT().DashboardAmount().Times(1).Return(models.DashboardAmount{
+						CreditedAmount: 10000,
+						PendingAmount: 5000,
+					},nil),
+					mar.EXPECT().DashboardUsers().Times(1).Return(models.DashboardUsers{
+						TotalUsers: 5,
+						BlockedUsers: 1,
+						OrderedUsers: 2,
+					},nil),
+					mar.EXPECT().DashboardProduct().Times(1).Return(models.DashboardProduct{
+						TotalProducts: 6,
+						OutOfStockProducts: 1,
+						TopSellingProduct: "printed saree",
+					},nil),
+				)
+			},
+			want: models.Dashboard{
+				DashboardRevenue: models.DashboardRevenue{
+					DayRevenue: 1200,
+						MonthRevenue: 5000,
+						YearlyRevenue: 10000,
+				},
+				DashboardOrders: models.DashboardOrders{
+					CompleteOrder: 5,
+						PendingOrder: 4,
+						CancelledOrder: 2,
+						TotalOrder: 11,
+						TotalOrderedUsers: 2,
+				},
+				DashboardAmount: models.DashboardAmount{
+					CreditedAmount: 10000,
+						PendingAmount: 5000,
+				},
+				DashboardUsers: models.DashboardUsers{
+					TotalUsers: 5,
+						BlockedUsers: 1,
+						OrderedUsers: 2,
+				},
+				DashboardProduct: models.DashboardProduct{
+					TotalProducts: 6,
+						OutOfStockProducts: 1,
+						TopSellingProduct: "printed saree",
+				},
+			},
+			wantErr: nil,
+		},
+	}
+	for _,tt:=range tests{
+		t.Run(tt.name,func(t *testing.T) {
+			tt.beforeTest(*adminRepo)
+			got,err:=adminUseCase.Dashboard()
+			assert.Equal(t,tt.wantErr,err)
+			if !reflect.DeepEqual(got,tt.want){
+				t.Errorf("adminUseCase_Login()=%v want %v",got,tt.want)
+			}
+		})
+	}
+}

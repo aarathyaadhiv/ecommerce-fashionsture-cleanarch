@@ -3,7 +3,7 @@ package handler
 import (
 	_ "bytes"
 	"encoding/json"
-	
+
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -25,11 +25,10 @@ func TestSignUpHandler(t *testing.T) {
 	cartUseCase := mock.NewMockCartUseCase(ctrl)
 	userHandler := NewUserHandler(userUseCase, cartUseCase)
 
-	
 	tests := []struct {
-		name          string
-		input         models.UserSignUp
-		beforeTest    func(mock.MockUserUseCase, models.UserSignUp)
+		name         string
+		input        models.UserSignUp
+		beforeTest   func(mock.MockUserUseCase, models.UserSignUp)
 		responseBody response.Response
 	}{
 		{
@@ -40,7 +39,7 @@ func TestSignUpHandler(t *testing.T) {
 				PhNo:     "+919745503907",
 				Password: "1234",
 			},
-			
+
 			beforeTest: func(muuc mock.MockUserUseCase, signup models.UserSignUp) {
 				muuc.EXPECT().UserSignUp(signup).Times(1).Return(models.TokenResponse{
 					Token: "lkjjjzhbxkjggjnsuahjkll",
@@ -54,7 +53,7 @@ func TestSignUpHandler(t *testing.T) {
 			},
 			responseBody: response.Response{
 				Statuscode: http.StatusCreated,
-				Message: "successfully signedup",
+				Message:    "successfully signedup",
 				Data: models.TokenResponse{
 					Token: "lkjjjzhbxkjggjnsuahjkll",
 					UserDetails: models.UserDetails{
@@ -62,16 +61,17 @@ func TestSignUpHandler(t *testing.T) {
 						Name:  "aarathy",
 						Email: "aarathy@gmail.com",
 						PhNo:  "+919745503907",
-					},	
+					},
 				},
+				Error: nil,
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.beforeTest(*userUseCase, tt.input)
-			router:=gin.Default()
-			router.POST("/signup",userHandler.SignUpHandler)	
+			router := gin.Default()
+			router.POST("/signup", userHandler.SignUpHandler)
 
 			mockRequest := httptest.NewRequest("POST", "/signup", strings.NewReader(`
 			{
@@ -80,16 +80,89 @@ func TestSignUpHandler(t *testing.T) {
 				"phno":"+919745503907",
 				"password":"1234"
 			}`))
-			
-			mockRequest.Header.Set("Content-Type","application/json")
-			w:=httptest.NewRecorder()
-			router.ServeHTTP(w,mockRequest)
+
+			mockRequest.Header.Set("Content-Type", "application/json")
+			w := httptest.NewRecorder()
+			router.ServeHTTP(w, mockRequest)
 			var actualResponse response.Response
-			json.Unmarshal(w.Body.Bytes(),&actualResponse)
-			assert.Equal(t,tt.responseBody.Statuscode,actualResponse.Statuscode)
-			assert.Equal(t,tt.responseBody.Error,actualResponse.Error)
-			assert.Equal(t,tt.responseBody.Message,actualResponse.Message)
-			assert.Equal(t,tt.responseBody.Data.(models.TokenResponse).Token,actualResponse.Data.(map[string]interface{})["Token"])
+			json.Unmarshal(w.Body.Bytes(), &actualResponse)
+			assert.Equal(t, tt.responseBody.Statuscode, actualResponse.Statuscode)
+			assert.Equal(t, tt.responseBody.Error, actualResponse.Error)
+			assert.Equal(t, tt.responseBody.Message, actualResponse.Message)
+			assert.Equal(t, tt.responseBody.Data.(models.TokenResponse).Token, actualResponse.Data.(map[string]interface{})["Token"])
+		})
+	}
+}
+
+func TestLoginHandler(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	userUseCase := mock.NewMockUserUseCase(ctrl)
+	cartUseCase := mock.NewMockCartUseCase(ctrl)
+	userHandler := NewUserHandler(userUseCase, cartUseCase)
+
+	tests := []struct {
+		name         string
+		input        models.UserLogin
+		beforeTest   func(mock.MockUserUseCase, models.UserLogin)
+		responseBody response.Response
+	}{
+		{
+			name: "user signup",
+			input: models.UserLogin{
+				Email:    "aarathy@gmail.com",
+	            Password: "1234",
+			},
+
+			beforeTest: func(muuc mock.MockUserUseCase, user models.UserLogin) {
+				muuc.EXPECT().UserLogin(user).Times(1).Return(models.TokenResponse{
+					Token: "lkjjjzhbxkjggjnsuahjkll",
+					UserDetails: models.UserDetails{
+						ID:    1,
+						Name:  "aarathy",
+						Email: "aarathy@gmail.com",
+						PhNo:  "+919745503907",
+					},
+				}, nil)
+			},
+			responseBody: response.Response{
+				Statuscode: http.StatusOK,
+				Message:    "successfully logged in",
+				Data: models.TokenResponse{
+					Token: "lkjjjzhbxkjggjnsuahjkll",
+					UserDetails: models.UserDetails{
+						ID:    1,
+						Name:  "aarathy",
+						Email: "aarathy@gmail.com",
+						PhNo:  "+919745503907",
+					},
+				},
+				Error: nil,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.beforeTest(*userUseCase, tt.input)
+			router := gin.Default()
+			router.POST("/login", userHandler.LoginHandler)
+
+			mockRequest := httptest.NewRequest("POST", "/login", strings.NewReader(`
+			{
+				"email":"aarathy@gmail.com",
+			    "password":"1234"
+			}`))
+
+			mockRequest.Header.Set("Content-Type", "application/json")
+			w := httptest.NewRecorder()
+			router.ServeHTTP(w, mockRequest)
+			var actualResponse response.Response
+			json.Unmarshal(w.Body.Bytes(), &actualResponse)
+			assert.Equal(t, tt.responseBody.Statuscode, actualResponse.Statuscode)
+			assert.Equal(t, tt.responseBody.Error, actualResponse.Error)
+			assert.Equal(t, tt.responseBody.Message, actualResponse.Message)
+			assert.Equal(t, tt.responseBody.Data.(models.TokenResponse).Token, actualResponse.Data.(map[string]interface{})["Token"])
 		})
 	}
 }

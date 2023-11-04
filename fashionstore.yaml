@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fashionstore-deployment
+  labels:
+    app: fashionstore
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fashionstore
+  template:
+    metadata:
+      labels:
+        app: fashionstore
+    spec:
+      containers:
+      - name: fashionstore
+        image: aarathy29/ecommerce:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: DB_PASSWORD 
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-config
+              key: postgres-password
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-config
+              key: postgres-host
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-config
+              key: postgres-db
+        - name: DB_USER
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-config
+              key: postgres-user
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-config
+              key: postgres-port                  
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fashionstore-service
+spec:
+  type: NodePort
+  selector:
+    app: fashionstore
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000 
+      nodePort: 30100    

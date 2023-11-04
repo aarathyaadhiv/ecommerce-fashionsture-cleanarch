@@ -37,6 +37,6 @@ jobs:
              cd ecommerce-fashionsture-cleanarch/
              git pull
              make build
-             sudo systemctl restart myapp.service
+             sudo systemctl restart myapp.service     
 
 
